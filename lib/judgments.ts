@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { supabase, isSupabaseConfigured } from './supabase';
+import { getSupabase } from './supabase';
 
 export interface ReviewJudgment {
   review_id: string;
@@ -50,17 +50,16 @@ let cachedJudgments: ReviewJudgment[] | null = null;
 let cachedSellerTrust: SellerTrust[] | null = null;
 
 export async function getReviewJudgments(): Promise<ReviewJudgment[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('review_judgments')
         .select('*');
-      
-      if (!error && data) {
-        return data;
-      }
+      if (error) console.error('Supabase review_judgments fetch failed:', error.message);
+      else if (data) return data;
     } catch (err) {
-      console.error('Supabase fetch error:', err);
+      console.error('Supabase review_judgments fetch failed:', err);
     }
   }
   
@@ -74,17 +73,16 @@ export async function getReviewJudgments(): Promise<ReviewJudgment[]> {
 }
 
 export async function getSellerTrust(): Promise<SellerTrust[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('seller_trust')
         .select('*');
-      
-      if (!error && data) {
-        return data;
-      }
+      if (error) console.error('Supabase seller_trust fetch failed:', error.message);
+      else if (data) return data;
     } catch (err) {
-      console.error('Supabase fetch error:', err);
+      console.error('Supabase seller_trust fetch failed:', err);
     }
   }
   

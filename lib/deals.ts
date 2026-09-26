@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from './supabase';
+import { getSupabase } from './supabase';
 import { CURRYS_POLICY, type SellerPolicy } from './policy';
 
 export { CURRYS_POLICY };
@@ -54,35 +54,39 @@ export function createShortCode(length = 4): string {
 const inMemoryDeals: Map<string, Deal> = new Map();
 const inMemoryApprovals: Map<string, Approval> = new Map();
 
-// Warn if running on Vercel without Supabase
-if (typeof process !== 'undefined' && process.env.VERCEL && !isSupabaseConfigured()) {
-  console.warn(
-    '⚠️ Running on Vercel without Supabase configuration. ' +
-    'In-memory storage will NOT work across serverless function instances. ' +
-    'Phone approval flow will fail. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.'
+function throwIfError(
+  action: string,
+  error: { message: string; code?: string; details?: string; hint?: string } | null
+): void {
+  if (!error) return;
+  console.error(
+    `Supabase ${action} failed:`,
+    error.message,
+    error.code || '',
+    error.details || '',
+    error.hint || ''
   );
-}
-
-function throwIfError(error: { message: string } | null): void {
-  if (error) throw new Error(error.message);
+  throw new Error(error.message);
 }
 
 export async function saveDeal(deal: Deal): Promise<void> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { error } = await supabase.from('deals').upsert(deal);
-    throwIfError(error);
+    throwIfError('saveDeal', error);
     return;
   }
   inMemoryDeals.set(deal.id, deal);
 }
 
 export async function listDeals(): Promise<Deal[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { data, error } = await supabase
       .from('deals')
       .select('*')
       .order('created_at', { ascending: false });
-    if (error) throw error;
+    throwIfError('listDeals', error);
     return data || [];
   }
   return Array.from(inMemoryDeals.values()).sort(
@@ -91,25 +95,27 @@ export async function listDeals(): Promise<Deal[]> {
 }
 
 export async function getDeal(id: string): Promise<Deal | null> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { data, error } = await supabase
       .from('deals')
       .select('*')
       .eq('id', id)
       .maybeSingle();
-    throwIfError(error);
+    throwIfError('getDeal', error);
     return data || null;
   }
   return inMemoryDeals.get(id) || null;
 }
 
 export async function updateDeal(id: string, updates: Partial<Deal>): Promise<void> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { error } = await supabase
       .from('deals')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id);
-    throwIfError(error);
+    throwIfError('updateDeal', error);
     return;
   }
   const deal = inMemoryDeals.get(id);
@@ -123,34 +129,37 @@ export async function updateDeal(id: string, updates: Partial<Deal>): Promise<vo
 }
 
 export async function saveApproval(approval: Approval): Promise<void> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { error } = await supabase.from('approvals').insert(approval);
-    throwIfError(error);
+    throwIfError('saveApproval', error);
     return;
   }
   inMemoryApprovals.set(approval.id, approval);
 }
 
 export async function getApproval(id: string): Promise<Approval | null> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { data, error } = await supabase
       .from('approvals')
       .select('*')
       .eq('id', id)
       .maybeSingle();
-    throwIfError(error);
+    throwIfError('getApproval', error);
     return data || null;
   }
   return inMemoryApprovals.get(id) || null;
 }
 
 export async function updateApproval(id: string, updates: Partial<Approval>): Promise<void> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { error } = await supabase
       .from('approvals')
       .update(updates)
       .eq('id', id);
-    throwIfError(error);
+    throwIfError('updateApproval', error);
     return;
   }
   const approval = inMemoryApprovals.get(id);
@@ -162,25 +171,27 @@ export async function updateApproval(id: string, updates: Partial<Approval>): Pr
 export async function getApprovalByShortCode(code: string): Promise<Approval | null> {
   const normalized = code.trim().toLowerCase();
   if (!normalized) return null;
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { data, error } = await supabase
       .from('approvals')
       .select('*')
       .eq('short_code', normalized)
       .maybeSingle();
-    throwIfError(error);
+    throwIfError('getApprovalByShortCode', error);
     return data || null;
   }
   return Array.from(inMemoryApprovals.values()).find((approval) => approval.short_code === normalized) || null;
 }
 
 export async function getApprovalsByDealId(dealId: string): Promise<Approval[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     const { data, error } = await supabase
       .from('approvals')
       .select('*')
       .eq('deal_id', dealId);
-    throwIfError(error);
+    throwIfError('getApprovalsByDealId', error);
     return data || [];
   }
   return Array.from(inMemoryApprovals.values()).filter(a => a.deal_id === dealId);

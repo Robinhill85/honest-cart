@@ -51,6 +51,19 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '03-compare-initial.png'), fullPage: true });
 
       await expect(page.getByText('No data').first()).toBeVisible();
+      const sonyCard = page.locator('div.rounded-xl').filter({
+        has: page.getByRole('heading', { name: 'Sony WH-1000XM6', level: 3 }),
+      });
+      await expect(sonyCard.getByRole('link', { name: 'Get the best deal' })).toHaveAttribute('href', '/deal');
+      await expect(page.getByText('0%', { exact: true })).toHaveCount(0);
+      await expect(page.locator('label').filter({ hasText: /^comfort/i })).toContainText('40%');
+      await page.setViewportSize({ width: 390, height: 844 });
+      const dealButton = sonyCard.getByRole('link', { name: 'Get the best deal' });
+      await dealButton.scrollIntoViewIfNeeded();
+      await expect(dealButton).toBeVisible();
+      const compareOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+      expect(compareOverflow).toBe(false);
+      await page.setViewportSize({ width: 1280, height: 720 });
 
       const headings = page.locator('h3');
       const orderBefore = await headings.allTextContents();
@@ -99,41 +112,50 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const shortLink = page.locator('a[href^="/a/"]');
       await expect(shortLink).toBeVisible();
       await expect(shortLink).toHaveAttribute('href', /^\/a\/[23456789abcdefghjkmnpqrstuvwxyz]{4}$/);
+      for (const width of [390, 1280]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 800 });
+        const clipped = await shortLink.evaluate((el) => el.scrollWidth > el.clientWidth + 1);
+        expect(clipped).toBe(false);
+        await expect(shortLink).toBeVisible();
+      }
+      await page.setViewportSize({ width: 1280, height: 720 });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop-qr-short-url.png'), fullPage: true });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08-negotiation-complete.png'), fullPage: true });
       console.log('✓ Negotiation completed');
 
-      // Step 5b: Group buy — 3 friend bots, ladder drops to the 3-buyer tier
+      // Step 5b: Group buy — 4 friend bots, ladder drops to the 5-buyer tier
       console.log('Step 5b: Inviting friends...');
       await page.click('button:has-text("Invite Friends")');
       await page.waitForSelector('text=Share link', { timeout: 5000 });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08b-group-buy-invited.png'), fullPage: true });
 
-      // Names sit beside a "Bot" badge, so the element text is "Alice Bot", not "Alice".
-      // Alice 2s, Bob 4s (+ renegotiation), Charlie 6s — about 14s total.
-      await page.getByText('Charlie').waitFor({ timeout: 25000 });
+      // Alice, Bob, Charlie, Dana join about 2s apart, with two price-drop pauses.
+      await page.getByText('Dana').waitFor({ timeout: 25000 });
       const membersPanel = page.locator('div.rounded-xl').filter({
-        has: page.getByRole('heading', { name: 'Group Members (4)' }),
+        has: page.getByRole('heading', { name: 'Group Members (5)' }),
       });
       await expect(membersPanel).toBeVisible();
-      for (const name of ['You', 'Alice', 'Bob', 'Charlie']) {
+      for (const name of ['You', 'Alice', 'Bob', 'Charlie', 'Dana']) {
         await expect(membersPanel.getByText(name)).toBeVisible();
       }
-      await expect(membersPanel.getByText('Bot', { exact: true })).toHaveCount(3);
-      await expect(membersPanel.getByText('✓ Approved')).toHaveCount(3);
+      await expect(membersPanel.getByText('Bot', { exact: true })).toHaveCount(4);
+      await expect(membersPanel.getByText('✓ Approved')).toHaveCount(4);
       await expect(membersPanel.getByText('Pending')).toHaveCount(1);
 
-      const currentTier = page.locator('div.border-emerald-500').filter({ hasText: 'Current' });
-      await expect(currentTier).toContainText('3 buyers');
-      await expect(currentTier).toContainText('£264.99');
-      const soloTier = page.locator('div.border-2').filter({ hasText: '1 buyer' });
-      await expect(soloTier).toContainText('£279.99');
-      const renegotiation = page.getByText('Group floor for 3 buyers is £264.99 each, down from the matched £279.99.', { exact: true });
+      const ladder = page.locator('div.rounded-xl').filter({
+        has: page.getByRole('heading', { name: 'Group Price Ladder' }),
+      });
+      await expect(ladder.locator('div.border-2').filter({ hasText: '1 buyer' })).toContainText('£279.99');
+      await expect(ladder.locator('div.border-2').filter({ hasText: '3 buyers' })).toContainText('£264.99');
+      const currentTier = ladder.locator('div.border-emerald-500').filter({ hasText: 'Current' });
+      await expect(currentTier).toContainText('5 buyers');
+      await expect(currentTier).toContainText('£249.99');
+      const renegotiation = page.getByText('Group floor for 5 buyers is £249.99 each, down from the matched £279.99.', { exact: true });
       await renegotiation.scrollIntoViewIfNeeded();
       await expect(renegotiation).toBeVisible();
 
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08c-group-buy-complete.png'), fullPage: true });
-      console.log('✓ Group buy: 4 members, £264.99 tier, bot cards auto-approved');
+      console.log('✓ Group buy: 5 members, £249.99 tier, bot cards auto-approved');
 
       // Extract approval URL
       const approvalLink = await page.locator('a[href*="/approve/"]').getAttribute('href');
@@ -152,7 +174,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
 
       await mobilePage.goto(approvalUrl!);
       await mobilePage.waitForLoadState('networkidle');
-      await expect(mobilePage.getByText('£264.99')).toBeVisible();
+      await expect(mobilePage.getByText('£249.99')).toBeVisible();
       await mobilePage.screenshot({ path: path.join(SCREENSHOTS_DIR, '09-approve-mobile.png'), fullPage: true });
       console.log('✓ Approval page loaded on mobile at the group price');
 
@@ -188,7 +210,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const approvalId = approvalUrl!.split('/').pop();
       await page.goto(`${BASE_URL}/checkout/${approvalId}`);
       await page.waitForLoadState('networkidle');
-      await expect(page.getByText('£264.99')).toBeVisible({ timeout: 8000 });
+      await expect(page.getByText('£249.99')).toBeVisible({ timeout: 8000 });
       await expect(page.getByText('Test mode', { exact: true })).toBeVisible();
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, 'checkout-test-mode.png'), fullPage: true });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '12-simulated-checkout.png'), fullPage: true });
@@ -203,7 +225,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '13-receipt.png'), fullPage: true });
       await expect(page.locator('h1')).toContainText('Purchase Complete');
-      await expect(page.getByText('Sony WH-1000XM6 from Currys at £264.99')).toBeVisible();
+      await expect(page.getByText('Sony WH-1000XM6 from Currys at £249.99')).toBeVisible();
       console.log('✓ Receipt page loaded');
 
       // Step 10: Seller dashboard shows the negotiated deal
@@ -215,9 +237,9 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await expect(page.getByText('Sample rows only')).toHaveCount(0);
       const dealCard = page.locator('div.rounded-lg').filter({ hasText: 'Sony WH-1000XM6' }).filter({ hasText: 'Offered:' });
       await expect(dealCard).toContainText('£244.99');
-      await expect(dealCard).toContainText('£264.99');
+      await expect(dealCard).toContainText('£249.99');
       await expect(dealCard).toContainText('Approved');
-      await expect(dealCard).toContainText('4 buyers · 3-buyer tier');
+      await expect(dealCard).toContainText('5 buyers · 5-buyer tier');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '14-seller-dashboard.png'), fullPage: true });
       console.log('✓ Seller dashboard showed the negotiated deal');
 

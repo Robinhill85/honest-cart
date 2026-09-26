@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 interface Product {
   id: string;
@@ -18,16 +18,16 @@ interface Product {
 }
 
 async function getProducts(): Promise<Product[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .order('typical_uk_rrp->current_typical_uk_price_gbp', { ascending: true });
-      
-      if (!error && data) {
-        return data;
-      }
+
+      if (error) console.error('Supabase products fetch failed:', error.message);
+      else if (data) return data;
     } catch (err) {
       console.error('Supabase fetch error:', err);
     }

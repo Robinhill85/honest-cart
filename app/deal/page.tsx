@@ -4,7 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import QRCode from 'react-qr-code';
 import { CURRYS_POLICY, DEMO_SELLER_LABEL, groupLadder } from '@/lib/policy';
-import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 
 interface ChatMessage {
   role: 'buyer' | 'seller' | 'system';
@@ -218,8 +218,8 @@ function DealScreen() {
   }, []);
 
   useEffect(() => {
-    const client = supabase;
-    if (!approvalId || !isSupabaseConfigured() || !client) return;
+    const client = getSupabase();
+    if (!approvalId || !client) return;
 
     const channel = client
       .channel(`approval-${approvalId}`)
@@ -525,7 +525,7 @@ function DealScreen() {
 
             {/* Approval QR */}
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+              <div className="min-w-0 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
                   {youApproved ? 'Approved on phone' : 'Your Approval Required'}
                 </h2>
@@ -552,7 +552,7 @@ function DealScreen() {
                     </p>
                     <a
                       href={`/a/${shortCode}`}
-                      className="block text-4xl font-bold tracking-widest font-mono text-slate-900 dark:text-slate-50"
+                      className="block max-w-full break-all font-mono text-sm font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-base"
                     >
                       {window.location.host}/a/{shortCode}
                     </a>

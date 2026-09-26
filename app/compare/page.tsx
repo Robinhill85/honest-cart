@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { getReviewJudgments, getSellerTrust } from '@/lib/judgments';
 import ComparisonClient from './ComparisonClient';
 
@@ -11,17 +11,16 @@ interface Product {
 }
 
 async function getProducts(): Promise<Product[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('products')
         .select('id, brand, model');
-      
-      if (!error && data) {
-        return data;
-      }
+      if (error) console.error('Supabase products fetch failed:', error.message);
+      else if (data) return data;
     } catch (err) {
-      console.error('Supabase fetch error:', err);
+      console.error('Supabase products fetch failed:', err);
     }
   }
   
@@ -35,17 +34,16 @@ async function getProducts(): Promise<Product[]> {
 }
 
 async function getReviews(): Promise<any[]> {
-  if (isSupabaseConfigured() && supabase) {
+  const supabase = getSupabase();
+  if (supabase) {
     try {
       const { data, error } = await supabase
         .from('reviews')
         .select('*');
-      
-      if (!error && data) {
-        return data;
-      }
+      if (error) console.error('Supabase reviews fetch failed:', error.message);
+      else if (data) return data;
     } catch (err) {
-      console.error('Supabase fetch error:', err);
+      console.error('Supabase reviews fetch failed:', err);
     }
   }
   

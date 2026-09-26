@@ -9,8 +9,9 @@ export const maxDuration = 60;
 // Demo friend bots
 const FRIEND_BOTS = [
   { name: 'Alice', delay: 2000 },
-  { name: 'Bob', delay: 4000 },
-  { name: 'Charlie', delay: 6000 },
+  { name: 'Bob', delay: 2000 },
+  { name: 'Charlie', delay: 2000 },
+  { name: 'Dana', delay: 2000 },
 ];
 
 export async function POST(

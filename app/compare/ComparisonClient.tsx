@@ -25,7 +25,7 @@ export default function ComparisonClient({
 }: ComparisonClientProps) {
   const [weights, setWeights] = useState<FeatureWeights>({
     noise_cancelling: 1.0,
-    comfort: 1.0,
+    comfort: 0.4,
     battery: 0.7,
     call_quality: 0.5,
     price: 0.8,
@@ -49,11 +49,15 @@ export default function ComparisonClient({
     const productReviews = reviews.filter((r: any) => r.product_id === productId);
     const reviewJudgments = judgments.filter(j => j.review_id && productReviews.some((r: any) => r.id === j.review_id));
 
-    return reviewJudgments.map(judgment => {
+    return reviewJudgments.flatMap(judgment => {
+      if (feature && feature !== 'price') {
+        const featureData = judgment.features[feature as keyof typeof judgment.features];
+        if (!featureData || featureData.mentioned_prob <= 0.5) return [];
+      }
       const review = productReviews.find((r: any) => r.id === judgment.review_id);
       const trusted = (1 - judgment.fake_prob) >= 0.5;
-      
-      return {
+
+      return [{
         review_id: judgment.review_id,
         text: review?.text || '',
         url: review?.url,
@@ -61,9 +65,13 @@ export default function ComparisonClient({
         judgment,
         trusted,
         reason_tag: judgment.reason_tag,
-      };
+      }];
     });
   };
+
+  const featureQuotes = selectedProduct && selectedFeature
+    ? getReviewsForProduct(selectedProduct, selectedFeature)
+    : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950">
@@ -125,15 +133,15 @@ export default function ComparisonClient({
                 }}
               >
                 <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-4">
+                  <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-4">
                       <div className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700">
                         <span className="text-2xl font-bold text-slate-900 dark:text-slate-50">
                           {ranking.rank}
                         </span>
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 sm:text-2xl">
                           {product.brand} {product.model}
                         </h3>
                         <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -146,7 +154,7 @@ export default function ComparisonClient({
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="sm:text-right">
                       <div className="text-3xl font-bold text-slate-900 dark:text-slate-50">
                         £{ranking.best_trusted_price}
                       </div>
@@ -158,36 +166,29 @@ export default function ComparisonClient({
                       >
                         {ranking.best_trusted_seller}
                       </a>
-                      {ranking.rank === 1 && ranking.product_id === 'sony-wh1000xm6' && (
-                        <div className="mt-2">
-                          <a
-                            href="/deal"
-                            className="inline-block text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
-                          >
-                            → Ask to price match
-                          </a>
-                        </div>
-                      )}
                     </div>
                   </div>
 
                   {/* Feature bars */}
                   <div className="space-y-3">
-                    {Object.entries(ranking.feature_scores).map(([feature, score]) => (
+                    {Object.entries(ranking.feature_scores).map(([feature, score]) => {
+                      const percent = score == null ? null : Math.round(score * 100);
+                      const hasData = percent != null && percent > 0;
+                      return (
                       <div key={feature}>
-                        <div className="flex justify-between items-center mb-1">
+                        <div className="flex justify-between items-center mb-1 gap-3">
                           <span className="text-sm font-medium text-slate-700 dark:text-slate-300 capitalize">
-                            {feature.replace('_', ' ')}
+                            {feature.replaceAll('_', ' ')}
                           </span>
-                          {score == null ? (
-                            <span className="text-sm text-slate-400 dark:text-slate-500">No data</span>
-                          ) : (
+                          {hasData ? (
                             <span className="text-sm text-slate-500 dark:text-slate-400">
-                              {Math.round(score * 100)}%
+                              {percent}%
                             </span>
+                          ) : (
+                            <span className="text-sm text-slate-400 dark:text-slate-500">No data</span>
                           )}
                         </div>
-                        {score == null ? null : (
+                        {hasData ? (
                           <button
                             onClick={() => {
                               setSelectedProduct(ranking.product_id);
@@ -198,20 +199,28 @@ export default function ComparisonClient({
                             <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all ${
-                                  score >= 0.7
+                                  score! >= 0.7
                                     ? 'bg-emerald-500'
-                                    : score >= 0.5
+                                    : score! >= 0.5
                                     ? 'bg-amber-500'
                                     : 'bg-slate-400'
                                 }`}
-                                style={{ width: `${Math.max(score * 100, 2)}%` }}
+                                style={{ width: `${Math.max(percent, 2)}%` }}
                               />
                             </div>
                           </button>
-                        )}
+                        ) : null}
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
+
+                  <a
+                    href={ranking.product_id === 'sony-wh1000xm6' ? '/deal' : `/deal?product=${ranking.product_id}`}
+                    className="mt-5 flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                  >
+                    Get the best deal
+                  </a>
                 </div>
               </div>
             );
@@ -248,7 +257,12 @@ export default function ComparisonClient({
                 </div>
               </div>
               <div className="p-6 space-y-4">
-                {getReviewsForProduct(selectedProduct, selectedFeature).map((reviewData) => (
+                {featureQuotes.length === 0 ? (
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    No quotes for this feature.
+                  </p>
+                ) : null}
+                {featureQuotes.map((reviewData) => (
                   <div
                     key={reviewData.review_id}
                     className={`p-4 rounded-lg border ${

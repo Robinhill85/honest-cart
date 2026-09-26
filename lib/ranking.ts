@@ -39,7 +39,7 @@ export interface ReviewWithJudgment {
 
 const DEFAULT_WEIGHTS: FeatureWeights = {
   noise_cancelling: 1.0,
-  comfort: 1.0,
+  comfort: 0.4,
   battery: 0.7,
   call_quality: 0.5,
   price: 0.8,
