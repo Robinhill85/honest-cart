@@ -1,8 +1,11 @@
--- Honest Cart Schema
--- Phase 1: Products, Reviews, Sellers, Offers, Judgments, Deals, Group Members, Approvals
+-- Honest Cart - Supabase SQL Migration
+-- Paste this into your Supabase SQL Editor
+
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Products table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY,
   brand TEXT NOT NULL,
   model TEXT NOT NULL,
@@ -15,7 +18,7 @@ CREATE TABLE products (
 );
 
 -- Reviews table
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
   id TEXT PRIMARY KEY,
   product_id TEXT NOT NULL REFERENCES products(id),
   source_type TEXT NOT NULL,
@@ -34,11 +37,11 @@ CREATE TABLE reviews (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_reviews_product_id ON reviews(product_id);
-CREATE INDEX idx_reviews_source_type ON reviews(source_type);
+CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON reviews(product_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_source_type ON reviews(source_type);
 
 -- Sellers table
-CREATE TABLE sellers (
+CREATE TABLE IF NOT EXISTS sellers (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
   tier TEXT NOT NULL CHECK (tier IN ('trusted', 'less_trusted')),
@@ -47,7 +50,7 @@ CREATE TABLE sellers (
 );
 
 -- Offers table
-CREATE TABLE offers (
+CREATE TABLE IF NOT EXISTS offers (
   id TEXT PRIMARY KEY,
   product_id TEXT NOT NULL REFERENCES products(id),
   seller_id TEXT NOT NULL REFERENCES sellers(id),
@@ -60,11 +63,11 @@ CREATE TABLE offers (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_offers_product_id ON offers(product_id);
-CREATE INDEX idx_offers_seller_id ON offers(seller_id);
+CREATE INDEX IF NOT EXISTS idx_offers_product_id ON offers(product_id);
+CREATE INDEX IF NOT EXISTS idx_offers_seller_id ON offers(seller_id);
 
--- Review judgments table (TypeSafe Jev review authenticity & features)
-CREATE TABLE review_judgments (
+-- Review judgments table
+CREATE TABLE IF NOT EXISTS review_judgments (
   review_id TEXT PRIMARY KEY REFERENCES reviews(id),
   fake_prob NUMERIC(5,4) NOT NULL,
   reason_tag TEXT NOT NULL,
@@ -77,11 +80,11 @@ CREATE TABLE review_judgments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_review_judgments_fake_prob ON review_judgments(fake_prob);
-CREATE INDEX idx_review_judgments_flight_relevance ON review_judgments(flight_relevance);
+CREATE INDEX IF NOT EXISTS idx_review_judgments_fake_prob ON review_judgments(fake_prob);
+CREATE INDEX IF NOT EXISTS idx_review_judgments_flight_relevance ON review_judgments(flight_relevance);
 
--- Seller trust table (TypeSafe Jev offer/seller trust)
-CREATE TABLE seller_trust (
+-- Seller trust table
+CREATE TABLE IF NOT EXISTS seller_trust (
   id TEXT PRIMARY KEY,
   seller TEXT NOT NULL,
   product_id TEXT NOT NULL REFERENCES products(id),
@@ -94,11 +97,11 @@ CREATE TABLE seller_trust (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_seller_trust_trust_prob ON seller_trust(trust_prob);
-CREATE INDEX idx_seller_trust_product ON seller_trust(product_id);
+CREATE INDEX IF NOT EXISTS idx_seller_trust_trust_prob ON seller_trust(trust_prob);
+CREATE INDEX IF NOT EXISTS idx_seller_trust_product ON seller_trust(product_id);
 
--- Deals table (for negotiated price-match results)
-CREATE TABLE deals (
+-- Deals table
+CREATE TABLE IF NOT EXISTS deals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id TEXT NOT NULL REFERENCES products(id),
   product_name TEXT NOT NULL,
@@ -115,22 +118,11 @@ CREATE TABLE deals (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_deals_status ON deals(status);
-CREATE INDEX idx_deals_group_id ON deals(group_id);
+CREATE INDEX IF NOT EXISTS idx_deals_status ON deals(status);
+CREATE INDEX IF NOT EXISTS idx_deals_group_id ON deals(group_id);
 
--- Group members table (for group buy feature, phase 2)
-CREATE TABLE group_members (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  deal_id UUID NOT NULL REFERENCES deals(id),
-  user_email TEXT NOT NULL,
-  quantity INTEGER DEFAULT 1,
-  joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE INDEX idx_group_members_deal_id ON group_members(deal_id);
-
--- Approvals table (for user approval flow)
-CREATE TABLE approvals (
+-- Approvals table
+CREATE TABLE IF NOT EXISTS approvals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   deal_id UUID NOT NULL REFERENCES deals(id),
   user_email TEXT,
@@ -146,10 +138,21 @@ CREATE TABLE approvals (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_approvals_deal_id ON approvals(deal_id);
-CREATE INDEX idx_approvals_status ON approvals(status);
+CREATE INDEX IF NOT EXISTS idx_approvals_deal_id ON approvals(deal_id);
+CREATE INDEX IF NOT EXISTS idx_approvals_status ON approvals(status);
 
--- Enable Row Level Security (all tables public for demo)
+-- Group members table
+CREATE TABLE IF NOT EXISTS group_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  deal_id UUID NOT NULL REFERENCES deals(id),
+  user_email TEXT NOT NULL,
+  quantity INTEGER DEFAULT 1,
+  joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_group_members_deal_id ON group_members(deal_id);
+
+-- Enable Row Level Security
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sellers ENABLE ROW LEVEL SECURITY;
@@ -160,7 +163,23 @@ ALTER TABLE deals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE group_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE approvals ENABLE ROW LEVEL SECURITY;
 
--- Allow public read access for demo
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Public read access" ON products;
+DROP POLICY IF EXISTS "Public read access" ON reviews;
+DROP POLICY IF EXISTS "Public read access" ON sellers;
+DROP POLICY IF EXISTS "Public read access" ON offers;
+DROP POLICY IF EXISTS "Public read access" ON review_judgments;
+DROP POLICY IF EXISTS "Public read access" ON seller_trust;
+DROP POLICY IF EXISTS "Public read access" ON deals;
+DROP POLICY IF EXISTS "Public read access" ON group_members;
+DROP POLICY IF EXISTS "Public read access" ON approvals;
+DROP POLICY IF EXISTS "Public insert access" ON deals;
+DROP POLICY IF EXISTS "Public update access" ON deals;
+DROP POLICY IF EXISTS "Public insert access" ON approvals;
+DROP POLICY IF EXISTS "Public update access" ON approvals;
+DROP POLICY IF EXISTS "Public insert access" ON group_members;
+
+-- Public read access for all tables
 CREATE POLICY "Public read access" ON products FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON reviews FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON sellers FOR SELECT USING (true);
@@ -171,7 +190,7 @@ CREATE POLICY "Public read access" ON deals FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON group_members FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON approvals FOR SELECT USING (true);
 
--- Allow public writes for demo (approval flow needs write access)
+-- Public write access for demo tables (deals, approvals, group_members)
 CREATE POLICY "Public insert access" ON deals FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public update access" ON deals FOR UPDATE USING (true);
 CREATE POLICY "Public insert access" ON approvals FOR INSERT WITH CHECK (true);

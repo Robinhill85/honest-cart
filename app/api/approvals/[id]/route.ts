@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getApproval } from '@/lib/deals';
+import { getApproval, updateApproval } from '@/lib/deals';
 
 export async function GET(
   request: NextRequest,
@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const approval = getApproval(id);
+    const approval = await getApproval(id);
     
     if (!approval) {
       return NextResponse.json(
@@ -33,9 +33,8 @@ export async function POST(
   try {
     const { id } = await params;
     const { approved } = await request.json();
-    const { updateApproval } = await import('@/lib/deals');
     
-    updateApproval(id, {
+    await updateApproval(id, {
       status: approved ? 'approved' : 'declined',
       approved_at: new Date().toISOString(),
     });
@@ -47,7 +46,7 @@ export async function POST(
       if (stripeKey && stripeKey.startsWith('sk_test_')) {
         // Create Stripe checkout session
         const stripe = require('stripe')(stripeKey);
-        const approval = getApproval(id);
+        const approval = await getApproval(id);
         
         if (!approval) {
           throw new Error('Approval not found');

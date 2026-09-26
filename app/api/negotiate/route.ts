@@ -74,8 +74,8 @@ export async function POST(request: NextRequest) {
         created_at: new Date().toISOString(),
       };
 
-      saveDeal(deal);
-      saveApproval(approval);
+      await saveDeal(deal);
+      await saveApproval(approval);
 
       // Send completion event with approval ID
       await writer.write(
