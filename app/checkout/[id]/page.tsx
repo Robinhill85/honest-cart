@@ -54,13 +54,17 @@ export default function CheckoutPage() {
           </svg>
         </div>
         
+        <p className="inline-block mb-4 px-3 py-1 text-sm font-semibold rounded-full bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">
+          Test mode
+        </p>
+
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-4">
           Simulated Test Checkout
         </h1>
         
         <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-6">
           <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong>TEST MODE:</strong> No Stripe secret key configured. This is a simulated checkout for demonstration purposes only.
+            <strong>Test mode.</strong> No Stripe secret key configured. This is a simulated checkout for demonstration purposes only.
           </p>
         </div>
 

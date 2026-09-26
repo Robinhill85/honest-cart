@@ -76,6 +76,11 @@ export async function POST(
             },
           ],
           mode: 'payment',
+          custom_text: {
+            submit: {
+              message: 'Test mode. This Stripe session uses a test key and does not create a live charge.',
+            },
+          },
           success_url: `${baseUrl}/receipt/${id}?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${baseUrl}/approve/${id}`,
           metadata: {
