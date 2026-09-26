@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 import { CURRYS_POLICY, groupLadder } from '@/lib/policy';
 
@@ -19,7 +18,6 @@ interface GroupMember {
 }
 
 export default function DealScreen() {
-  const router = useRouter();
   const [negotiating, setNegotiating] = useState(false);
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [approvalId, setApprovalId] = useState<string | null>(null);
@@ -141,6 +139,35 @@ export default function DealScreen() {
 
   const approvalUrl = approvalId ? `${window.location.origin}/approve/${approvalId}` : '';
   const ladder = groupLadder(soloPrice);
+  const youApproved = groupMembers.some((member) => !member.isBot && member.status === 'approved');
+
+  useEffect(() => {
+    if (!approvalId) return;
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/approvals/${approvalId}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        if (cancelled || data.status !== 'approved') return;
+        setGroupMembers((prev) =>
+          prev.map((member) =>
+            member.approvalId === approvalId ? { ...member, status: 'approved' } : member
+          )
+        );
+      } catch (error) {
+        console.error('Approval poll failed:', error);
+      }
+    };
+
+    poll();
+    const timer = setInterval(poll, 1500);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [approvalId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
@@ -357,10 +384,22 @@ export default function DealScreen() {
                           <div className="text-xs text-slate-500 dark:text-slate-400">
                             £{groupPrice.toFixed(2)} each
                           </div>
+                          {!member.isBot && member.status === 'approved' && (
+                            <a
+                              href={`/receipt/${member.approvalId}`}
+                              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                            >
+                              View receipt
+                            </a>
+                          )}
                         </div>
                       </div>
                       <div>
-                        {member.status === 'approved' ? (
+                        {!member.isBot && member.status === 'approved' ? (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                            Approved on phone
+                          </span>
+                        ) : member.status === 'approved' ? (
                           <span className="px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
                             ✓ Approved
                           </span>
@@ -380,11 +419,21 @@ export default function DealScreen() {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
-                  Your Approval Required
+                  {youApproved ? 'Approved on phone' : 'Your Approval Required'}
                 </h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-6">
-                  Scan the QR code with your phone to approve your purchase (£{groupPrice.toFixed(2)}).
+                  {youApproved
+                    ? `Your phone approved £${groupPrice.toFixed(2)}.`
+                    : `Scan the QR code with your phone to approve your purchase (£${groupPrice.toFixed(2)}).`}
                 </p>
+                {youApproved && (
+                  <a
+                    href={`/receipt/${approvalId}`}
+                    className="inline-block mb-6 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg"
+                  >
+                    View receipt
+                  </a>
+                )}
                 <div className="bg-white p-6 rounded-lg inline-block">
                   <QRCode value={approvalUrl} size={200} />
                 </div>

@@ -167,11 +167,15 @@ test.describe('Honest Cart - Happy Path E2E', () => {
 
       await mobileContext.close();
 
-      // Step 7: Check desktop update (should show approval happened)
+      // Step 7: Laptop polls the approval and flips You to approved
       console.log('Step 7: Checking desktop update...');
-      // In real scenario with Supabase Realtime, desktop would update automatically
-      // For now, just verify we're on the right screen
+      await expect(page.getByText('Approved on phone').first()).toBeVisible({ timeout: 5000 });
+      await expect(page.getByRole('link', { name: 'View receipt' }).first()).toBeVisible();
+      const youCard = page.locator('div.rounded-lg').filter({ hasText: 'You' }).first();
+      await expect(youCard).toContainText('Approved on phone');
+      await expect(youCard).not.toContainText('Pending');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '11-desktop-after-approve.png'), fullPage: true });
+      console.log('✓ Laptop showed Approved on phone');
 
       // Step 8: Navigate to simulated checkout from desktop
       console.log('Step 8: Navigating to checkout...');
