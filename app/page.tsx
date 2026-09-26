@@ -1,163 +1,238 @@
-import fs from 'fs';
-import path from 'path';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+'use client';
 
-interface Product {
-  id: string;
-  brand: string;
-  model: string;
-  released?: string;
-  typical_uk_rrp: {
-    launch_rrp_gbp: number;
-    current_typical_uk_price_gbp: number;
-    current_price_source: string;
-  };
-  under_300_gbp_at_trusted_retailer: boolean;
-  specs?: any;
-  why_chosen?: string;
-}
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-async function getProducts(): Promise<Product[]> {
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('typical_uk_rrp->current_typical_uk_price_gbp', { ascending: true });
-      
-      if (!error && data) {
-        return data;
-      }
-    } catch (err) {
-      console.error('Supabase fetch error:', err);
+export default function AskScreen() {
+  const router = useRouter();
+  const [query, setQuery] = useState('Noise-cancelling headphones under £300, mainly for flights');
+  const [researching, setResearching] = useState(false);
+  const [researchStage, setResearchStage] = useState<'search' | 'reviews' | 'done'>('search');
+  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [reviewCount, setReviewCount] = useState(0);
+  const [reviewTags, setReviewTags] = useState<string[]>([]);
+
+  const chips = ['flights', 'comfort', 'battery', 'budget'];
+
+  const addChip = (chip: string) => {
+    if (!query.toLowerCase().includes(chip)) {
+      setQuery(prev => `${prev} ${chip}`);
     }
-  }
-  
-  const dataPath = path.join(process.cwd(), 'data', 'products_c90d.json');
-  const fileData = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-  return fileData.products;
-}
+  };
 
-export default async function Home() {
-  const products = await getProducts();
+  const startResearch = async () => {
+    setResearching(true);
+    setResearchStage('search');
+    setSearchResults([]);
+    setReviewCount(0);
+    setReviewTags([]);
+
+    // Phase 1: Search
+    try {
+      const response = await fetch('/api/research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+      
+      // Stream in search results
+      for (let i = 0; i < data.searchResults.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 150));
+        setSearchResults(prev => [...prev, data.searchResults[i]]);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setResearchStage('reviews');
+
+      // Phase 2: Reviews
+      const tags = data.reviewTags || [];
+      const totalReviews = data.reviewCount || 173;
+
+      // Animate counter
+      const counterDuration = 2000;
+      const steps = 20;
+      const increment = totalReviews / steps;
+      
+      for (let i = 0; i <= steps; i++) {
+        await new Promise(resolve => setTimeout(resolve, counterDuration / steps));
+        setReviewCount(Math.min(Math.round(increment * i), totalReviews));
+      }
+
+      // Stream in tags
+      for (let i = 0; i < tags.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        setReviewTags(prev => [...prev, tags[i]]);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setResearchStage('done');
+
+      // Transition to comparison
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      router.push('/compare');
+    } catch (error) {
+      console.error('Research error:', error);
+      // Silent fallback - still transition
+      setTimeout(() => router.push('/compare'), 1000);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4">
-            Honest Cart
-          </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Trust-aware shopping for premium headphones. We research authenticity, judge reviews with AI, and negotiate deals with trusted sellers.
-          </p>
-        </div>
-
-        {!isSupabaseConfigured() && (
-          <div className="mb-8 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-            <p className="text-sm text-amber-800 dark:text-amber-200">
-              ⚠️ Running in offline mode (using local data files). Configure Supabase to enable live data.
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
+      {!researching ? (
+        <div className="max-w-2xl w-full">
+          <div className="text-center mb-8">
+            <h1 className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4">
+              Honest Cart
+            </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-400">
+              Trust-aware shopping powered by AI
             </p>
           </div>
-        )}
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+            <label className="block text-lg font-semibold text-slate-900 dark:text-slate-50 mb-4">
+              What are you buying?
+            </label>
+            
+            <textarea
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full px-4 py-3 text-lg border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              rows={3}
+              placeholder="e.g., Wireless headphones for long flights under £300"
+            />
+
+            <div className="flex flex-wrap gap-2 mt-4 mb-6">
+              {chips.map(chip => (
+                <button
+                  key={chip}
+                  onClick={() => addChip(chip)}
+                  className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full transition-colors"
+                >
+                  + {chip}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={startResearch}
+              disabled={!query.trim()}
+              className="w-full py-4 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 rounded-xl transition-colors disabled:cursor-not-allowed"
             >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                      {product.brand}
-                    </h2>
-                    <p className="text-lg text-slate-600 dark:text-slate-400">
-                      {product.model}
-                    </p>
+              Research & Compare
+            </button>
+          </div>
+
+          <div className="mt-8 text-center">
+            <a
+              href="/catalog"
+              className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 underline"
+            >
+              Browse catalog directly
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-2xl w-full">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-6">
+              Researching...
+            </h2>
+
+            {/* Search stage */}
+            {researchStage === 'search' && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-slate-700 dark:text-slate-300">
+                    Searching the web...
+                  </span>
+                </div>
+                {searchResults.map((result, i) => (
+                  <div
+                    key={i}
+                    className="ml-9 text-sm text-slate-600 dark:text-slate-400 animate-fade-in"
+                  >
+                    {result}
                   </div>
-                  {product.under_300_gbp_at_trusted_retailer && (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                      Under £300
-                    </span>
-                  )}
+                ))}
+              </div>
+            )}
+
+            {/* Reviews stage */}
+            {researchStage === 'reviews' && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="text-slate-700 dark:text-slate-300">
+                    Web search complete
+                  </span>
                 </div>
 
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Current price</span>
-                    <span className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                      £{product.typical_uk_rrp.current_typical_uk_price_gbp}
+                <div className="ml-9 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-slate-700 dark:text-slate-300">
+                      Analyzing reviews...
                     </span>
                   </div>
                   
-                  {product.typical_uk_rrp.launch_rrp_gbp > product.typical_uk_rrp.current_typical_uk_price_gbp && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-500 dark:text-slate-400">Original RRP</span>
-                      <span className="text-sm text-slate-400 dark:text-slate-500 line-through">
-                        £{product.typical_uk_rrp.launch_rrp_gbp}
-                      </span>
-                    </div>
-                  )}
-
-                  {product.released && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-500 dark:text-slate-400">Released</span>
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        {new Date(product.released).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {product.specs && (
-                  <div className="space-y-2 mb-6 text-sm">
-                    {product.specs.battery_hours_anc_claimed && (
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                        {product.specs.battery_hours_anc_claimed.value}h battery
-                      </div>
-                    )}
-                    {product.specs.weight_g && (
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                        {product.specs.weight_g.value}g weight
-                      </div>
-                    )}
-                    {product.specs.anc && (
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Active noise cancelling
-                      </div>
-                    )}
+                  <div className="text-4xl font-bold text-slate-900 dark:text-slate-50">
+                    {reviewCount}
                   </div>
-                )}
 
-                {product.why_chosen && (
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {product.why_chosen}
-                  </p>
-                )}
+                  <div className="flex flex-wrap gap-2">
+                    {reviewTags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 animate-fade-in"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
+            )}
 
-              <div className="bg-slate-50 dark:bg-slate-900 px-6 py-4 border-t border-slate-200 dark:border-slate-700">
-                <a href="/compare">
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                    Compare Offers
-                  </button>
-                </a>
+            {/* Done stage */}
+            {researchStage === 'done' && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="text-slate-700 dark:text-slate-300">
+                    Analysis complete
+                  </span>
+                </div>
+                <div className="ml-9 text-sm text-slate-600 dark:text-slate-400">
+                  Preparing comparison board...
+                </div>
               </div>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
+      )}
 
-        <div className="mt-16 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Demo for Grok Bot Commerce London Hackathon • Track: Agentic Commerce
-          </p>
-        </div>
-      </main>
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(-4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
