@@ -69,15 +69,15 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const orderBefore = await headings.allTextContents();
       console.log('Order before:', orderBefore.join(' > '));
 
-      // Noise cancelling starts at 100%. Dropping it to 0 changes who is first.
-      console.log('Step 3a: Moving noise-cancelling slider to 0...');
-      await page.locator('input[type="range"]').nth(0).fill('0');
+      // Comfort starts at 40%, so it can be dragged up. That swaps the leader.
+      console.log('Step 3a: Dragging comfort slider up...');
+      await page.locator('input[type="range"]').nth(1).fill('1');
       await expect.poll(async () => headings.first().textContent()).not.toBe(orderBefore[0]);
       const orderAfter = await headings.allTextContents();
       expect(orderAfter.join('|')).not.toBe(orderBefore.join('|'));
       console.log('Order after:', orderAfter.join(' > '));
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04-compare-order-changed.png'), fullPage: true });
-      console.log('✓ Noise-cancelling slider changed the order');
+      console.log('✓ Comfort slider changed the order');
 
       // Open evidence drawer
       console.log('Step 3c: Opening evidence drawer...');
