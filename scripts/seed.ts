@@ -19,6 +19,8 @@ async function seed() {
   const productsData = JSON.parse(fs.readFileSync(path.join(dataDir, 'products_c90d.json'), 'utf-8'));
   const reviewsData = JSON.parse(fs.readFileSync(path.join(dataDir, 'reviews_2b03.json'), 'utf-8'));
   const sellersData = JSON.parse(fs.readFileSync(path.join(dataDir, 'sellers_prices_97c0.json'), 'utf-8'));
+  const judgmentsData = JSON.parse(fs.readFileSync(path.join(dataDir, 'judgments_9e10.json'), 'utf-8'));
+  const sellerTrustData = JSON.parse(fs.readFileSync(path.join(dataDir, 'seller_trust_22c0.json'), 'utf-8'));
 
   console.log('📦 Inserting products...');
   const { error: productsError } = await supabase
@@ -95,6 +97,46 @@ async function seed() {
     }
   }
   console.log(`✓ Inserted ${offers.length} offers`);
+
+  console.log('🧠 Inserting review judgments...');
+  const judgmentBatches = [];
+  for (let i = 0; i < judgmentsData.judgments.length; i += 100) {
+    judgmentBatches.push(judgmentsData.judgments.slice(i, i + 100));
+  }
+
+  for (const batch of judgmentBatches) {
+    const { error } = await supabase.from('review_judgments').upsert(batch);
+    if (error) {
+      console.error('Error inserting judgment batch:', error);
+    }
+  }
+  console.log(`✓ Inserted ${judgmentsData.judgments.length} review judgments`);
+
+  console.log('🛡️ Inserting seller trust data...');
+  const trustBatches = [];
+  for (let i = 0; i < sellerTrustData.offers.length; i += 100) {
+    trustBatches.push(sellerTrustData.offers.slice(i, i + 100));
+  }
+
+  for (const batch of trustBatches) {
+    const records = batch.map((offer: any) => ({
+      id: offer.offer_id,
+      seller: offer.seller,
+      product_id: offer.product_id,
+      price_gbp: offer.price_gbp,
+      url: offer.url,
+      trust_prob: offer.trust_prob,
+      top_flags: offer.top_flags || [],
+      flag_probs: offer.flag_probs || {},
+      model: offer.model,
+    }));
+    
+    const { error } = await supabase.from('seller_trust').upsert(records);
+    if (error) {
+      console.error('Error inserting trust batch:', error);
+    }
+  }
+  console.log(`✓ Inserted ${sellerTrustData.offers.length} seller trust records`);
 
   console.log('✅ Database seeded successfully!');
 }

@@ -63,19 +63,39 @@ CREATE TABLE offers (
 CREATE INDEX idx_offers_product_id ON offers(product_id);
 CREATE INDEX idx_offers_seller_id ON offers(seller_id);
 
--- Judgments table (for TypeSafe Jev results)
-CREATE TABLE judgments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  entity_type TEXT NOT NULL CHECK (entity_type IN ('review', 'seller', 'offer')),
-  entity_id TEXT NOT NULL,
-  question_type TEXT NOT NULL CHECK (question_type IN ('choice', 'score', 'noul')),
-  question TEXT NOT NULL,
-  answer JSONB NOT NULL,
-  confidence NUMERIC(5,4),
+-- Review judgments table (TypeSafe Jev review authenticity & features)
+CREATE TABLE review_judgments (
+  review_id TEXT PRIMARY KEY REFERENCES reviews(id),
+  fake_prob NUMERIC(5,4) NOT NULL,
+  reason_tag TEXT NOT NULL,
+  reason_tag_confidence NUMERIC(5,4),
+  reason_tag_probabilities JSONB,
+  authenticity_signals JSONB,
+  features JSONB NOT NULL,
+  flight_relevance NUMERIC(5,4),
+  model TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_judgments_entity ON judgments(entity_type, entity_id);
+CREATE INDEX idx_review_judgments_fake_prob ON review_judgments(fake_prob);
+CREATE INDEX idx_review_judgments_flight_relevance ON review_judgments(flight_relevance);
+
+-- Seller trust table (TypeSafe Jev offer/seller trust)
+CREATE TABLE seller_trust (
+  id TEXT PRIMARY KEY,
+  seller TEXT NOT NULL,
+  product_id TEXT NOT NULL REFERENCES products(id),
+  price_gbp NUMERIC(10,2) NOT NULL,
+  url TEXT NOT NULL,
+  trust_prob NUMERIC(5,4) NOT NULL,
+  top_flags TEXT[],
+  flag_probs JSONB,
+  model TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_seller_trust_trust_prob ON seller_trust(trust_prob);
+CREATE INDEX idx_seller_trust_product ON seller_trust(product_id);
 
 -- Deals table (for negotiated price-match results)
 CREATE TABLE deals (
@@ -126,7 +146,8 @@ ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sellers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE judgments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE review_judgments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE seller_trust ENABLE ROW LEVEL SECURITY;
 ALTER TABLE deals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE group_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE approvals ENABLE ROW LEVEL SECURITY;
@@ -136,7 +157,8 @@ CREATE POLICY "Public read access" ON products FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON reviews FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON sellers FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON offers FOR SELECT USING (true);
-CREATE POLICY "Public read access" ON judgments FOR SELECT USING (true);
+CREATE POLICY "Public read access" ON review_judgments FOR SELECT USING (true);
+CREATE POLICY "Public read access" ON seller_trust FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON deals FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON group_members FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON approvals FOR SELECT USING (true);

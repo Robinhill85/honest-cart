@@ -142,9 +142,11 @@ export default async function Home() {
               </div>
 
               <div className="bg-slate-50 dark:bg-slate-900 px-6 py-4 border-t border-slate-200 dark:border-slate-700">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                  Compare Offers
-                </button>
+                <a href="/compare">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Compare Offers
+                  </button>
+                </a>
               </div>
             </div>
           ))}

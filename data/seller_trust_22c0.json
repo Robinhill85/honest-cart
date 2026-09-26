@@ -1,0 +1,1316 @@
+{
+ "meta": {
+  "kind": "seller_trust",
+  "model_requested": "jev-latest",
+  "model": "jev-1.13.0",
+  "generated_at": "2026-09-26T10:47:01+01:00",
+  "count": 45,
+  "ok": 45,
+  "failed": 0,
+  "input_tokens": 41301,
+  "estimated_cost_usd": 0.00173,
+  "cost_note": "Estimated from reported input tokens at $0.042/Mtok (jev-1.13 list price; output tokens free). API does not return cost.",
+  "total_time_s_whole_run": 4.93,
+  "concurrency": 8,
+  "notes": "Raw probabilities, no ranking policy. features.*.positive_prob = P(positive | mentioned) = p(positive)/(1-p(not_mentioned)); full Choice probabilities in features.*.probabilities. flight_relevance = Score(0-3)/3. top_flags = flags with prob>=0.5 sorted desc (max 4); all flag probs in flag_probs."
+ },
+ "offers": [
+  {
+   "offer_id": "offer-000",
+   "seller": "Currys",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 349.0,
+   "url": "https://www.currys.co.uk/products/sony-wh1000xm6-wireless-bluetooth-noisecancelling-headphones-black-10282441.html",
+   "status": "ok",
+   "trust_prob": 0.92,
+   "top_flags": [],
+   "flag_probs": {
+    "no_uk_warranty": 0.13,
+    "grey_import": 0.11,
+    "restrictive_returns": 0.08,
+    "weak_ratings": 0.18,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.05
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78a574b7af26e16dbbe8b847",
+   "usage": {
+    "input_tokens": 950,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-001",
+   "seller": "John Lewis",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 349.0,
+   "url": "https://www.johnlewis.com/sony-wh-1000xm6-noise-cancelling-wireless-bluetooth-high-resolution-audio-over-ear-headphones-with-mic-remote/sand-pink/p113671309",
+   "status": "ok",
+   "trust_prob": 0.88,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.18,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.27,
+    "weak_ratings": 0.82,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.1
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78a875739364e74c27f64d0d",
+   "usage": {
+    "input_tokens": 908,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-002",
+   "seller": "Argos",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 349.99,
+   "url": "https://www.argos.co.uk/product/7616497",
+   "status": "ok",
+   "trust_prob": 0.86,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.17,
+    "grey_import": 0.13,
+    "restrictive_returns": 0.16,
+    "weak_ratings": 0.82,
+    "non_uk_company": 0.05,
+    "slow_delivery": 0.07,
+    "complaints": 0.06,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78a07f82ae528176fff99728",
+   "usage": {
+    "input_tokens": 880,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-003",
+   "seller": "Amazon UK (sold by Amazon)",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 349.0,
+   "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+   "status": "ok",
+   "trust_prob": 0.86,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.23,
+    "grey_import": 0.15,
+    "restrictive_returns": 0.2,
+    "weak_ratings": 0.78,
+    "non_uk_company": 0.11,
+    "slow_delivery": 0.08,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.05
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78a177409db620b1c1a9a1b5",
+   "usage": {
+    "input_tokens": 876,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-004",
+   "seller": "Sony UK Store",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 349.0,
+   "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+   "status": "ok",
+   "trust_prob": 0.59,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.15,
+    "grey_import": 0.19,
+    "restrictive_returns": 0.34,
+    "weak_ratings": 0.87,
+    "non_uk_company": 0.09,
+    "slow_delivery": 0.08,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.05
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78ab7c9dad77878fd4efef34",
+   "usage": {
+    "input_tokens": 739,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-005",
+   "seller": "Techinthebasket",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 244.99,
+   "url": "https://www.techinthebasket.com/sony-wh-1000xm6-black.html",
+   "status": "ok",
+   "trust_prob": 0.07,
+   "top_flags": [
+    "no UK manufacturer warranty",
+    "slow delivery",
+    "possible grey import / international model",
+    "non-UK company"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.99,
+    "grey_import": 0.93,
+    "restrictive_returns": 0.85,
+    "weak_ratings": 0.71,
+    "non_uk_company": 0.87,
+    "slow_delivery": 0.96,
+    "complaints": 0.6,
+    "third_party_marketplace": 0.47
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78a67827b883661a34978acd",
+   "usage": {
+    "input_tokens": 1320,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-006",
+   "seller": "OnBuy (marketplace)",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 286.99,
+   "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+   "status": "ok",
+   "trust_prob": 0.17,
+   "top_flags": [
+    "third-party marketplace seller",
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.73,
+    "grey_import": 0.5,
+    "restrictive_returns": 0.44,
+    "weak_ratings": 0.89,
+    "non_uk_company": 0.23,
+    "slow_delivery": 0.1,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.9
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c789e77cc815ce4663e7a1e2b",
+   "usage": {
+    "input_tokens": 928,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-007",
+   "seller": "a1techdeals.com",
+   "product_id": "sony-wh1000xm6",
+   "price_gbp": 290.99,
+   "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+   "status": "ok",
+   "trust_prob": 0.11,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "third-party marketplace seller",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.71,
+    "grey_import": 0.57,
+    "restrictive_returns": 0.4,
+    "weak_ratings": 0.93,
+    "non_uk_company": 0.29,
+    "slow_delivery": 0.1,
+    "complaints": 0.02,
+    "third_party_marketplace": 0.58
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c78a57ff7b455a906a73e6a5f",
+   "usage": {
+    "input_tokens": 776,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-008",
+   "seller": "Currys",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 229.0,
+   "url": "https://www.currys.co.uk/products/sony-wh1000xm5-wireless-bluetooth-noisecancelling-headphones-black-10238756.html",
+   "status": "ok",
+   "trust_prob": 0.92,
+   "top_flags": [],
+   "flag_probs": {
+    "no_uk_warranty": 0.12,
+    "grey_import": 0.1,
+    "restrictive_returns": 0.08,
+    "weak_ratings": 0.19,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.04
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c792470f1aaac2cd1778940bb",
+   "usage": {
+    "input_tokens": 950,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-009",
+   "seller": "Argos",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 229.99,
+   "url": "https://www.argos.co.uk/product/2847319",
+   "status": "ok",
+   "trust_prob": 0.86,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.17,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.17,
+    "weak_ratings": 0.83,
+    "non_uk_company": 0.05,
+    "slow_delivery": 0.06,
+    "complaints": 0.05,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79357d7fb766becfe5500ae3",
+   "usage": {
+    "input_tokens": 880,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-010",
+   "seller": "John Lewis",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 219.0,
+   "url": "https://www.johnlewis.com/sony-wh-1000xm5-noise-cancelling-wireless-bluetooth-high-resolution-audio-over-ear-headphones-with-mic-remote/black/p6229813",
+   "status": "ok",
+   "trust_prob": 0.89,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.17,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.27,
+    "weak_ratings": 0.82,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.1
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c793b7beb91e0a34441e3ff49",
+   "usage": {
+    "input_tokens": 908,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-011",
+   "seller": "Amazon UK (sold by Amazon)",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 229.0,
+   "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+   "status": "ok",
+   "trust_prob": 0.87,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.25,
+    "grey_import": 0.17,
+    "restrictive_returns": 0.19,
+    "weak_ratings": 0.76,
+    "non_uk_company": 0.1,
+    "slow_delivery": 0.08,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.06
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7936782dba1dd710bc6609c3",
+   "usage": {
+    "input_tokens": 893,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-012",
+   "seller": "Sony UK Store",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 229.0,
+   "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+   "status": "ok",
+   "trust_prob": 0.47,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.17,
+    "grey_import": 0.32,
+    "restrictive_returns": 0.31,
+    "weak_ratings": 0.86,
+    "non_uk_company": 0.1,
+    "slow_delivery": 0.09,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.08
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c793576d4a4e99cd1a348c0cb",
+   "usage": {
+    "input_tokens": 767,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-013",
+   "seller": "Techinthebasket",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 169.99,
+   "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+   "status": "ok",
+   "trust_prob": 0.07,
+   "top_flags": [
+    "no UK manufacturer warranty",
+    "slow delivery",
+    "possible grey import / international model",
+    "non-UK company"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.99,
+    "grey_import": 0.93,
+    "restrictive_returns": 0.84,
+    "weak_ratings": 0.67,
+    "non_uk_company": 0.86,
+    "slow_delivery": 0.96,
+    "complaints": 0.55,
+    "third_party_marketplace": 0.56
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c793f751f89aacd635c1bc291",
+   "usage": {
+    "input_tokens": 1280,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-014",
+   "seller": "a1techdeals.com",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 173.49,
+   "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+   "status": "ok",
+   "trust_prob": 0.1,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "possible grey import / international model",
+    "third-party marketplace seller"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.73,
+    "grey_import": 0.61,
+    "restrictive_returns": 0.39,
+    "weak_ratings": 0.94,
+    "non_uk_company": 0.48,
+    "slow_delivery": 0.13,
+    "complaints": 0.02,
+    "third_party_marketplace": 0.59
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c793b7832ac317c44e62ed798",
+   "usage": {
+    "input_tokens": 756,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-015",
+   "seller": "eBay (seller not identified)",
+   "product_id": "sony-wh1000xm5",
+   "price_gbp": 174.99,
+   "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+   "status": "ok",
+   "trust_prob": 0.1,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "third-party marketplace seller",
+    "no UK manufacturer warranty",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.79,
+    "grey_import": 0.66,
+    "restrictive_returns": 0.4,
+    "weak_ratings": 0.9,
+    "non_uk_company": 0.34,
+    "slow_delivery": 0.14,
+    "complaints": 0.02,
+    "third_party_marketplace": 0.9
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c796f7755ab64bd7a5029b876",
+   "usage": {
+    "input_tokens": 763,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-016",
+   "seller": "Currys",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 399.97,
+   "url": "https://www.currys.co.uk/products/bose-quietcomfort-ultra-2nd-gen-wireless-bluetooth-noisecancelling-headphones-black-10290064.html",
+   "status": "ok",
+   "trust_prob": 0.92,
+   "top_flags": [],
+   "flag_probs": {
+    "no_uk_warranty": 0.11,
+    "grey_import": 0.1,
+    "restrictive_returns": 0.08,
+    "weak_ratings": 0.18,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.05
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79b974f8b028009cd6f73642",
+   "usage": {
+    "input_tokens": 957,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-017",
+   "seller": "Argos",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 399.95,
+   "url": "https://www.argos.co.uk/product/7271959",
+   "status": "ok",
+   "trust_prob": 0.86,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.17,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.18,
+    "weak_ratings": 0.84,
+    "non_uk_company": 0.05,
+    "slow_delivery": 0.07,
+    "complaints": 0.05,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79c9759d8560d1fe01294e32",
+   "usage": {
+    "input_tokens": 887,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-018",
+   "seller": "John Lewis",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 332.95,
+   "url": "https://www.johnlewis.com/bose-quietcomfort-ultra-2nd-gen-noise-cancelling-over-ear-wireless-bluetooth-headphones-with-mic-remote/black/p114209626",
+   "status": "ok",
+   "trust_prob": 0.88,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.19,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.25,
+    "weak_ratings": 0.82,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79d67f219251ab484d9c0fe3",
+   "usage": {
+    "input_tokens": 915,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-019",
+   "seller": "Amazon UK (sold by Amazon)",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 320.0,
+   "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+   "status": "ok",
+   "trust_prob": 0.88,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.3,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.18,
+    "weak_ratings": 0.76,
+    "non_uk_company": 0.1,
+    "slow_delivery": 0.08,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.06
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79eb7ba19a3b00ead4c3b45d",
+   "usage": {
+    "input_tokens": 865,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-020",
+   "seller": "Techinthebasket",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 231.99,
+   "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+   "status": "ok",
+   "trust_prob": 0.07,
+   "top_flags": [
+    "no UK manufacturer warranty",
+    "slow delivery",
+    "possible grey import / international model",
+    "non-UK company"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.99,
+    "grey_import": 0.94,
+    "restrictive_returns": 0.85,
+    "weak_ratings": 0.72,
+    "non_uk_company": 0.87,
+    "slow_delivery": 0.96,
+    "complaints": 0.56,
+    "third_party_marketplace": 0.57
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79f375f49dfa6d5b0d0fd2fc",
+   "usage": {
+    "input_tokens": 1320,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-021",
+   "seller": "OnBuy (marketplace)",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 274.99,
+   "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+   "status": "ok",
+   "trust_prob": 0.15,
+   "top_flags": [
+    "third-party marketplace seller",
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.77,
+    "grey_import": 0.53,
+    "restrictive_returns": 0.48,
+    "weak_ratings": 0.88,
+    "non_uk_company": 0.25,
+    "slow_delivery": 0.09,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.91
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79f17df4b99c801e111bac09",
+   "usage": {
+    "input_tokens": 953,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-022",
+   "seller": "Joybuy UK",
+   "product_id": "bose-qc-ultra-2",
+   "price_gbp": 320.0,
+   "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+   "status": "ok",
+   "trust_prob": 0.17,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "possible grey import / international model",
+    "third-party marketplace seller"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.72,
+    "grey_import": 0.58,
+    "restrictive_returns": 0.39,
+    "weak_ratings": 0.9,
+    "non_uk_company": 0.33,
+    "slow_delivery": 0.13,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.53
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c79f3780fa482993e41b46b53",
+   "usage": {
+    "input_tokens": 822,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-023",
+   "seller": "Currys",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 248.97,
+   "url": "https://www.currys.co.uk/products/sennheiser-momentum-4-wireless-bluetooth-noisecancelling-headphones-black-10242526.html",
+   "status": "ok",
+   "trust_prob": 0.92,
+   "top_flags": [],
+   "flag_probs": {
+    "no_uk_warranty": 0.12,
+    "grey_import": 0.1,
+    "restrictive_returns": 0.08,
+    "weak_ratings": 0.18,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.05
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a297cbabbba6cfa4458736c",
+   "usage": {
+    "input_tokens": 949,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-024",
+   "seller": "Argos",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 179.99,
+   "url": "https://www.argos.co.uk/product/1488566",
+   "status": "ok",
+   "trust_prob": 0.85,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.16,
+    "grey_import": 0.13,
+    "restrictive_returns": 0.17,
+    "weak_ratings": 0.83,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.07,
+    "complaints": 0.05,
+    "third_party_marketplace": 0.1
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a3f7213860f482f16e41d7a",
+   "usage": {
+    "input_tokens": 879,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-025",
+   "seller": "John Lewis",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 179.99,
+   "url": "https://www.johnlewis.com/sennheiser-momentum-4-wireless-noise-cancelling-bluetooth-over-ear-headphones-with-mic-remote/black/p109312626",
+   "status": "ok",
+   "trust_prob": 0.87,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.18,
+    "grey_import": 0.13,
+    "restrictive_returns": 0.23,
+    "weak_ratings": 0.82,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.06,
+    "complaints": 0.05,
+    "third_party_marketplace": 0.11
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a61720d977809aca24cf937",
+   "usage": {
+    "input_tokens": 907,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-026",
+   "seller": "Amazon UK (sold by Amazon)",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 179.99,
+   "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+   "status": "ok",
+   "trust_prob": 0.88,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.3,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.18,
+    "weak_ratings": 0.77,
+    "non_uk_company": 0.1,
+    "slow_delivery": 0.08,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.06
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a7371c0877df35776b49f15",
+   "usage": {
+    "input_tokens": 857,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-027",
+   "seller": "Richer Sounds",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 199.0,
+   "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+   "status": "ok",
+   "trust_prob": 0.77,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.39,
+    "grey_import": 0.16,
+    "restrictive_returns": 0.35,
+    "weak_ratings": 0.81,
+    "non_uk_company": 0.05,
+    "slow_delivery": 0.08,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.1
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a6e7f9dbff0d0f58e159bc2",
+   "usage": {
+    "input_tokens": 821,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-028",
+   "seller": "Techinthebasket",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 144.99,
+   "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+   "status": "ok",
+   "trust_prob": 0.07,
+   "top_flags": [
+    "no UK manufacturer warranty",
+    "slow delivery",
+    "possible grey import / international model",
+    "non-UK company"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.99,
+    "grey_import": 0.94,
+    "restrictive_returns": 0.84,
+    "weak_ratings": 0.64,
+    "non_uk_company": 0.86,
+    "slow_delivery": 0.96,
+    "complaints": 0.54,
+    "third_party_marketplace": 0.54
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a8c761a9fbc12bf44b76f95",
+   "usage": {
+    "input_tokens": 1296,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-029",
+   "seller": "OnBuy (marketplace)",
+   "product_id": "sennheiser-momentum-4",
+   "price_gbp": 159.99,
+   "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+   "status": "ok",
+   "trust_prob": 0.16,
+   "top_flags": [
+    "third-party marketplace seller",
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.75,
+    "grey_import": 0.46,
+    "restrictive_returns": 0.46,
+    "weak_ratings": 0.88,
+    "non_uk_company": 0.26,
+    "slow_delivery": 0.09,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.91
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7a927c1cb8b860416c87a815",
+   "usage": {
+    "input_tokens": 937,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-030",
+   "seller": "Currys",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 229.0,
+   "url": "https://www.currys.co.uk/products/bose-quietcomfort-wireless-bluetooth-noisecancelling-headphones-black-10254902.html",
+   "status": "ok",
+   "trust_prob": 0.92,
+   "top_flags": [],
+   "flag_probs": {
+    "no_uk_warranty": 0.12,
+    "grey_import": 0.11,
+    "restrictive_returns": 0.1,
+    "weak_ratings": 0.17,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.05,
+    "third_party_marketplace": 0.05
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7ad07f378b5e143c63bd5d86",
+   "usage": {
+    "input_tokens": 962,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-031",
+   "seller": "Argos",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 229.95,
+   "url": "https://www.argos.co.uk/product/3244708",
+   "status": "ok",
+   "trust_prob": 0.85,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.19,
+    "grey_import": 0.13,
+    "restrictive_returns": 0.19,
+    "weak_ratings": 0.83,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.07,
+    "complaints": 0.06,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7aef7a349d0838723991ec0d",
+   "usage": {
+    "input_tokens": 892,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-032",
+   "seller": "John Lewis",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 196.0,
+   "url": "https://www.johnlewis.com/bose-quietcomfort-noise-cancelling-over-ear-wireless-bluetooth-headphones-with-mic-remote/triple-black/p110950051",
+   "status": "ok",
+   "trust_prob": 0.89,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.19,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.25,
+    "weak_ratings": 0.83,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7ae97cada57a45fb00596556",
+   "usage": {
+    "input_tokens": 920,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-033",
+   "seller": "Amazon UK (sold by Amazon)",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 196.0,
+   "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+   "status": "ok",
+   "trust_prob": 0.88,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.3,
+    "grey_import": 0.16,
+    "restrictive_returns": 0.19,
+    "weak_ratings": 0.77,
+    "non_uk_company": 0.12,
+    "slow_delivery": 0.08,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.06
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7af07f1d87fab0ac4106ecbc",
+   "usage": {
+    "input_tokens": 870,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-034",
+   "seller": "Techinthebasket",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 150.99,
+   "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+   "status": "ok",
+   "trust_prob": 0.06,
+   "top_flags": [
+    "no UK manufacturer warranty",
+    "slow delivery",
+    "possible grey import / international model",
+    "non-UK company"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.99,
+    "grey_import": 0.93,
+    "restrictive_returns": 0.84,
+    "weak_ratings": 0.66,
+    "non_uk_company": 0.87,
+    "slow_delivery": 0.96,
+    "complaints": 0.56,
+    "third_party_marketplace": 0.53
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7b0370dca32988da82580292",
+   "usage": {
+    "input_tokens": 1309,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-035",
+   "seller": "OnBuy (marketplace)",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 157.99,
+   "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+   "status": "ok",
+   "trust_prob": 0.15,
+   "top_flags": [
+    "third-party marketplace seller",
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.77,
+    "grey_import": 0.51,
+    "restrictive_returns": 0.47,
+    "weak_ratings": 0.87,
+    "non_uk_company": 0.24,
+    "slow_delivery": 0.09,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.92
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7b0d70328d51a46c3ddf96b0",
+   "usage": {
+    "input_tokens": 948,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-036",
+   "seller": "Joybuy UK",
+   "product_id": "bose-quietcomfort",
+   "price_gbp": 196.0,
+   "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+   "status": "ok",
+   "trust_prob": 0.17,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "possible grey import / international model",
+    "third-party marketplace seller"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.73,
+    "grey_import": 0.55,
+    "restrictive_returns": 0.41,
+    "weak_ratings": 0.9,
+    "non_uk_company": 0.28,
+    "slow_delivery": 0.11,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.53
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7b417c2da627d0431e5c8474",
+   "usage": {
+    "input_tokens": 835,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-037",
+   "seller": "Currys",
+   "product_id": "sonos-ace",
+   "price_gbp": 349.0,
+   "url": "https://www.currys.co.uk/products/sonos-ace-wireless-bluetooth-noisecancelling-headphones-black-10263722.html",
+   "status": "ok",
+   "trust_prob": 0.92,
+   "top_flags": [],
+   "flag_probs": {
+    "no_uk_warranty": 0.14,
+    "grey_import": 0.1,
+    "restrictive_returns": 0.09,
+    "weak_ratings": 0.18,
+    "non_uk_company": 0.03,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.04
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7b627b94895c3db73e6fad92",
+   "usage": {
+    "input_tokens": 944,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-038",
+   "seller": "Argos",
+   "product_id": "sonos-ace",
+   "price_gbp": 349.0,
+   "url": "https://www.argos.co.uk/product/4886323",
+   "status": "ok",
+   "trust_prob": 0.85,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.19,
+    "grey_import": 0.12,
+    "restrictive_returns": 0.17,
+    "weak_ratings": 0.83,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.07,
+    "complaints": 0.06,
+    "third_party_marketplace": 0.09
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7b6570b5949c37b7309a356d",
+   "usage": {
+    "input_tokens": 874,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-039",
+   "seller": "John Lewis",
+   "product_id": "sonos-ace",
+   "price_gbp": 349.0,
+   "url": "https://www.johnlewis.com/sonos-ace-wireless-bluetooth-over-ear-headphones-with-active-noise-cancelling-mic-remote/black/p112069471",
+   "status": "ok",
+   "trust_prob": 0.87,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.23,
+    "grey_import": 0.13,
+    "restrictive_returns": 0.27,
+    "weak_ratings": 0.81,
+    "non_uk_company": 0.04,
+    "slow_delivery": 0.06,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.07
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7b7979f899b7ac0579d1a51f",
+   "usage": {
+    "input_tokens": 874,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-040",
+   "seller": "Sonos UK Store",
+   "product_id": "sonos-ace",
+   "price_gbp": 349.0,
+   "url": "https://www.sonos.com/en-gb/shop/sonos-ace",
+   "status": "ok",
+   "trust_prob": 0.76,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.14,
+    "grey_import": 0.1,
+    "restrictive_returns": 0.32,
+    "weak_ratings": 0.86,
+    "non_uk_company": 0.07,
+    "slow_delivery": 0.1,
+    "complaints": 0.03,
+    "third_party_marketplace": 0.04
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7bad73b89f3843724bc43b38",
+   "usage": {
+    "input_tokens": 725,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-041",
+   "seller": "Amazon UK (sold by Amazon)",
+   "product_id": "sonos-ace",
+   "price_gbp": 349.0,
+   "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+   "status": "ok",
+   "trust_prob": 0.87,
+   "top_flags": [
+    "few, weak or missing ratings"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.29,
+    "grey_import": 0.13,
+    "restrictive_returns": 0.2,
+    "weak_ratings": 0.79,
+    "non_uk_company": 0.1,
+    "slow_delivery": 0.08,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.06
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7ba875f0b79202834d80246a",
+   "usage": {
+    "input_tokens": 844,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-042",
+   "seller": "Dressinn",
+   "product_id": "sonos-ace",
+   "price_gbp": 276.49,
+   "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+   "status": "ok",
+   "trust_prob": 0.17,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "non-UK company",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.79,
+    "grey_import": 0.6,
+    "restrictive_returns": 0.47,
+    "weak_ratings": 0.88,
+    "non_uk_company": 0.62,
+    "slow_delivery": 0.52,
+    "complaints": 0.04,
+    "third_party_marketplace": 0.4
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7bcd7be6bf7f6ab26e1dff17",
+   "usage": {
+    "input_tokens": 850,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-043",
+   "seller": "Stuart Westmoreland",
+   "product_id": "sonos-ace",
+   "price_gbp": 339.0,
+   "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+   "status": "ok",
+   "trust_prob": 0.11,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "no UK manufacturer warranty",
+    "third-party marketplace seller"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.73,
+    "grey_import": 0.49,
+    "restrictive_returns": 0.4,
+    "weak_ratings": 0.91,
+    "non_uk_company": 0.24,
+    "slow_delivery": 0.12,
+    "complaints": 0.02,
+    "third_party_marketplace": 0.72
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7bd27fe483436d98451d1d91",
+   "usage": {
+    "input_tokens": 759,
+    "output_tokens": 184
+   }
+  },
+  {
+   "offer_id": "offer-044",
+   "seller": "eBay (seller not identified)",
+   "product_id": "sonos-ace",
+   "price_gbp": 422.72,
+   "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+   "status": "ok",
+   "trust_prob": 0.09,
+   "top_flags": [
+    "few, weak or missing ratings",
+    "third-party marketplace seller",
+    "no UK manufacturer warranty",
+    "possible grey import / international model"
+   ],
+   "flag_probs": {
+    "no_uk_warranty": 0.83,
+    "grey_import": 0.53,
+    "restrictive_returns": 0.41,
+    "weak_ratings": 0.92,
+    "non_uk_company": 0.27,
+    "slow_delivery": 0.14,
+    "complaints": 0.02,
+    "third_party_marketplace": 0.92
+   },
+   "model": "jev-1.13.0",
+   "request_id": "req_01a0dd1c7be07f8f92ead234102396a5",
+   "usage": {
+    "input_tokens": 756,
+    "output_tokens": 184
+   }
+  }
+ ]
+}
