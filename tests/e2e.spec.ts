@@ -158,8 +158,11 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const sellerAtThree = page.getByText('For 3 units I can do £264.99 each. Deal.', { exact: true });
       const buyerAtFive = page.getByText('Now 5 of us. Make it £249.99 each and all 5 orders are yours today.', { exact: true });
       const sellerAtFive = page.getByText('Five units, £249.99 each. Agreed.', { exact: true });
-      const bobJoined = page.getByText('Bob joined the group (3 buyers)', { exact: true });
-      const danaJoined = page.getByText('Dana joined the group (5 buyers)', { exact: true });
+      const negotiation = page.locator('div.rounded-xl').filter({
+        has: page.getByRole('heading', { name: 'Negotiation' }),
+      });
+      const bobJoined = negotiation.getByText('Bob joined the group (3 buyers)', { exact: true });
+      const danaJoined = negotiation.getByText('Dana joined the group (5 buyers)', { exact: true });
       await sellerAtFive.scrollIntoViewIfNeeded();
       await bobJoined.scrollIntoViewIfNeeded();
       await expect(bobJoined).toBeVisible();
