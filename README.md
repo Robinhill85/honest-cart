@@ -34,3 +34,15 @@ Open http://localhost:3000. Every variable in `.env.example` is optional and shi
 ## Disclosure
 
 The seller is a demo bot standing in for Currys. All payments are Stripe test mode. No live charges are made.
+## Security and next steps
+
+Honest Cart is a one-day hackathon demo. Payments run in Stripe **test mode only** (the server refuses any key that isn't `sk_test_`), and no real money or personal data is involved.
+
+Known limitations we would fix before production:
+
+- **Database writes use the public anon key.** To keep the demo simple, deals and approvals are written through Supabase with the anon key under permissive row-level security policies. That means a determined visitor could edit a deal's status or price directly. The Stripe receipt page is not affected, because it re-verifies payment with Stripe before showing "Paid".
+  - *Fix:* move all writes to a server-only Supabase client using the service-role key, drop the public insert/update policies, and revoke anon write grants (keeping read access for realtime updates).
+- **API routes are unauthenticated.** Anyone can call approve/decline or trigger a group buy on a deal (Stripe test mode only; prices never go below the configured floors).
+  - *Fix:* require a per-approval secret token for approve/decline, block repeat group-buys, and add auth plus rate limiting to the research and negotiate endpoints.
+
+No secrets are shipped to the browser, and the repo was scanned with gitleaks and trufflehog before publishing.
