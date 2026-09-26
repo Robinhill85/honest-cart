@@ -1,6 +1,9 @@
-import { NextResponse } from 'next/server';
 import { getApprovalsByDealId, listDeals } from '@/lib/deals';
+import { jsonNoStore } from '@/lib/http';
 import { groupFloorLabel } from '@/lib/policy';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {
@@ -20,15 +23,16 @@ export async function GET() {
           offered_price: deal.matched_price ?? null,
           group_size: approvals.length,
           tier: groupFloorLabel(approvals.length),
-          approval_status: userApproval?.status ?? 'none',
+          approval_status:
+            userApproval?.stripe_payment_status === 'paid' ? 'paid' : (userApproval?.status ?? 'none'),
           time: deal.created_at,
           group_messages: groupMessages,
         };
       })
     );
-    return NextResponse.json({ deals: rows });
+    return jsonNoStore({ deals: rows });
   } catch (error) {
     console.error('Failed to list deals:', error);
-    return NextResponse.json({ error: 'Failed to list deals' }, { status: 500 });
+    return jsonNoStore({ error: 'Failed to list deals' }, 500);
   }
 }

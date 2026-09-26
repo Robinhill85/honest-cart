@@ -40,6 +40,8 @@ export interface Approval {
   created_at: string;
   approved_at?: string;
   short_code?: string;
+  stripe_payment_intent_id?: string;
+  stripe_payment_status?: string | null;
 }
 
 const SHORT_CODE_ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz';
@@ -111,21 +113,27 @@ export async function getDeal(id: string): Promise<Deal | null> {
 export async function updateDeal(id: string, updates: Partial<Deal>): Promise<void> {
   const supabase = getSupabase();
   if (supabase) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('deals')
       .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id);
+      .eq('id', id)
+      .select('id');
     throwIfError('updateDeal', error);
+    if (!data || data.length === 0) {
+      console.error('Supabase updateDeal matched 0 rows:', id);
+      throw new Error(`Deal ${id} was not updated`);
+    }
     return;
   }
   const deal = inMemoryDeals.get(id);
-  if (deal) {
-    inMemoryDeals.set(id, {
-      ...deal,
-      ...updates,
-      updated_at: new Date().toISOString(),
-    });
+  if (!deal) {
+    throw new Error(`Deal ${id} was not updated`);
   }
+  inMemoryDeals.set(id, {
+    ...deal,
+    ...updates,
+    updated_at: new Date().toISOString(),
+  });
 }
 
 export async function saveApproval(approval: Approval): Promise<void> {
@@ -155,17 +163,23 @@ export async function getApproval(id: string): Promise<Approval | null> {
 export async function updateApproval(id: string, updates: Partial<Approval>): Promise<void> {
   const supabase = getSupabase();
   if (supabase) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('approvals')
       .update(updates)
-      .eq('id', id);
+      .eq('id', id)
+      .select('id');
     throwIfError('updateApproval', error);
+    if (!data || data.length === 0) {
+      console.error('Supabase updateApproval matched 0 rows:', id);
+      throw new Error(`Approval ${id} was not updated`);
+    }
     return;
   }
   const approval = inMemoryApprovals.get(id);
-  if (approval) {
-    inMemoryApprovals.set(id, { ...approval, ...updates });
+  if (!approval) {
+    throw new Error(`Approval ${id} was not updated`);
   }
+  inMemoryApprovals.set(id, { ...approval, ...updates });
 }
 
 export async function getApprovalByShortCode(code: string): Promise<Approval | null> {

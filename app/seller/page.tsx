@@ -10,7 +10,7 @@ interface DealRow {
   offered_price: number | null;
   group_size: number;
   tier: '1' | '3' | '5';
-  approval_status: 'pending' | 'approved' | 'declined' | 'none';
+  approval_status: 'pending' | 'approved' | 'declined' | 'paid' | 'none';
   time: string;
   group_messages?: { role: 'buyer' | 'seller' | 'system'; content: string }[];
 }
@@ -68,6 +68,7 @@ function formatDealTime(iso: string): string {
 }
 
 function approvalLabel(status: DealRow['approval_status']): string {
+  if (status === 'paid') return 'Paid (test mode)';
   if (status === 'approved') return 'Approved';
   if (status === 'declined') return 'Declined';
   if (status === 'pending') return 'Pending';
@@ -88,7 +89,7 @@ export default function SellerDashboard() {
 
     const poll = async () => {
       try {
-        const response = await fetch('/api/deals');
+        const response = await fetch('/api/deals', { cache: 'no-store' });
         if (!response.ok) throw new Error('Could not load deals');
         const data = await response.json();
         if (cancelled) return;
@@ -197,7 +198,7 @@ export default function SellerDashboard() {
                     className={`p-4 rounded-lg border-2 ${
                       deal.approval_status === 'declined'
                         ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20'
-                        : deal.approval_status === 'approved'
+                        : deal.approval_status === 'approved' || deal.approval_status === 'paid'
                           ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20'
                           : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40'
                     }`}

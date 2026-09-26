@@ -1,5 +1,8 @@
-import { NextResponse } from 'next/server';
 import { getApprovalsByDealId, getDeal } from '@/lib/deals';
+import { jsonNoStore } from '@/lib/http';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(
   _request: Request,
@@ -9,12 +12,12 @@ export async function GET(
     const { id } = await params;
     const deal = await getDeal(id);
     if (!deal) {
-      return NextResponse.json({ error: 'Deal not found' }, { status: 404 });
+      return jsonNoStore({ error: 'Deal not found' }, 404);
     }
     const approvals = await getApprovalsByDealId(id);
-    return NextResponse.json({ deal, approvals });
+    return jsonNoStore({ deal, approvals });
   } catch (error) {
     console.error('Failed to load deal:', error);
-    return NextResponse.json({ error: 'Failed to load deal' }, { status: 500 });
+    return jsonNoStore({ error: 'Failed to load deal' }, 500);
   }
 }

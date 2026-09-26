@@ -201,9 +201,10 @@ CREATE POLICY "Public insert access" ON group_members FOR INSERT WITH CHECK (tru
 ALTER TABLE approvals ADD COLUMN IF NOT EXISTS short_code TEXT;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_approvals_short_code ON approvals (short_code);
 
--- Realtime: the laptop subscribes to the user's approval row.
+-- Realtime: the laptop subscribes to the user's approval row and the deal row.
 -- Idempotent. `ALTER PUBLICATION ... ADD TABLE` errors if the table is already a member.
 ALTER TABLE approvals REPLICA IDENTITY FULL;
+ALTER TABLE deals REPLICA IDENTITY FULL;
 
 DO $$
 BEGIN
@@ -216,5 +217,15 @@ BEGIN
          AND tablename = 'approvals'
      ) THEN
     ALTER PUBLICATION supabase_realtime ADD TABLE approvals;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+     AND NOT EXISTS (
+       SELECT 1
+       FROM pg_publication_tables
+       WHERE pubname = 'supabase_realtime'
+         AND schemaname = 'public'
+         AND tablename = 'deals'
+     ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE deals;
   END IF;
 END $$;

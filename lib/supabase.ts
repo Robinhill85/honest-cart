@@ -1,23 +1,27 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 /**
- * Next inlines a direct `process.env.NEXT_PUBLIC_*` access at build time.
- * The live bundle was built without those values, so the client compiled to
- * null and runtime env could not turn it back on. Server reads must stay dynamic.
+ * Next inlines a direct `process.env.NEXT_PUBLIC_*` access at build time, and
+ * only keeps runtime values for names the bundle reads that way. A computed
+ * `process.env[name]` stays dynamic, which is what `next start` needs when the
+ * build machine did not have the keys. Read both.
  */
-function readServerEnv(name: string): string {
-  const value = process.env[name];
+function nonEmpty(value: string | undefined): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
 const SERVER_URL = ['NEXT', 'PUBLIC', 'SUPABASE', 'URL'].join('_');
 const SERVER_KEY = ['NEXT', 'PUBLIC', 'SUPABASE', 'ANON', 'KEY'].join('_');
 
-function readBrowserEnv(): { url: string; key: string } {
-  return {
-    url: (process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim(),
-    key: (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '').trim(),
-  };
+export function supabasePublicConfig(): { url: string; anonKey: string } {
+  const url = nonEmpty(process.env.NEXT_PUBLIC_SUPABASE_URL) || nonEmpty(process.env[SERVER_URL]);
+  const anonKey =
+    nonEmpty(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) || nonEmpty(process.env[SERVER_KEY]);
+  return { url, anonKey };
+}
+
+function uncachedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  return fetch(input, { ...init, cache: 'no-store' });
 }
 
 let cached: SupabaseClient | null = null;
@@ -26,12 +30,9 @@ let loggedMissing = false;
 export function getSupabase(): SupabaseClient | null {
   if (cached) return cached;
 
-  const onServer = typeof window === 'undefined';
-  const url = onServer ? readServerEnv(SERVER_URL) : readBrowserEnv().url;
-  const key = onServer ? readServerEnv(SERVER_KEY) : readBrowserEnv().key;
-
-  if (!url || !key) {
-    if (onServer && process.env.VERCEL && !loggedMissing) {
+  const { url, anonKey } = supabasePublicConfig();
+  if (!url || !anonKey) {
+    if (typeof window === 'undefined' && process.env.VERCEL && !loggedMissing) {
       loggedMissing = true;
       console.error(
         'Supabase env is empty at runtime. Deal and approval writes stay in memory on this instance. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.'
@@ -40,8 +41,9 @@ export function getSupabase(): SupabaseClient | null {
     return null;
   }
 
-  cached = createClient(url, key, {
+  cached = createClient(url, anonKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: uncachedFetch },
   });
   return cached;
 }

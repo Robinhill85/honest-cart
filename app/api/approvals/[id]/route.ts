@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getApproval, updateApproval } from '@/lib/deals';
+import { jsonNoStore } from '@/lib/http';
 import { publicBaseUrl } from '@/lib/public-url';
 
 export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(
   request: NextRequest,
@@ -13,19 +16,13 @@ export async function GET(
     const approval = await getApproval(id);
     
     if (!approval) {
-      return NextResponse.json(
-        { error: 'Approval not found' },
-        { status: 404 }
-      );
+      return jsonNoStore({ error: 'Approval not found' }, 404);
     }
 
-    return NextResponse.json(approval);
+    return jsonNoStore(approval);
   } catch (error) {
     console.error('Get approval error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch approval' },
-      { status: 500 }
-    );
+    return jsonNoStore({ error: 'Failed to fetch approval' }, 500);
   }
 }
 
@@ -88,16 +85,13 @@ export async function POST(
           },
         });
 
-        return NextResponse.json({ checkoutUrl: session.url });
+        return jsonNoStore({ checkoutUrl: session.url });
       }
     }
 
-    return NextResponse.json({ success: true, checkoutUrl: null });
+    return jsonNoStore({ success: true, checkoutUrl: null });
   } catch (error) {
     console.error('Approval action error:', error);
-    return NextResponse.json(
-      { error: 'Failed to process approval' },
-      { status: 500 }
-    );
+    return jsonNoStore({ error: 'Failed to process approval' }, 500);
   }
 }
