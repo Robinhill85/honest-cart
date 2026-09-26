@@ -79,7 +79,12 @@ export async function POST(request: NextRequest) {
 
       // Send completion event with approval ID
       await writer.write(
-        encoder.encode(`data: ${JSON.stringify({ type: 'complete', approvalId, dealId })}\n\n`)
+        encoder.encode(`data: ${JSON.stringify({
+          type: 'complete',
+          approvalId,
+          dealId,
+          matchedPrice,
+        })}\n\n`)
       );
     } catch (error) {
       console.error('Negotiation error:', error);
