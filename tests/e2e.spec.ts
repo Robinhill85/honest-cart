@@ -122,12 +122,12 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await expect(currentTier).toContainText('£264.99');
       const soloTier = page.locator('div.border-2').filter({ hasText: '1 buyer' });
       await expect(soloTier).toContainText('£279.99');
-      const renegotiation = page.getByText('Group floor for 3 buyers is £264.99 each.', { exact: false });
+      const renegotiation = page.getByText('Group floor for 3 buyers is £264.99 each, down from the matched £279.99.', { exact: true });
       await renegotiation.scrollIntoViewIfNeeded();
       await expect(renegotiation).toBeVisible();
 
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08c-group-buy-complete.png'), fullPage: true });
-      console.log('✓ Group buy: 4 members, £329.00 tier, bot cards auto-approved');
+      console.log('✓ Group buy: 4 members, £264.99 tier, bot cards auto-approved');
 
       // Extract approval URL
       const approvalLink = await page.locator('a[href*="/approve/"]').getAttribute('href');
@@ -163,7 +163,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       console.log('Step 7: Checking desktop update...');
       await expect(page.getByText('Approved on phone').first()).toBeVisible({ timeout: 5000 });
       await expect(page.getByRole('link', { name: 'View receipt' }).first()).toBeVisible();
-      const youCard = page.locator('div.rounded-lg').filter({ hasText: 'You' }).first();
+      const youCard = membersPanel.locator('div.rounded-lg').filter({ hasText: 'You' });
       await expect(youCard).toContainText('Approved on phone');
       await expect(youCard).not.toContainText('Pending');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '11-desktop-after-approve.png'), fullPage: true });
@@ -187,7 +187,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '13-receipt.png'), fullPage: true });
       await expect(page.locator('h1')).toContainText('Purchase Complete');
-      await expect(page.getByText('£264.99')).toBeVisible();
+      await expect(page.getByText('Sony WH-1000XM6 from Currys at £264.99')).toBeVisible();
       console.log('✓ Receipt page loaded');
 
       // Step 10: Seller dashboard
