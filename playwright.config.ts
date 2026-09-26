@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'list',
-  timeout: 90000, // 90 seconds for full flow
+  timeout: 120000, // full path includes the ~15s group-buy join sequence
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
