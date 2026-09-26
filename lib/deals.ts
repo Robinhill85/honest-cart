@@ -54,12 +54,17 @@ if (typeof process !== 'undefined' && process.env.VERCEL && !isSupabaseConfigure
   );
 }
 
+function throwIfError(error: { message: string } | null): void {
+  if (error) throw new Error(error.message);
+}
+
 export async function saveDeal(deal: Deal): Promise<void> {
   if (isSupabaseConfigured() && supabase) {
-    await supabase.from('deals').upsert(deal);
-  } else {
-    inMemoryDeals.set(deal.id, deal);
+    const { error } = await supabase.from('deals').upsert(deal);
+    throwIfError(error);
+    return;
   }
+  inMemoryDeals.set(deal.id, deal);
 }
 
 export async function listDeals(): Promise<Deal[]> {
@@ -78,11 +83,12 @@ export async function listDeals(): Promise<Deal[]> {
 
 export async function getDeal(id: string): Promise<Deal | null> {
   if (isSupabaseConfigured() && supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('deals')
       .select('*')
       .eq('id', id)
-      .single();
+      .maybeSingle();
+    throwIfError(error);
     return data || null;
   }
   return inMemoryDeals.get(id) || null;
@@ -90,37 +96,40 @@ export async function getDeal(id: string): Promise<Deal | null> {
 
 export async function updateDeal(id: string, updates: Partial<Deal>): Promise<void> {
   if (isSupabaseConfigured() && supabase) {
-    await supabase
+    const { error } = await supabase
       .from('deals')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id);
-  } else {
-    const deal = inMemoryDeals.get(id);
-    if (deal) {
-      inMemoryDeals.set(id, {
-        ...deal,
-        ...updates,
-        updated_at: new Date().toISOString(),
-      });
-    }
+    throwIfError(error);
+    return;
+  }
+  const deal = inMemoryDeals.get(id);
+  if (deal) {
+    inMemoryDeals.set(id, {
+      ...deal,
+      ...updates,
+      updated_at: new Date().toISOString(),
+    });
   }
 }
 
 export async function saveApproval(approval: Approval): Promise<void> {
   if (isSupabaseConfigured() && supabase) {
-    await supabase.from('approvals').insert(approval);
-  } else {
-    inMemoryApprovals.set(approval.id, approval);
+    const { error } = await supabase.from('approvals').insert(approval);
+    throwIfError(error);
+    return;
   }
+  inMemoryApprovals.set(approval.id, approval);
 }
 
 export async function getApproval(id: string): Promise<Approval | null> {
   if (isSupabaseConfigured() && supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('approvals')
       .select('*')
       .eq('id', id)
-      .single();
+      .maybeSingle();
+    throwIfError(error);
     return data || null;
   }
   return inMemoryApprovals.get(id) || null;
@@ -128,24 +137,26 @@ export async function getApproval(id: string): Promise<Approval | null> {
 
 export async function updateApproval(id: string, updates: Partial<Approval>): Promise<void> {
   if (isSupabaseConfigured() && supabase) {
-    await supabase
+    const { error } = await supabase
       .from('approvals')
       .update(updates)
       .eq('id', id);
-  } else {
-    const approval = inMemoryApprovals.get(id);
-    if (approval) {
-      inMemoryApprovals.set(id, { ...approval, ...updates });
-    }
+    throwIfError(error);
+    return;
+  }
+  const approval = inMemoryApprovals.get(id);
+  if (approval) {
+    inMemoryApprovals.set(id, { ...approval, ...updates });
   }
 }
 
 export async function getApprovalsByDealId(dealId: string): Promise<Approval[]> {
   if (isSupabaseConfigured() && supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('approvals')
       .select('*')
       .eq('deal_id', dealId);
+    throwIfError(error);
     return data || [];
   }
   return Array.from(inMemoryApprovals.values()).filter(a => a.deal_id === dealId);

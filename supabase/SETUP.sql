@@ -196,3 +196,21 @@ CREATE POLICY "Public update access" ON deals FOR UPDATE USING (true);
 CREATE POLICY "Public insert access" ON approvals FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public update access" ON approvals FOR UPDATE USING (true);
 CREATE POLICY "Public insert access" ON group_members FOR INSERT WITH CHECK (true);
+
+-- Realtime: the laptop subscribes to the user's approval row.
+-- Idempotent. `ALTER PUBLICATION ... ADD TABLE` errors if the table is already a member.
+ALTER TABLE approvals REPLICA IDENTITY FULL;
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+     AND NOT EXISTS (
+       SELECT 1
+       FROM pg_publication_tables
+       WHERE pubname = 'supabase_realtime'
+         AND schemaname = 'public'
+         AND tablename = 'approvals'
+     ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE approvals;
+  END IF;
+END $$;

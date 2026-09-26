@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import QRCode from 'react-qr-code';
 import { CURRYS_POLICY, groupLadder } from '@/lib/policy';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 interface ChatMessage {
   role: 'buyer' | 'seller' | 'system';
@@ -17,7 +19,15 @@ interface GroupMember {
   status: 'pending' | 'approved';
 }
 
-export default function DealScreen() {
+function soloPriceFromChat(messages: ChatMessage[], fallback: number): number {
+  const agreed = messages.find((message) => message.role === 'system' && message.content.includes('Deal agreed at £'));
+  const match = agreed?.content.match(/£([\d.]+)/);
+  return match ? parseFloat(match[1]) : fallback;
+}
+
+function DealScreen() {
+  const searchParams = useSearchParams();
+  const dealFromUrl = searchParams.get('deal');
   const [negotiating, setNegotiating] = useState(false);
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [approvalId, setApprovalId] = useState<string | null>(null);
@@ -27,6 +37,9 @@ export default function DealScreen() {
   const [soloPrice, setSoloPrice] = useState<number>(CURRYS_POLICY.floor_price);
   const [groupPrice, setGroupPrice] = useState<number>(CURRYS_POLICY.floor_price);
   const [shareLink, setShareLink] = useState<string>('');
+  const [restoring, setRestoring] = useState(Boolean(dealFromUrl));
+  const [restoreError, setRestoreError] = useState<string | null>(null);
+  const dealToRestore = useRef(dealFromUrl);
 
   const startNegotiation = async () => {
     setNegotiating(true);
@@ -68,6 +81,9 @@ export default function DealScreen() {
               const matched = data.matchedPrice || CURRYS_POLICY.floor_price;
               setSoloPrice(matched);
               setGroupPrice(matched);
+              const nextUrl = new URL(window.location.href);
+              nextUrl.searchParams.set('deal', data.dealId);
+              window.history.replaceState(null, '', `${nextUrl.pathname}${nextUrl.search}`);
               // Add user as first group member
               setGroupMembers([{
                 name: 'You',
@@ -141,6 +157,85 @@ export default function DealScreen() {
   const ladder = groupLadder(soloPrice);
   const youApproved = groupMembers.some((member) => !member.isBot && member.status === 'approved');
 
+  const markYouApproved = (id: string, price?: number) => {
+    if (price != null && Number.isFinite(price)) setGroupPrice(price);
+    setGroupMembers((prev) =>
+      prev.map((member) =>
+        member.approvalId === id ? { ...member, status: 'approved' } : member
+      )
+    );
+  };
+
+  useEffect(() => {
+    const id = dealToRestore.current;
+    if (!id) return;
+    let cancelled = false;
+
+    const restore = async () => {
+      try {
+        const response = await fetch(`/api/deals/${id}`);
+        if (!response.ok) throw new Error('Deal not found');
+        const data = await response.json();
+        if (cancelled) return;
+
+        const deal = data.deal;
+        const approvals = Array.isArray(data.approvals) ? data.approvals : [];
+        const messages: ChatMessage[] = Array.isArray(deal.chat_log) ? deal.chat_log : [];
+        const userApproval = approvals.find((approval: { is_bot?: boolean }) => !approval.is_bot);
+        const price = Number(userApproval?.price ?? deal.matched_price ?? CURRYS_POLICY.floor_price);
+
+        setDealId(deal.id);
+        setNegotiating(true);
+        setChatLog(messages);
+        setApprovalId(userApproval?.id ?? null);
+        setGroupPrice(price);
+        setSoloPrice(soloPriceFromChat(messages, Number(deal.matched_price) || price));
+        setGroupBuyActive(approvals.some((approval: { is_bot?: boolean }) => approval.is_bot));
+        setGroupMembers(
+          approvals.map((approval: { id: string; is_bot?: boolean; bot_name?: string; status: string }) => ({
+            name: approval.is_bot ? approval.bot_name || 'Bot' : 'You',
+            approvalId: approval.id,
+            isBot: Boolean(approval.is_bot),
+            status: approval.status === 'approved' ? 'approved' : 'pending',
+          }))
+        );
+        setRestoreError(null);
+      } catch (error) {
+        console.error('Deal restore failed:', error);
+        if (!cancelled) setRestoreError('This deal is not on this server.');
+      } finally {
+        if (!cancelled) setRestoring(false);
+      }
+    };
+
+    restore();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!approvalId || !isSupabaseConfigured() || !supabase) return;
+
+    const channel = supabase
+      .channel(`approval-${approvalId}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'approvals', filter: `id=eq.${approvalId}` },
+        (payload) => {
+          const row = payload.new as { status?: string; price?: number };
+          if (row.status === 'approved') {
+            markYouApproved(approvalId, row.price != null ? Number(row.price) : undefined);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [approvalId]);
+
   useEffect(() => {
     if (!approvalId) return;
     let cancelled = false;
@@ -151,18 +246,14 @@ export default function DealScreen() {
         if (!response.ok) return;
         const data = await response.json();
         if (cancelled || data.status !== 'approved') return;
-        setGroupMembers((prev) =>
-          prev.map((member) =>
-            member.approvalId === approvalId ? { ...member, status: 'approved' } : member
-          )
-        );
+        markYouApproved(approvalId, data.price != null ? Number(data.price) : undefined);
       } catch (error) {
         console.error('Approval poll failed:', error);
       }
     };
 
     poll();
-    const timer = setInterval(poll, 1500);
+    const timer = setInterval(poll, 2000);
     return () => {
       cancelled = true;
       clearInterval(timer);
@@ -185,7 +276,15 @@ export default function DealScreen() {
           Deal: Sony WH-1000XM6
         </h1>
 
-        {!negotiating && !approvalId && (
+        {restoring && (
+          <p className="text-slate-600 dark:text-slate-400 mb-8">Loading this deal…</p>
+        )}
+
+        {restoreError && (
+          <p className="text-red-700 dark:text-red-400 mb-8">{restoreError}</p>
+        )}
+
+        {!restoring && !negotiating && !approvalId && (
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Cheaper offer */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 border-2 border-red-200 dark:border-red-800">
@@ -241,7 +340,7 @@ export default function DealScreen() {
           </div>
         )}
 
-        {!negotiating && !approvalId && (
+        {!restoring && !negotiating && !approvalId && (
           <button
             onClick={startNegotiation}
             className="w-full py-4 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
@@ -474,5 +573,13 @@ export default function DealScreen() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function DealPage() {
+  return (
+    <Suspense fallback={<p className="p-4 text-slate-600 dark:text-slate-400">Loading this deal…</p>}>
+      <DealScreen />
+    </Suspense>
   );
 }
