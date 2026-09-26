@@ -45,6 +45,26 @@ const DEFAULT_WEIGHTS: FeatureWeights = {
   price: 0.8,
 };
 
+/** Budget from the prefilled ask: "under £300". */
+export const USER_BUDGET_GBP = 300;
+
+/**
+ * 1 at £0 and 0.85 at the budget, so two prices inside £300 stay close.
+ * Over the budget it falls to 0 at twice the budget.
+ * Uses the best trusted-seller price, not the cheapest untrusted offer.
+ */
+export function priceValueScore(trustedPrice: number, budget: number = USER_BUDGET_GBP): number {
+  if (!Number.isFinite(trustedPrice) || trustedPrice <= 0) return 1;
+  const ratio = trustedPrice / budget;
+  if (ratio <= 1) return 1 - 0.15 * ratio;
+  return Math.max(0, 0.85 * (2 - ratio));
+}
+
+export function combineScore(featureScore: number, priceValue: number, priceWeight: number): number {
+  if (priceWeight <= 0) return featureScore;
+  return (featureScore + priceValue * priceWeight) / (1 + priceWeight);
+}
+
 export function calculateProductScore(
   productId: string,
   judgments: ReviewJudgment[],
@@ -155,8 +175,10 @@ export function rankProducts(
   weights: FeatureWeights = DEFAULT_WEIGHTS
 ): ProductRanking[] {
   const rankings: ProductRanking[] = productIds.map(productId => {
-    const score = calculateProductScore(productId, judgments, weights);
+    const featureScore = calculateProductScore(productId, judgments, weights);
     const priceData = getBestTrustedPrice(productId, sellerTrust);
+    const priceValue = priceData ? priceValueScore(priceData.price) : 0;
+    const score = combineScore(featureScore, priceValue, weights.price);
     
     const productJudgments = judgments.filter(j => j.product_id === productId);
     const trustedCount = productJudgments.filter(j => (1 - j.fake_prob) >= 0.5).length;
