@@ -4,7 +4,7 @@ An AI shopping agent that ignores fake reviews, ranks products on what you care 
 
 **Live demo:** https://honest-cart-lyart.vercel.app
 
-**Demo video:** `<VIDEO_LINK>`
+**Demo video:** [Demo video](https://youtu.be/8Kxs1ZU2TkM)
 
 ## How it works
 
