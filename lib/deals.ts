@@ -1,4 +1,8 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { CURRYS_POLICY, type SellerPolicy } from './policy';
+
+export { CURRYS_POLICY };
+export type { SellerPolicy };
 
 export interface Deal {
   id: string;
@@ -21,16 +25,6 @@ export interface ChatMessage {
   role: 'buyer' | 'seller' | 'system';
   content: string;
   timestamp: string;
-}
-
-export interface SellerPolicy {
-  floor_price: number;
-  max_discount_percent: number;
-  group_pricing: {
-    qty_1: number;
-    qty_3: number;
-    qty_5: number;
-  };
 }
 
 export interface Approval {
@@ -143,12 +137,8 @@ export async function getApprovalsByDealId(dealId: string): Promise<Approval[]> 
   return Array.from(inMemoryApprovals.values()).filter(a => a.deal_id === dealId);
 }
 
-export const CURRYS_POLICY: SellerPolicy = {
-  floor_price: 279.99,
-  max_discount_percent: 20,
-  group_pricing: {
-    qty_1: 349.0,
-    qty_3: 329.0,
-    qty_5: 309.0,
-  },
-};
+/** Write the current group price onto every approval for this deal, including the real user. */
+export async function setDealApprovalPrices(dealId: string, price: number): Promise<void> {
+  const approvals = await getApprovalsByDealId(dealId);
+  await Promise.all(approvals.map((approval) => updateApproval(approval.id, { price })));
+}

@@ -1,10 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 export default function ReceiptPage() {
   const params = useParams();
   const id = params.id as string;
+  const [price, setPrice] = useState<number | null>(null);
+  const [productName, setProductName] = useState('Sony WH-1000XM6');
+  const [seller, setSeller] = useState('Currys');
+
+  useEffect(() => {
+    if (!id || id === 'simulated') {
+      setPrice(279.99);
+      return;
+    }
+    fetch(`/api/approvals/${id}`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (data?.price != null) setPrice(Number(data.price));
+        else setPrice(279.99);
+        if (data?.product_name) setProductName(data.product_name);
+        if (data?.seller) setSeller(data.seller);
+      })
+      .catch(() => setPrice(279.99));
+  }, [id]);
+
+  const listPrice = 349;
+  const saving = price != null ? listPrice - price : null;
 
   const steps = [
     { time: '14:32:15', role: 'User', action: 'Initiated search for noise-cancelling headphones under £300' },
@@ -41,7 +64,7 @@ export default function ReceiptPage() {
               Purchase Complete!
             </h1>
             <p className="text-slate-600 dark:text-slate-400">
-              Sony WH-1000XM6 from Currys at £279.99
+              {productName} from {seller} at {price != null ? `£${price.toFixed(2)}` : '…'}
             </p>
           </div>
 
@@ -77,7 +100,7 @@ export default function ReceiptPage() {
             </h3>
             <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
               <li>• Buyer bot negotiated with Currys bot</li>
-              <li>• Achieved £69.01 savings from original £349.00 price</li>
+              <li>• {saving != null ? `Charged £${price!.toFixed(2)}, £${saving.toFixed(2)} under the £${listPrice.toFixed(2)} list price` : 'Price shown once the approval loads'}</li>
               <li>• Avoided grey import risks (no UK warranty, restrictive returns)</li>
               <li>• You approved via phone in real-time</li>
               <li>• {id === 'simulated' ? 'Simulated checkout (TEST mode)' : 'Stripe processed payment'}</li>

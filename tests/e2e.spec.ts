@@ -127,8 +127,10 @@ test.describe('Honest Cart - Happy Path E2E', () => {
 
       const currentTier = page.locator('div.border-emerald-500').filter({ hasText: 'Current' });
       await expect(currentTier).toContainText('3 buyers');
-      await expect(currentTier).toContainText('£329.00');
-      const renegotiation = page.getByText('Great! For 3 buyers, I can offer £329.00 each.', { exact: true });
+      await expect(currentTier).toContainText('£264.99');
+      const soloTier = page.locator('div.border-2').filter({ hasText: '1 buyer' });
+      await expect(soloTier).toContainText('£279.99');
+      const renegotiation = page.getByText('Group floor for 3 buyers is £264.99 each.', { exact: false });
       await renegotiation.scrollIntoViewIfNeeded();
       await expect(renegotiation).toBeVisible();
 
@@ -152,8 +154,9 @@ test.describe('Honest Cart - Happy Path E2E', () => {
 
       await mobilePage.goto(approvalUrl!);
       await mobilePage.waitForLoadState('networkidle');
+      await expect(mobilePage.getByText('£264.99')).toBeVisible();
       await mobilePage.screenshot({ path: path.join(SCREENSHOTS_DIR, '09-approve-mobile.png'), fullPage: true });
-      console.log('✓ Approval page loaded on mobile');
+      console.log('✓ Approval page loaded on mobile at the group price');
 
       // Approve
       console.log('Step 6a: Approving purchase...');
@@ -175,6 +178,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const approvalId = approvalUrl!.split('/').pop();
       await page.goto(`${BASE_URL}/checkout/${approvalId}`);
       await page.waitForLoadState('networkidle');
+      await expect(page.getByText('£264.99')).toBeVisible({ timeout: 8000 });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '12-simulated-checkout.png'), fullPage: true });
       console.log('✓ Simulated checkout page loaded');
 
@@ -187,6 +191,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '13-receipt.png'), fullPage: true });
       await expect(page.locator('h1')).toContainText('Purchase Complete');
+      await expect(page.getByText('£264.99')).toBeVisible();
       console.log('✓ Receipt page loaded');
 
       // Step 10: Seller dashboard

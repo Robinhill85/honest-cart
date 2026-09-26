@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDeal, updateDeal, saveApproval, getApprovalsByDealId } from '@/lib/deals';
-import { CURRYS_POLICY } from '@/lib/deals';
+import { getDeal, updateDeal, saveApproval, getApprovalsByDealId, setDealApprovalPrices } from '@/lib/deals';
 import type { Approval } from '@/lib/deals';
+import { CURRYS_POLICY, groupFloorLabel, groupLadder, groupPriceForCount } from '@/lib/policy';
 
 // Demo friend bots
 const FRIEND_BOTS = [
@@ -31,55 +31,58 @@ export async function POST(
 
     // Generate group ID if not exists
     const groupId = deal.group_id || crypto.randomUUID();
+    const soloPrice = deal.matched_price || deal.trusted_price;
     await updateDeal(dealId, { group_id: groupId });
 
     // Create stream for real-time updates
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
+        let currentPrice = soloPrice;
+
         // Send initial state
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({
             type: 'group_started',
             groupId,
             shareLink: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/deal/group/${groupId}`,
+            soloPrice,
+            ladder: groupLadder(soloPrice),
           })}\n\n`)
         );
 
         // Simulate friend bots joining with delays
         for (const bot of FRIEND_BOTS) {
           await new Promise(resolve => setTimeout(resolve, bot.delay));
-          
-          // Create approval for bot
+
+          const approvalsBefore = await getApprovalsByDealId(dealId);
+          const memberCount = approvalsBefore.length + 1;
+          const groupPrice = groupPriceForCount(memberCount, soloPrice);
+          const tier = groupFloorLabel(memberCount);
+
           const botApprovalId = crypto.randomUUID();
           const botApproval: Approval = {
             id: botApprovalId,
             deal_id: dealId,
             product_name: deal.product_name,
             seller: deal.trusted_seller,
-            price: deal.matched_price || deal.trusted_price,
+            price: groupPrice,
             status: 'approved',
             is_bot: true,
             bot_name: bot.name,
             created_at: new Date().toISOString(),
             approved_at: new Date().toISOString(),
           };
-          
+
           await saveApproval(botApproval);
-          
-          // Get current member count
-          const approvals = await getApprovalsByDealId(dealId);
-          const memberCount = approvals.length;
-          
-          // Determine new group price
-          let groupPrice = CURRYS_POLICY.group_pricing.qty_1;
-          if (memberCount >= 5) {
-            groupPrice = CURRYS_POLICY.group_pricing.qty_5;
-          } else if (memberCount >= 3) {
-            groupPrice = CURRYS_POLICY.group_pricing.qty_3;
+
+          const priceDropped = groupPrice < currentPrice - 0.001;
+          if (priceDropped) {
+            currentPrice = groupPrice;
+            await setDealApprovalPrices(dealId, groupPrice);
+            await updateDeal(dealId, { matched_price: groupPrice });
           }
-          
-          // Send update
+
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({
               type: 'member_joined',
@@ -90,33 +93,33 @@ export async function POST(
               timestamp: new Date().toISOString(),
             })}\n\n`)
           );
-          
-          // Renegotiate if price dropped
-          if (memberCount === 3 || memberCount === 5) {
+
+          if (priceDropped) {
+            const floor = tier === '5'
+              ? CURRYS_POLICY.group_floors.buyers_5
+              : CURRYS_POLICY.group_floors.buyers_3;
+
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({
                 type: 'chat',
                 role: 'system',
-                content: `Group size reached ${memberCount}! Renegotiating for better price...`,
+                content: `Group size reached ${memberCount}. Checking the group floor for ${tier} buyers.`,
                 timestamp: new Date().toISOString(),
               })}\n\n`)
             );
-            
+
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({
                 type: 'chat',
                 role: 'seller',
-                content: `Great! For ${memberCount} buyers, I can offer £${groupPrice.toFixed(2)} each.`,
+                content: `Group floor for ${tier} buyers is £${floor.toFixed(2)} each, down from the matched £${soloPrice.toFixed(2)}.`,
                 timestamp: new Date().toISOString(),
               })}\n\n`)
             );
-            
-            // Update deal price
-            await updateDeal(dealId, { matched_price: groupPrice });
           }
         }
 

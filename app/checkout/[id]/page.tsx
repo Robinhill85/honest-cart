@@ -7,13 +7,32 @@ export default function CheckoutPage() {
   const params = useParams();
   const approvalId = params.id as string;
   const [loading, setLoading] = useState(true);
+  const [price, setPrice] = useState<number | null>(null);
+  const [productName, setProductName] = useState('Sony WH-1000XM6');
 
   useEffect(() => {
-    // Simulate checkout
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
+    let cancelled = false;
+    const started = Date.now();
+
+    fetch(`/api/approvals/${approvalId}`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        if (data.price != null) setPrice(Number(data.price));
+        if (data.product_name) setProductName(data.product_name);
+      })
+      .catch(() => {})
+      .finally(() => {
+        const wait = Math.max(0, 800 - (Date.now() - started));
+        setTimeout(() => {
+          if (!cancelled) setLoading(false);
+        }, wait);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [approvalId]);
 
   if (loading) {
     return (
@@ -45,12 +64,19 @@ export default function CheckoutPage() {
           </p>
         </div>
 
+        <p className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-2">
+          {productName}
+        </p>
+        <p className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-6">
+          {price != null ? `£${price.toFixed(2)}` : '…'}
+        </p>
+
         <p className="text-slate-600 dark:text-slate-400 mb-8">
           In production with a valid <code className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-sm">sk_test_*</code> Stripe key, this would redirect to a real Stripe Checkout session.
         </p>
 
         <a
-          href="/receipt/simulated"
+          href={`/receipt/${approvalId}`}
           className="inline-block w-full py-4 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
         >
           Continue to Receipt

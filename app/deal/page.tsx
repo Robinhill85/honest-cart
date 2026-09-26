@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import QRCode from 'react-qr-code';
+import { CURRYS_POLICY, groupLadder } from '@/lib/policy';
 
 interface ChatMessage {
   role: 'buyer' | 'seller' | 'system';
@@ -25,7 +26,8 @@ export default function DealScreen() {
   const [dealId, setDealId] = useState<string | null>(null);
   const [groupBuyActive, setGroupBuyActive] = useState(false);
   const [groupMembers, setGroupMembers] = useState<GroupMember[]>([]);
-  const [groupPrice, setGroupPrice] = useState<number>(349.0);
+  const [soloPrice, setSoloPrice] = useState<number>(CURRYS_POLICY.floor_price);
+  const [groupPrice, setGroupPrice] = useState<number>(CURRYS_POLICY.floor_price);
   const [shareLink, setShareLink] = useState<string>('');
 
   const startNegotiation = async () => {
@@ -65,7 +67,9 @@ export default function DealScreen() {
             if (data.type === 'complete') {
               setApprovalId(data.approvalId);
               setDealId(data.dealId);
-              setGroupPrice(data.matchedPrice || 349.0);
+              const matched = data.matchedPrice || CURRYS_POLICY.floor_price;
+              setSoloPrice(matched);
+              setGroupPrice(matched);
               // Add user as first group member
               setGroupMembers([{
                 name: 'You',
@@ -136,6 +140,7 @@ export default function DealScreen() {
   };
 
   const approvalUrl = approvalId ? `${window.location.origin}/approve/${approvalId}` : '';
+  const ladder = groupLadder(soloPrice);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
@@ -259,11 +264,7 @@ export default function DealScreen() {
                 Group Price Ladder
               </h2>
               <div className="space-y-3">
-                {[
-                  { qty: 1, price: 349.0 },
-                  { qty: 3, price: 329.0 },
-                  { qty: 5, price: 309.0 },
-                ].map(tier => {
+                {ladder.map(tier => {
                   const isActive = groupMembers.length >= tier.qty;
                   const isCurrent = 
                     (groupMembers.length < 3 && tier.qty === 1) ||

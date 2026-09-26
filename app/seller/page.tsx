@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { CURRYS_POLICY } from '@/lib/policy';
 
 interface DealLog {
   id: string;
@@ -16,11 +17,7 @@ export default function SellerDashboard() {
   const [policy, setPolicy] = useState({
     floor_price: 279.99,
     max_discount_percent: 20,
-    group_pricing: {
-      qty_1: 349.0,
-      qty_3: 329.0,
-      qty_5: 309.0,
-    },
+    group_floors: CURRYS_POLICY.group_floors,
   });
 
   const [deals, setDeals] = useState<DealLog[]>([
@@ -123,51 +120,27 @@ export default function SellerDashboard() {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-                  Group Buy Pricing Ladder
+                  Group floor
                 </label>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-600 dark:text-slate-400 w-20">1 unit:</span>
-                    <input
-                      type="number"
-                      value={policy.group_pricing.qty_1}
-                      onChange={(e) => setPolicy({
-                        ...policy,
-                        group_pricing: { ...policy.group_pricing, qty_1: parseFloat(e.target.value) }
-                      })}
-                      className="flex-1 px-3 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
-                      step="0.01"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-600 dark:text-slate-400 w-20">3 units:</span>
-                    <input
-                      type="number"
-                      value={policy.group_pricing.qty_3}
-                      onChange={(e) => setPolicy({
-                        ...policy,
-                        group_pricing: { ...policy.group_pricing, qty_3: parseFloat(e.target.value) }
-                      })}
-                      className="flex-1 px-3 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
-                      step="0.01"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-600 dark:text-slate-400 w-20">5+ units:</span>
-                    <input
-                      type="number"
-                      value={policy.group_pricing.qty_5}
-                      onChange={(e) => setPolicy({
-                        ...policy,
-                        group_pricing: { ...policy.group_pricing, qty_5: parseFloat(e.target.value) }
-                      })}
-                      className="flex-1 px-3 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
-                      step="0.01"
-                    />
-                  </div>
+                  {[
+                    { label: '1 buyer', price: policy.group_floors.buyers_1, note: 'solo matched price' },
+                    { label: '3 buyers', price: policy.group_floors.buyers_3, note: 'group floor' },
+                    { label: '5 buyers', price: policy.group_floors.buyers_5, note: 'group floor' },
+                  ].map((tier) => (
+                    <div key={tier.label} className="flex items-center justify-between gap-2 rounded-lg bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                        {tier.label}
+                        <span className="ml-2 text-xs text-slate-400">{tier.note}</span>
+                      </span>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+                        £{tier.price.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Lower prices for group purchases (coming soon)
+                  The seller bot steps down to these group floors. A group price never goes above the matched price. One buyer still pays £{policy.floor_price.toFixed(2)}.
                 </p>
               </div>
 

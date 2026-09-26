@@ -13,20 +13,27 @@ export default function ApprovePage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetchApproval();
-  }, [approvalId]);
+    let cancelled = false;
 
-  const fetchApproval = async () => {
-    try {
-      const response = await fetch(`/api/approvals/${approvalId}`);
-      const data = await response.json();
-      setApproval(data);
-    } catch (error) {
-      console.error('Failed to fetch approval:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchApproval = async () => {
+      try {
+        const response = await fetch(`/api/approvals/${approvalId}`);
+        const data = await response.json();
+        if (!cancelled) setApproval(data);
+      } catch (error) {
+        console.error('Failed to fetch approval:', error);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchApproval();
+    const timer = setInterval(fetchApproval, 1500);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [approvalId]);
 
   const handleApprove = async () => {
     setSubmitting(true);
