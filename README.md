@@ -54,7 +54,17 @@ Copy `.env.example` to `.env.local`. All of them are optional.
 | `STRIPE_SECRET_KEY` | Checkout. Must start with `sk_test_`. |
 | `NEXT_PUBLIC_BASE_URL` | Share links and Stripe return URLs. Otherwise the request host is used. |
 
-On Vercel, set the Supabase URL and anon key. In-memory storage does not survive across separate serverless instances, so phone approval would not reach the laptop without it. Paste `supabase/SETUP.sql` into the Supabase SQL editor, then `npm run seed`.
+On Vercel, set the Supabase URL and anon key. In-memory storage does not survive across separate serverless instances, so phone approval would not reach the laptop without it. Use the Supabase setup section below. A service-role key is only for `npm run seed`.
+
+## Supabase setup
+
+Paste these into the Supabase SQL editor, in this order. No service-role key is required.
+
+1. `supabase/SETUP.sql`
+2. `supabase/SEED_1.sql`
+3. `supabase/SEED_2.sql`
+
+The seed files are idempotent (`INSERT ... ON CONFLICT DO UPDATE`) and match the tables in `SETUP.sql`. Then set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `NEXT_PUBLIC_BASE_URL`.
 
 ## Data
 
