@@ -37,6 +37,7 @@ function DealScreen() {
   const [soloPrice, setSoloPrice] = useState<number>(CURRYS_POLICY.floor_price);
   const [groupPrice, setGroupPrice] = useState<number>(CURRYS_POLICY.floor_price);
   const [shareLink, setShareLink] = useState<string>('');
+  const [shortCode, setShortCode] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(Boolean(dealFromUrl));
   const [restoreError, setRestoreError] = useState<string | null>(null);
   const dealToRestore = useRef(dealFromUrl);
@@ -78,6 +79,7 @@ function DealScreen() {
             if (data.type === 'complete') {
               setApprovalId(data.approvalId);
               setDealId(data.dealId);
+              if (data.shortCode) setShortCode(data.shortCode);
               const matched = data.matchedPrice || CURRYS_POLICY.floor_price;
               setSoloPrice(matched);
               setGroupPrice(matched);
@@ -181,13 +183,14 @@ function DealScreen() {
         const deal = data.deal;
         const approvals = Array.isArray(data.approvals) ? data.approvals : [];
         const messages: ChatMessage[] = Array.isArray(deal.chat_log) ? deal.chat_log : [];
-        const userApproval = approvals.find((approval: { is_bot?: boolean }) => !approval.is_bot);
+        const userApproval = approvals.find((approval: { is_bot?: boolean; short_code?: string }) => !approval.is_bot);
         const price = Number(userApproval?.price ?? deal.matched_price ?? CURRYS_POLICY.floor_price);
 
         setDealId(deal.id);
         setNegotiating(true);
         setChatLog(messages);
         setApprovalId(userApproval?.id ?? null);
+        if (userApproval?.short_code) setShortCode(userApproval.short_code);
         setGroupPrice(price);
         setSoloPrice(soloPriceFromChat(messages, Number(deal.matched_price) || price));
         setGroupBuyActive(approvals.some((approval: { is_bot?: boolean }) => approval.is_bot));
@@ -536,6 +539,19 @@ function DealScreen() {
                 <div className="bg-white p-6 rounded-lg inline-block">
                   <QRCode value={approvalUrl} size={200} />
                 </div>
+                {shortCode && (
+                  <div className="mt-6">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                      Type this on your phone
+                    </p>
+                    <a
+                      href={`/a/${shortCode}`}
+                      className="block text-4xl font-bold tracking-widest font-mono text-slate-900 dark:text-slate-50"
+                    >
+                      {window.location.host}/a/{shortCode}
+                    </a>
+                  </div>
+                )}
                 <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
                   <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
                     Or visit directly:

@@ -39,6 +39,15 @@ export interface Approval {
   bot_name?: string;
   created_at: string;
   approved_at?: string;
+  short_code?: string;
+}
+
+const SHORT_CODE_ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz';
+
+export function createShortCode(length = 4): string {
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (byte) => SHORT_CODE_ALPHABET[byte % SHORT_CODE_ALPHABET.length]).join('');
 }
 
 // In-memory store (fallback when Supabase is not configured)
@@ -148,6 +157,21 @@ export async function updateApproval(id: string, updates: Partial<Approval>): Pr
   if (approval) {
     inMemoryApprovals.set(id, { ...approval, ...updates });
   }
+}
+
+export async function getApprovalByShortCode(code: string): Promise<Approval | null> {
+  const normalized = code.trim().toLowerCase();
+  if (!normalized) return null;
+  if (isSupabaseConfigured() && supabase) {
+    const { data, error } = await supabase
+      .from('approvals')
+      .select('*')
+      .eq('short_code', normalized)
+      .maybeSingle();
+    throwIfError(error);
+    return data || null;
+  }
+  return Array.from(inMemoryApprovals.values()).find((approval) => approval.short_code === normalized) || null;
 }
 
 export async function getApprovalsByDealId(dealId: string): Promise<Approval[]> {

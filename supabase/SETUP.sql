@@ -197,6 +197,10 @@ CREATE POLICY "Public insert access" ON approvals FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public update access" ON approvals FOR UPDATE USING (true);
 CREATE POLICY "Public insert access" ON group_members FOR INSERT WITH CHECK (true);
 
+-- Short code for the typeable phone link (/a/k7mp).
+ALTER TABLE approvals ADD COLUMN IF NOT EXISTS short_code TEXT;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_approvals_short_code ON approvals (short_code);
+
 -- Realtime: the laptop subscribes to the user's approval row.
 -- Idempotent. `ALTER PUBLICATION ... ADD TABLE` errors if the table is already a member.
 ALTER TABLE approvals REPLICA IDENTITY FULL;

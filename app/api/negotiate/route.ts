@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { negotiateDeal } from '@/lib/negotiation';
-import { saveDeal, saveApproval, CURRYS_POLICY, Deal, Approval } from '@/lib/deals';
+import { saveDeal, saveApproval, createShortCode, CURRYS_POLICY, Deal, Approval } from '@/lib/deals';
 import { randomUUID } from 'crypto';
 
 export const maxDuration = 60;
@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
       // Create deal and approval
       const dealId = randomUUID();
       const approvalId = randomUUID();
+      const shortCode = createShortCode();
 
       const deal: Deal = {
         id: dealId,
@@ -74,6 +75,7 @@ export async function POST(request: NextRequest) {
         price: matchedPrice,
         status: 'pending',
         created_at: new Date().toISOString(),
+        short_code: shortCode,
       };
 
       await saveDeal(deal);
@@ -86,6 +88,7 @@ export async function POST(request: NextRequest) {
           approvalId,
           dealId,
           matchedPrice,
+          shortCode,
         })}\n\n`)
       );
     } catch (error) {
