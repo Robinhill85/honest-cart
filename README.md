@@ -1,118 +1,69 @@
 # Honest Cart
 
-A trust-aware shopping agent for the Grok Bot Commerce London Hackathon (Agentic Commerce track).
+A trust-aware shopping demo. You ask for flight headphones, the app ranks six models from seeded review judgments, a buyer bot asks Currys to price-match a risky cheaper offer, and you approve the purchase on a phone-sized page.
 
-Honest Cart researches product categories, judges review authenticity and seller trust with TypeSafe Jev, ranks products with user sliders, and enables buyer bots to negotiate price-matches with trusted sellers. Human approval via phone + Stripe TEST mode checkout.
+It runs with no environment variables. Search results and review judgments are the files in `data/`. Checkout is labelled as simulated unless a Stripe test key is set.
 
-## Features
+## Demo flow
 
-**Phase 1 (Current):**
-- Product catalog (6 premium headphones)
-- Review database (173 real reviews with provenance)
-- Seller trust signals (45 UK seller offers)
-- Offline-first architecture (works with zero env vars)
-- Supabase backend with local JSON fallback
-- Tavily web search integration
-
-**Phase 2 (Future):**
-- TypeSafe Jev authenticity judgments
-- Interactive comparison sliders with evidence drawer
-- Buyer/seller bot price-match negotiation
-- Phone approval flow
-- Stripe TEST mode checkout
-- Group buy price ladder
+1. Open the home page. The query is already filled in. Choose **Research & Compare**.
+2. The research feed replays a saved search sample and the seeded judgments, then opens the comparison board.
+3. Move the sliders. A feature with no review mentions shows **No data** and is left out of that product's score. Open a bar to read the evidence.
+4. Open **Deal** (`/deal`) and ask Currys to match. The bot's floor is £279.99.
+5. **Invite Friends**. Three demo bots join. The group floor steps down: 3 buyers pay £264.99, 5 would pay £249.99. It never goes above the matched price.
+6. Open the approval link (or scan the QR code) and approve. The laptop page flips to **Approved on phone** within a couple of seconds.
+7. Continue through simulated checkout to the receipt. The price on the approval, checkout, and receipt is the current group price.
+8. `/seller` shows the floor, discount cap, and group floors the bot uses, plus a sample deal log.
 
 ## Stack
 
-- **Frontend:** Next.js 15 (App Router) + TypeScript + Tailwind CSS
-- **Database:** Supabase (Postgres + Realtime)
-- **AI Judgments:** TypeSafe Jev (System One)
-- **Web Search:** Tavily
-- **Payments:** Stripe (TEST mode only)
-- **Deploy:** Vercel
+- Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS
+- Optional Supabase for deals and approvals across serverless instances
+- Optional Tavily search and TypeSafe Jev (the demo uses seeded judgments either way)
+- Stripe test mode only (`sk_test_`). Any other key is ignored.
 
-## Quick Start
-
-### 1. Install dependencies
+## Run locally
 
 ```bash
 npm install
-```
-
-### 2. Run locally (offline mode)
-
-The app works immediately with local data files:
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open http://localhost:3000.
 
-### 3. Configure services (optional)
-
-Copy `.env.example` to `.env.local` and add your keys:
+Production check:
 
 ```bash
-cp .env.example .env.local
+npm run build
+npm start
 ```
 
-- **Supabase:** Get keys from [database.new](https://database.new)
-  1. Create project
-  2. Run migration: `supabase/migrations/001_initial_schema.sql`
-  3. Run seed: `npx tsx scripts/seed.ts`
-- **Tavily:** Get key from [tavily.com](https://tavily.com)
-- **TypeSafe:** Get key from [typesafe.ai](https://typesafe.ai)
-- **Stripe:** Get TEST keys from [stripe.com](https://stripe.com)
+Do not run `next dev` and `next start` against the same `.next` directory.
 
-## Project Structure
+## Environment variables
 
-```
-/app
-  /page.tsx           # Home: product catalog
-  /compare/page.tsx   # Comparison screen with ranking
-/data                 # Local JSON data (products, reviews, sellers, judgments)
-/lib
-  /supabase.ts        # Supabase client
-  /search.ts          # Tavily wrapper
-  /jev.ts             # TypeSafe client
-  /judgments.ts       # Judgment data loader
-  /ranking.ts         # Ranking algorithm
-/scripts
-  /seed.ts            # Database seed script
-/supabase/migrations
-  /001_initial_schema.sql  # Database schema
-```
+Copy `.env.example` to `.env.local`. All of them are optional.
 
-## Data Files
+| Variable | Used for |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Deal and approval storage |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Deal and approval storage |
+| `SUPABASE_SERVICE_ROLE_KEY` | `npm run seed` only. Never imported by the app. |
+| `TAVILY_API_KEY` | Live web search. Without it, the feed replays a saved sample. |
+| `TYPESAFE_API_KEY` | Reserved for live judgments. The board uses `data/judgments_9e10.json`. |
+| `STRIPE_SECRET_KEY` | Checkout. Must start with `sk_test_`. |
+| `NEXT_PUBLIC_BASE_URL` | Share links and Stripe return URLs. Otherwise the request host is used. |
 
-All demo data is committed under `/data`:
-- `products_c90d.json` - 6 headphone models with specs
-- `reviews_2b03.json` - 173 real reviews with URLs
-- `sellers_prices_97c0.json` - 45 UK seller offers with trust signals
-- `judgments_9e10.json` - 173 TypeSafe Jev review judgments (fake_prob, features, flight_relevance)
-- `seller_trust_22c0.json` - 45 TypeSafe Jev seller trust scores (trust_prob, flags)
+On Vercel, set the Supabase URL and anon key. In-memory storage does not survive across separate serverless instances, so phone approval would not reach the laptop without it. Paste `supabase/SETUP.sql` into the Supabase SQL editor, then `npm run seed`.
 
-## Deploy to Vercel
+## Data
 
-1. Push to GitHub
-2. Import to [Vercel](https://vercel.com)
-3. Add environment variables (optional)
-4. Deploy
+Committed under `data/`:
 
-The app builds and runs with zero env vars (offline mode).
+- `products_c90d.json` — six headphone models
+- `reviews_2b03.json` — 173 review excerpts with source URLs. The wording belongs to the original reviewers and publishers.
+- `sellers_prices_97c0.json` — UK seller offers
+- `judgments_9e10.json` — precomputed authenticity and feature judgments
+- `seller_trust_22c0.json` — precomputed seller trust scores
 
-## Demo Safety
-
-Every screen works without API keys. Local JSON files provide fallback data when Supabase, Tavily, TypeSafe, or Stripe are unreachable.
-
-## Hackathon Info
-
-- **Event:** Grok Bot Commerce London Hackathon
-- **Track:** Agentic Commerce
-- **Code freeze:** 16:30 London time
-- **Working name:** Honest Cart
-
-## License
-
-Demo code for hackathon. Not production-ready.
+The receipt timeline is a scripted illustration. The price in its heading is the approval stored for that purchase.

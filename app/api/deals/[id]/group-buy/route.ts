@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDeal, updateDeal, saveApproval, getApprovalsByDealId, setDealApprovalPrices } from '@/lib/deals';
 import type { Approval } from '@/lib/deals';
 import { CURRYS_POLICY, groupFloorLabel, groupLadder, groupPriceForCount } from '@/lib/policy';
+import { publicBaseUrl } from '@/lib/public-url';
+
+export const maxDuration = 60;
 
 // Demo friend bots
 const FRIEND_BOTS = [
@@ -45,7 +48,7 @@ export async function POST(
           encoder.encode(`data: ${JSON.stringify({
             type: 'group_started',
             groupId,
-            shareLink: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/deal/group/${groupId}`,
+            shareLink: `${publicBaseUrl(request)}/deal/group/${groupId}`,
             soloPrice,
             ladder: groupLadder(soloPrice),
           })}\n\n`)

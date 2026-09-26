@@ -73,7 +73,7 @@ export default function ComparisonClient({
             Compare Headphones
           </h1>
           <p className="text-lg text-slate-600 dark:text-slate-400">
-            Rankings based on trusted reviews and flight relevance
+            Rankings use the seeded review judgments in this repo. A feature with no mentions is left out of the score.
           </p>
         </div>
 
@@ -102,6 +102,11 @@ export default function ComparisonClient({
                   onChange={(e) => setWeights({ ...weights, [key]: parseFloat(e.target.value) })}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-blue-600"
                 />
+                {key === 'price' && (
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                    Shown on each card. The rank uses review features, not this slider.
+                  </p>
+                )}
               </div>
             ))}
           </div>

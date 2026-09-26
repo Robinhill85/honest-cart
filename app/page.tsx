@@ -11,6 +11,7 @@ export default function AskScreen() {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [reviewCount, setReviewCount] = useState(0);
   const [reviewTags, setReviewTags] = useState<string[]>([]);
+  const [searchCached, setSearchCached] = useState(true);
 
   const chips = ['flights', 'comfort', 'battery', 'budget'];
 
@@ -36,6 +37,7 @@ export default function AskScreen() {
       });
 
       const data = await response.json();
+      setSearchCached(data.cached !== false);
       
       // Stream in search results
       for (let i = 0; i < data.searchResults.length; i++) {
@@ -148,7 +150,7 @@ export default function AskScreen() {
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
                   <span className="text-slate-700 dark:text-slate-300">
-                    Searching the web...
+                    {searchCached ? 'Replaying a saved search sample...' : 'Searching the web...'}
                   </span>
                 </div>
                 {searchResults.map((result, i) => (
@@ -180,7 +182,7 @@ export default function AskScreen() {
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
                     <span className="text-slate-700 dark:text-slate-300">
-                      Analyzing reviews...
+                      Replaying seeded review judgments...
                     </span>
                   </div>
                   

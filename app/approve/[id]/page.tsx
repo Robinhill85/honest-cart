@@ -177,7 +177,7 @@ export default function ApprovePage() {
         </div>
 
         <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-6">
-          This is a secure approval request from Honest Cart
+          No payment is taken on this screen. Checkout is the next step.
         </p>
       </div>
     </div>

@@ -1,6 +1,3 @@
-'use client';
-
-import { useState } from 'react';
 import { CURRYS_POLICY } from '@/lib/policy';
 
 interface DealLog {
@@ -14,13 +11,13 @@ interface DealLog {
 }
 
 export default function SellerDashboard() {
-  const [policy, setPolicy] = useState({
-    floor_price: 279.99,
-    max_discount_percent: 20,
+  const policy = {
+    floor_price: CURRYS_POLICY.floor_price,
+    max_discount_percent: CURRYS_POLICY.max_discount_percent,
     group_floors: CURRYS_POLICY.group_floors,
-  });
+  };
 
-  const [deals, setDeals] = useState<DealLog[]>([
+  const deals: DealLog[] = [
     {
       id: '1',
       time: '14:32:56',
@@ -48,7 +45,7 @@ export default function SellerDashboard() {
       status: 'declined',
       reason: 'Requested price 51% below floor',
     },
-  ]);
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
@@ -77,46 +74,17 @@ export default function SellerDashboard() {
             </h2>
 
             <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Floor Price (Sony WH-1000XM6)
-                </label>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-slate-900 dark:text-slate-50">£</span>
-                  <input
-                    type="number"
-                    value={policy.floor_price}
-                    onChange={(e) => setPolicy({ ...policy, floor_price: parseFloat(e.target.value) })}
-                    className="flex-1 px-4 py-2 text-lg border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
-                    step="0.01"
-                  />
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Minimum price the bot can offer
-                </p>
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-900 px-3 py-2 flex justify-between">
+                <span className="text-sm text-slate-600 dark:text-slate-400">Floor price (Sony WH-1000XM6)</span>
+                <span className="text-sm font-semibold text-slate-900 dark:text-slate-50">£{policy.floor_price.toFixed(2)}</span>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Maximum Discount
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="range"
-                    min="0"
-                    max="50"
-                    value={policy.max_discount_percent}
-                    onChange={(e) => setPolicy({ ...policy, max_discount_percent: parseFloat(e.target.value) })}
-                    className="flex-1"
-                  />
-                  <span className="text-lg font-semibold text-slate-900 dark:text-slate-50 w-16 text-right">
-                    {policy.max_discount_percent}%
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Maximum discount from list price
-                </p>
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-900 px-3 py-2 flex justify-between">
+                <span className="text-sm text-slate-600 dark:text-slate-400">Maximum discount from list</span>
+                <span className="text-sm font-semibold text-slate-900 dark:text-slate-50">{policy.max_discount_percent}%</span>
               </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                These are the rules the seller bot actually uses. This page does not edit them.
+              </p>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
@@ -144,19 +112,13 @@ export default function SellerDashboard() {
                 </p>
               </div>
 
-              <button
-                onClick={() => alert('Policy saved! This would update the bot\'s negotiation rules.')}
-                className="w-full py-3 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-              >
-                Save Policy
-              </button>
             </div>
           </div>
 
           {/* Deal log */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
-              Agent Deal Log
+              Sample deal log
             </h2>
 
             <div className="space-y-4">
@@ -211,7 +173,7 @@ export default function SellerDashboard() {
 
             <div className="mt-6 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                <strong>Live updates:</strong> New deals appear here automatically when buyer agents request price matches.
+                Sample rows for the demo. This log does not update when you negotiate on the deal page.
               </p>
             </div>
           </div>

@@ -3,6 +3,8 @@ import { negotiateDeal } from '@/lib/negotiation';
 import { saveDeal, saveApproval, CURRYS_POLICY, Deal, Approval } from '@/lib/deals';
 import { randomUUID } from 'crypto';
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   const encoder = new TextEncoder();
   const stream = new TransformStream();

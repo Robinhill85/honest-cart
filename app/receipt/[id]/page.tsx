@@ -69,9 +69,12 @@ export default function ReceiptPage() {
           </div>
 
           <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-6 mb-8">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-4">
-              Transaction Timeline
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-1">
+              Demo timeline
             </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              The times below are a scripted illustration, not this session. The price in the heading is the approval on record.
+            </p>
             <div className="space-y-3">
               {steps.map((step, i) => (
                 <div key={i} className="flex items-start gap-3">

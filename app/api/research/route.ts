@@ -3,30 +3,37 @@ import { searchWeb } from '@/lib/search';
 import fs from 'fs';
 import path from 'path';
 
+export const maxDuration = 60;
+
+const SAVED_SEARCH = [
+  'Saved sample: What Hi-Fi? — Sony WH-1000XM6 review (whathifi.com)',
+  'Saved sample: TechRadar — Best noise-cancelling headphones (techradar.com)',
+  'Saved sample: SoundGuys — Sony WH-1000XM6 review (soundguys.com)',
+  'Saved sample: Expert Reviews — Headphones under £300 (expertreviews.co.uk)',
+  'Saved sample: Trusted Reviews — Bose QuietComfort Ultra (trustedreviews.com)',
+];
+
 export async function POST(request: NextRequest) {
   try {
     const { query } = await request.json();
 
-    // Try real Tavily search if key is set (with timeout)
     let searchResults: string[] = [];
-    
+    let cached = true;
+
     try {
       const searchPromise = searchWeb(query, { maxResults: 5 });
-      const timeoutPromise = new Promise<never>((_, reject) => 
+      const timeoutPromise = new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('timeout')), 3000)
       );
-      
+
       const response = await Promise.race([searchPromise, timeoutPromise]);
-      searchResults = response.results.map(r => `${r.title} (${new URL(r.url).hostname})`);
-    } catch (error) {
-      // Silent fallback to cached results
-      searchResults = [
-        'What Hi-Fi? - Sony WH-1000XM6 review (whathifi.com)',
-        'TechRadar - Best noise-cancelling headphones 2026 (techradar.com)',
-        'SoundGuys - Sony WH-1000XM6 review (soundguys.com)',
-        'Expert Reviews - Headphones under £300 (expertreviews.co.uk)',
-        'Trusted Reviews - Bose QuietComfort Ultra (trustedreviews.com)',
-      ];
+      cached = response.from_cache;
+      searchResults = cached
+        ? SAVED_SEARCH
+        : response.results.map(r => `${r.title} (${new URL(r.url).hostname})`);
+    } catch {
+      cached = true;
+      searchResults = SAVED_SEARCH;
     }
 
     // Load review judgments for tags
@@ -56,6 +63,7 @@ export async function POST(request: NextRequest) {
       searchResults,
       reviewCount: judgmentsData.judgments.length,
       reviewTags: topTags,
+      cached,
     });
   } catch (error) {
     console.error('Research API error:', error);

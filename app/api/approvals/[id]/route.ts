@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getApproval, updateApproval } from '@/lib/deals';
+import { publicBaseUrl } from '@/lib/public-url';
+
+export const maxDuration = 60;
 
 export async function GET(
   request: NextRequest,
@@ -42,7 +45,12 @@ export async function POST(
     if (approved) {
       // Check if Stripe is configured
       const stripeKey = process.env.STRIPE_SECRET_KEY;
-      
+      const baseUrl = publicBaseUrl(request);
+
+      if (stripeKey && !stripeKey.startsWith('sk_test_')) {
+        console.warn('Stripe key ignored. Only sk_test_ keys are accepted.');
+      }
+
       if (stripeKey && stripeKey.startsWith('sk_test_')) {
         // Create Stripe checkout session
         const stripe = require('stripe')(stripeKey);
@@ -68,8 +76,8 @@ export async function POST(
             },
           ],
           mode: 'payment',
-          success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/receipt/${id}?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/approve/${id}`,
+          success_url: `${baseUrl}/receipt/${id}?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${baseUrl}/approve/${id}`,
           metadata: {
             approval_id: id,
           },
