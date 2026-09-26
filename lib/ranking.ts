@@ -60,51 +60,36 @@ export function priceValueScore(trustedPrice: number, budget: number = USER_BUDG
   return Math.max(0, 0.85 * (2 - ratio));
 }
 
-export function combineScore(featureScore: number, priceValue: number, priceWeight: number): number {
+export function combineScore(featureScore: number | null, priceValue: number, priceWeight: number): number {
+  if (featureScore == null) return priceWeight > 0 ? priceValue : 0;
   if (priceWeight <= 0) return featureScore;
   return (featureScore + priceValue * priceWeight) / (1 + priceWeight);
 }
 
+const FEATURE_KEYS = ['noise_cancelling', 'comfort', 'battery', 'call_quality'] as const;
+
+/**
+ * One score per feature, then the slider weights of features that have evidence.
+ * A missing feature is left out and the remaining weights are renormalised.
+ * It is not entered as 0, and it is not filled in with a high score.
+ */
 export function calculateProductScore(
   productId: string,
   judgments: ReviewJudgment[],
   weights: FeatureWeights = DEFAULT_WEIGHTS
-): number {
-  const productJudgments = judgments.filter(j => j.product_id === productId);
-  
-  if (productJudgments.length === 0) return 0;
+): number | null {
+  let weighted = 0;
+  let weightSum = 0;
 
-  let totalScore = 0;
-  let totalWeight = 0;
-
-  for (const judgment of productJudgments) {
-    const reviewTrust = 1 - judgment.fake_prob;
-    const flightWeight = judgment.flight_relevance || 0.5;
-    const reviewWeight = reviewTrust * flightWeight;
-
-    if (reviewWeight < 0.1) continue; // Skip very low trust/relevance
-
-    const features = judgment.features;
-    let reviewScore = 0;
-    let featureCount = 0;
-
-    const featureKeys = ['noise_cancelling', 'comfort', 'battery', 'call_quality'] as const;
-    for (const key of featureKeys) {
-      const feature = features[key];
-      // No mention, or a mention with no sentiment, is missing evidence — not a zero.
-      if (!feature || feature.mentioned_prob <= 0.5 || feature.positive_prob == null) continue;
-      if (weights[key] <= 0) continue;
-      reviewScore += feature.positive_prob * weights[key];
-      featureCount += weights[key];
-    }
-
-    if (featureCount > 0) {
-      totalScore += (reviewScore / featureCount) * reviewWeight;
-      totalWeight += reviewWeight;
-    }
+  for (const key of FEATURE_KEYS) {
+    if (weights[key] <= 0) continue;
+    const featureScore = calculateFeatureScore(productId, key, judgments);
+    if (featureScore == null) continue;
+    weighted += featureScore * weights[key];
+    weightSum += weights[key];
   }
 
-  return totalWeight > 0 ? totalScore / totalWeight : 0;
+  return weightSum > 0 ? weighted / weightSum : null;
 }
 
 export function calculateFeatureScore(

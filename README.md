@@ -8,7 +8,7 @@ It runs with no environment variables. Search results and review judgments are t
 
 1. Open the home page. The query is already filled in. Choose **Research & Compare**.
 2. The research feed replays a saved search sample and the seeded judgments, then opens the comparison board.
-3. Move the sliders. The Price slider weights the best trusted-seller price against the £300 budget. A feature with no review mentions shows **No data** and is left out of that product's score. Open a bar to read the evidence.
+3. Move the sliders. The Price slider weights the best trusted-seller price against the £300 budget. A feature with no review mentions shows **No data**, is left out of that product's score, and the remaining slider weights are renormalised. A real negative mention can still score 0%. Open a bar to read the evidence.
 4. Open **Deal** (`/deal`) and ask Currys to match. The bot's floor is £279.99.
 5. **Invite Friends**. Four demo bots join (you plus four is five buyers). At 3 buyers and again at 5, the buyer bot asks for a group price and the seller bot answers from the ladder: £264.99, then £249.99. Each person still buys their own unit. It never goes above the matched £279.99.
 6. Open the approval link (or scan the QR code) and approve. The laptop page flips to **Approved on phone** within a couple of seconds.

@@ -172,8 +172,8 @@ export default function ComparisonClient({
                   {/* Feature bars */}
                   <div className="space-y-3">
                     {Object.entries(ranking.feature_scores).map(([feature, score]) => {
-                      const percent = score == null ? null : Math.round(score * 100);
-                      const hasData = percent != null && percent > 0;
+                      const hasData = score != null;
+                      const percent = hasData ? Math.round(score * 100) : null;
                       return (
                       <div key={feature}>
                         <div className="flex justify-between items-center mb-1 gap-3">

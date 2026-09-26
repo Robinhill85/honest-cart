@@ -55,7 +55,11 @@ test.describe('Honest Cart - Happy Path E2E', () => {
         has: page.getByRole('heading', { name: 'Sony WH-1000XM6', level: 3 }),
       });
       await expect(sonyCard.getByRole('link', { name: 'Get the best deal' })).toHaveAttribute('href', '/deal');
-      await expect(page.getByText('0%', { exact: true })).toHaveCount(0);
+      const boseCard = page.locator('div.rounded-xl').filter({
+        has: page.getByRole('heading', { name: 'Bose QuietComfort Headphones (2023, 1st gen)', level: 3 }),
+      });
+      await expect(boseCard.getByText('No data', { exact: true })).toBeVisible();
+      await expect(boseCard.getByText('0%', { exact: true })).toBeVisible();
       await expect(page.locator('label').filter({ hasText: /^comfort/i })).toContainText('40%');
       await page.setViewportSize({ width: 390, height: 844 });
       const dealButton = sonyCard.getByRole('link', { name: 'Get the best deal' });
@@ -69,15 +73,15 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const orderBefore = await headings.allTextContents();
       console.log('Order before:', orderBefore.join(' > '));
 
-      // Comfort starts at 40%, so it can be dragged up. That swaps the leader.
-      console.log('Step 3a: Dragging comfort slider up...');
-      await page.locator('input[type="range"]').nth(1).fill('1');
+      // Call quality starts at 50%. Zeroing it drops Bose's real 0 and changes the leader.
+      console.log('Step 3a: Moving call-quality slider to 0...');
+      await page.locator('input[type="range"]').nth(3).fill('0');
       await expect.poll(async () => headings.first().textContent()).not.toBe(orderBefore[0]);
       const orderAfter = await headings.allTextContents();
       expect(orderAfter.join('|')).not.toBe(orderBefore.join('|'));
       console.log('Order after:', orderAfter.join(' > '));
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04-compare-order-changed.png'), fullPage: true });
-      console.log('✓ Comfort slider changed the order');
+      console.log('✓ Call-quality slider changed the order');
 
       // Open evidence drawer
       console.log('Step 3c: Opening evidence drawer...');
