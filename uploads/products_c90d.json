@@ -1,0 +1,286 @@
+{
+  "collected_at": "2026-09-25",
+  "market": "UK",
+  "products": [
+    {
+      "id": "sony-wh1000xm6",
+      "brand": "Sony",
+      "model": "WH-1000XM6",
+      "released": "2025-05",
+      "typical_uk_rrp": {
+        "launch_rrp_gbp": 400.0,
+        "source": "https://www.whathifi.com/headphones/sony-wh-1000xm6",
+        "source_text": "Tested at £400 / $450 / AU$699",
+        "current_typical_uk_price_gbp": 349.0,
+        "current_price_source": "Currys, John Lewis, Amazon UK, Sony UK all £349.00 on 2026-09-25 (see sellers_prices.json)"
+      },
+      "under_300_gbp_at_trusted_retailer": false,
+      "specs": {
+        "battery_hours_anc_claimed": {
+          "value": 30,
+          "source": "https://www.whathifi.com/headphones/sony-wh-1000xm6",
+          "source_text": "Battery life 30hrs"
+        },
+        "weight_g": {
+          "value": 254,
+          "source": "https://www.whathifi.com/headphones/sony-wh-1000xm6",
+          "source_text": "Weight 254g"
+        },
+        "anc": {
+          "value": "Yes, adaptive; QN3 processor, 12 microphones",
+          "source": "https://www.stuff.tv/features/best-noise-cancelling-headphones/",
+          "source_text": "improved QN3 processor and 12 microphones for enhanced noise cancellation"
+        },
+        "codecs": {
+          "value": [
+            "SBC",
+            "AAC",
+            "LDAC",
+            "LC3"
+          ],
+          "source": "https://www.whathifi.com/headphones/sony-wh-1000xm6",
+          "source_text": "Bluetooth SBC, AAC, LDAC, LC3"
+        },
+        "foldable": {
+          "value": true,
+          "source": "https://pocketmags.com/us/what-hifi-magazine/march-2026/articles/sony-wh-1000xm6",
+          "source_text": "Hinges make a return on XM6."
+        },
+        "measured_battery_hours": {
+          "value": "37h 14m (SoundGuys standardized test)",
+          "source": "https://www.soundguys.com/sony-wh-1000xm6-review-read-before-buying-137397/"
+        }
+      },
+      "why_chosen": "What Hi-Fi, Stuff and Expert Reviews rank it the best all-round noise-cancelling headphone in 2026; the flagship of the flight-headphone category."
+    },
+    {
+      "id": "sony-wh1000xm5",
+      "brand": "Sony",
+      "model": "WH-1000XM5",
+      "released": "2022-05",
+      "typical_uk_rrp": {
+        "launch_rrp_gbp": 380.0,
+        "source": "https://www.whathifi.com/reviews/sony-wh-1000xm5",
+        "source_text": "Tested at £380 / $399 / AU$550",
+        "current_typical_uk_price_gbp": 229.0,
+        "current_price_source": "Currys £229.00, Sony UK £229.00, Argos £229.99 on 2026-09-25"
+      },
+      "under_300_gbp_at_trusted_retailer": true,
+      "specs": {
+        "battery_hours_anc_claimed": {
+          "value": 30,
+          "source": "https://www.sony.co.uk/electronics/headband-headphones/wh-1000xm5",
+          "source_text": "30 hours of battery life"
+        },
+        "weight_g": {
+          "value": 250,
+          "source": "https://www.whathifi.com/reviews/sony-wh-1000xm5",
+          "source_text": "Weight 250g"
+        },
+        "anc": {
+          "value": "Yes",
+          "source": "https://www.whathifi.com/reviews/sony-wh-1000xm5",
+          "source_text": "Noise cancelling Superb, up there with the best 5/5"
+        },
+        "codecs": {
+          "value": [
+            "SBC",
+            "AAC",
+            "LDAC"
+          ],
+          "source": "https://www.whathifi.com/reviews/sony-wh-1000xm5",
+          "source_text": "Bluetooth SBC, AAC, LDAC"
+        },
+        "foldable": {
+          "value": false,
+          "source": "https://pocketmags.com/us/what-hifi-magazine/march-2026/articles/sony-wh-1000xm6",
+          "source_text": "The previous XM5 generation was quite rigid in its construction and couldn’t be folded away"
+        }
+      },
+      "why_chosen": "Previous flagship, still sold widely and now well under £300: the value pick for the demo budget."
+    },
+    {
+      "id": "bose-qc-ultra-2",
+      "brand": "Bose",
+      "model": "QuietComfort Ultra Headphones (2nd Gen)",
+      "released": "2025-09",
+      "typical_uk_rrp": {
+        "launch_rrp_gbp": 449.0,
+        "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-ultra-headphones-2nd-gen",
+        "source_text": "RRP £449",
+        "current_typical_uk_price_gbp": 320.0,
+        "current_price_source": "Amazon UK £320.00; John Lewis from £332.95; Currys £399.97; Argos £399.95 on 2026-09-25"
+      },
+      "under_300_gbp_at_trusted_retailer": false,
+      "specs": {
+        "battery_hours_anc_claimed": {
+          "value": 30,
+          "source": "https://www.whathifi.com/headphones/bose-quietcomfort-ultra-headphones-2nd-gen",
+          "source_text": "Battery life 30 hours"
+        },
+        "weight_g": {
+          "value": 250,
+          "source": "https://www.whathifi.com/headphones/bose-quietcomfort-ultra-headphones-2nd-gen",
+          "source_text": "Weight 250g"
+        },
+        "anc": {
+          "value": "Yes",
+          "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-ultra-headphones-2nd-gen",
+          "source_text": "Noise Cancellation? Yes"
+        },
+        "codecs": {
+          "value": [
+            "SBC",
+            "AAC",
+            "aptX Adaptive"
+          ],
+          "source": "https://www.whathifi.com/headphones/bose-quietcomfort-ultra-headphones-2nd-gen",
+          "source_text": "Bluetooth SBC, AAC, aptX Adaptive"
+        },
+        "usb_c_lossless_audio": {
+          "value": true,
+          "source": "https://www.wired.com/review/bose-quietcomfort-ultra-headphones-2/",
+          "source_text": "USB-C lossless audio support"
+        }
+      },
+      "why_chosen": "Bose flagship and the main rival to the XM6; praised for comfort on long flights."
+    },
+    {
+      "id": "sennheiser-momentum-4",
+      "brand": "Sennheiser",
+      "model": "Momentum 4 Wireless",
+      "released": "2022-08",
+      "typical_uk_rrp": {
+        "launch_rrp_gbp": 299.99,
+        "source": "https://www.trustedreviews.com/reviews/sennheiser-momentum-4-wireless",
+        "source_text": "RRP £299.99",
+        "current_typical_uk_price_gbp": 179.99,
+        "current_price_source": "Argos, John Lewis, Amazon UK £179.99 on 2026-09-25 (Currys £248.97)"
+      },
+      "under_300_gbp_at_trusted_retailer": true,
+      "specs": {
+        "battery_hours_anc_claimed": {
+          "value": 60,
+          "source": "https://support.sennheiser-hearing.com/hc/en-at/articles/37791406604189-MOMENTUM-4-Wireless-Specifications",
+          "source_text": "60 hrs music playtime via Bluetooth and with ANC"
+        },
+        "weight_g": {
+          "value": 293,
+          "source": "https://www.whathifi.com/reviews/sennheiser-momentum-4-wireless",
+          "source_text": "Weight 293g"
+        },
+        "anc": {
+          "value": "Yes, adaptive",
+          "source": "https://www.trustedreviews.com/reviews/sennheiser-momentum-4-wireless",
+          "source_text": "Adaptive noise cancellation with transparency mode"
+        },
+        "codecs": {
+          "value": [
+            "SBC",
+            "AAC",
+            "aptX",
+            "aptX Adaptive"
+          ],
+          "source": "https://www.whathifi.com/reviews/sennheiser-momentum-4-wireless",
+          "source_text": "Codecs aptX Adaptive, aptX, SBC, AAC"
+        }
+      },
+      "why_chosen": "Long-running audiophile favourite with class-leading 60h battery (big for long-haul flights), now around £180."
+    },
+    {
+      "id": "bose-quietcomfort",
+      "brand": "Bose",
+      "model": "QuietComfort Headphones (2023, 1st gen)",
+      "released": "2023-09",
+      "typical_uk_rrp": {
+        "launch_rrp_gbp": 299.0,
+        "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-headphones",
+        "source_text": "RRP £299",
+        "current_typical_uk_price_gbp": 229.0,
+        "current_price_source": "Currys £229.00, Argos £229.95; John Lewis and Amazon UK from £196.00 on 2026-09-25"
+      },
+      "under_300_gbp_at_trusted_retailer": true,
+      "specs": {
+        "battery_hours_anc_claimed": {
+          "value": 24,
+          "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-headphones",
+          "source_text": "Battery life Up to 24 hours on a single charge"
+        },
+        "weight_g": {
+          "value": 237,
+          "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-headphones",
+          "source_text": "Weight 237 G"
+        },
+        "anc": {
+          "value": "Yes",
+          "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-headphones",
+          "source_text": "Noise Cancellation? Yes"
+        },
+        "codecs": {
+          "value": [
+            "SBC",
+            "AAC"
+          ],
+          "source": "https://www.trustedreviews.com/reviews/bose-quietcomfort-headphones",
+          "source_text": "Audio Resolution SBC, AAC"
+        }
+      },
+      "why_chosen": "Mid-price Bose known for comfort and a compact folding case; a budget flight option. Note: a newer \"QuietComfort (2nd Gen)\" appeared at UK retailers in Sep 2026 (Currys £299.95, John Lewis £299.95) with almost no reviews yet, so this dataset uses the widely reviewed 2023 model."
+    },
+    {
+      "id": "sonos-ace",
+      "brand": "Sonos",
+      "model": "Ace",
+      "released": "2024-06",
+      "typical_uk_rrp": {
+        "launch_rrp_gbp": 449.0,
+        "source": "https://www.trustedreviews.com/reviews/sonos-ace",
+        "source_text": "RRP £449",
+        "current_typical_uk_price_gbp": 349.0,
+        "current_price_source": "Sonos UK store £349 (https://www.sonos.com/en-gb/shop/sonos-ace); Currys, Argos, John Lewis £349.00 on 2026-09-25"
+      },
+      "under_300_gbp_at_trusted_retailer": false,
+      "specs": {
+        "battery_hours_anc_claimed": {
+          "value": 30,
+          "source": "https://www.sonos.com/en-gb/shop/sonos-ace",
+          "source_text": "30 hours with Active Noise Cancellation enabled"
+        },
+        "weight_g": {
+          "value": 312,
+          "source": "https://www.whathifi.com/reviews/sonos-ace",
+          "source_text": "Weight 312g"
+        },
+        "anc": {
+          "value": "Yes",
+          "source": "https://www.whathifi.com/reviews/sonos-ace",
+          "source_text": "Noise-cancelling? Yes"
+        },
+        "codecs": {
+          "value": [
+            "SBC",
+            "AAC",
+            "aptX Lossless"
+          ],
+          "source": "https://www.whathifi.com/reviews/sonos-ace",
+          "source_text": "Codec Support SBC, AAC, AptX Lossless"
+        }
+      },
+      "why_chosen": "Popular premium alternative praised for flight comfort (T3 14-hour flight test). Note: successor \"Sonos Ace Ultra\" launched Sep 2026 at £399 (too new for reviews)."
+    }
+  ],
+  "excluded": [
+    {
+      "model": "Apple AirPods Max 2",
+      "reason": "£499 in the UK (Expert Reviews, 22 Sep 2026), above the £150–£400 range"
+    },
+    {
+      "model": "Sonos Ace Ultra",
+      "reason": "Launched Sep 2026 (£399); no customer reviews on Currys yet"
+    },
+    {
+      "model": "Sennheiser Momentum 5 Wireless",
+      "reason": "New (Currys £329.99, only 1 customer review); Momentum 4 has far more reviews"
+    }
+  ]
+}

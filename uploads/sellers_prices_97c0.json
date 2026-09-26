@@ -1,0 +1,1503 @@
+{
+  "collected_at": "2026-09-25",
+  "currency": "GBP",
+  "notes": [
+    "Prices are as displayed on 2026-09-25 (evening, UK time); UK retail prices change often, so re-check before the demo.",
+    "seller_tier is our demo label: \"trusted\" = major UK retailer or manufacturer store; \"less_trusted\" = grey-import, marketplace or little-known shop. It is based on the listed trust_signals, not on a verified audit.",
+    "Trustpilot pages could not be fetched (403/verification wall), so Trustpilot scores are null. Where available, Feefo or idealo shop ratings are given instead, with their sample sizes.",
+    "Amazon, eBay, OnBuy and Sony UK prices come from idealo.co.uk offer rows because those sites blocked direct fetches."
+  ],
+  "offers": [
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "Currys",
+      "seller_tier": "trusted",
+      "url": "https://www.currys.co.uk/products/sony-wh1000xm6-wireless-bluetooth-noisecancelling-headphones-black-10282441.html",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.currys.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "Feefo (public API, service reviews)",
+            "score": 4.5,
+            "scale": 5,
+            "review_count": 88335,
+            "verified_count": 88335,
+            "url": "https://www.feefo.com/en-GB/reviews/currys"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Change-of-mind returns within 30 days of purchase or delivery, even if opened for inspection (item must be like new for a full refund)",
+          "url": "https://www.currys.co.uk/services/shopping-with-us/returns-refunds.html",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "John Lewis",
+      "seller_tier": "trusted",
+      "url": "https://www.johnlewis.com/sony-wh-1000xm6-noise-cancelling-wireless-bluetooth-high-resolution-audio-over-ear-headphones-with-mic-remote/sand-pink/p113671309",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "note": "Search card shows £349.00–£349.99 depending on colour",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.johnlewis.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Returns within 30 days of receipt, unused with proof of purchase (per John Lewis customer-services pages, via search index)",
+          "url": "https://www.johnlewis.com/customer-services/returns/how-to-return-your-item",
+          "verified": false,
+          "note": "johnlewis.com policy page timed out for our fetcher"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "Argos",
+      "seller_tier": "trusted",
+      "url": "https://www.argos.co.uk/product/7616497",
+      "price_gbp": 349.99,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.argos.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "30-day change-of-mind returns (unused, resaleable, original packaging)",
+          "url": "https://help.argos.co.uk/help/terms-and-conditions",
+          "verified": false,
+          "note": "Argos help pages returned 403 to our fetcher; summary taken from search-index result for the Argos help centre"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "Amazon UK (sold by Amazon)",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Amazon itself blocked automated access; price as listed on idealo for shop \"amazon.co.uk\"",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.amazon.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run (amazon.co.uk blocked automated access)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Listed on idealo as shop \"amazon.co.uk\" (Amazon retail), distinct from \"Amazon-marketplace.co.uk\" third-party offers"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "Sony UK Store",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Not verified (sony.co.uk store pages returned 403)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Manufacturer’s own UK store"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "Techinthebasket",
+      "seller_tier": "less_trusted",
+      "url": "https://www.techinthebasket.com/sony-wh-1000xm6-black.html",
+      "price_gbp": 244.99,
+      "condition": "new, possible international model (grey import)",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25) + idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Silver £241.99 at https://www.techinthebasket.com/sony-wh-1000xm6-silver.html",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/techinthebasket.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually. Search-engine result titles showed \"Techinthebasket.com Reviews 3,612\" (ie.trustpilot.com) and \"Reviews 3,868\" (au.trustpilot.com); score not visible."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating (shown in idealo offer row)",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 42,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "30-day return window, but opened items carry a 10%–30% restocking fee and used items a fixed 20% restocking fee; seller recommends recording an unboxing video; return address in Manchester",
+          "url": "https://www.techinthebasket.com/returns",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "no",
+          "basis": "Seller offers its own \"up to 6-month\" warranty (6 Months Seller's Warranty on the product page; extra 12 months sold as paid add-on), not a UK manufacturer warranty",
+          "url": "https://www.techinthebasket.com/warranty"
+        },
+        "other_signals": [
+          "FAQ: \"We source our products globally, which means you may receive an international model.\" (grey/parallel import) https://www.techinthebasket.com/faq",
+          "FAQ: ships delivery-duty-paid from a Manchester warehouse; items \"supplied with a UK-compliant generic adapter where applicable\"",
+          "Site footer: \"Copyright by LKC NAVIGATOR GLOBAL S.R.L.\" (non-UK company form)",
+          "Product page shows \"Be the first to review this product\" (no on-site reviews)",
+          "A Resolver UK complaints page for the company appeared in search results (not opened): https://www.resolver.co.uk/companies/tech-in-the-basket-complaints",
+          "idealo delivery estimate Sat 03 Oct–Thu 08 Oct 2026 (vs 1–3 days at UK majors)"
+        ]
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "OnBuy (marketplace)",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+      "price_gbp": 286.99,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/onbuy.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 5,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Not verified (onbuy.com returned 403); third-party marketplace, terms depend on the individual seller",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Marketplace listing; underlying seller not shown on idealo"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm6",
+      "seller": "a1techdeals.com",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html",
+      "price_gbp": 290.99,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Midnight Blue listed at £275.49",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Unknown web shop; no idealo shop rating shown"
+        },
+        "other_signals": [
+          "No idealo shop rating displayed"
+        ]
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "Currys",
+      "seller_tier": "trusted",
+      "url": "https://www.currys.co.uk/products/sony-wh1000xm5-wireless-bluetooth-noisecancelling-headphones-black-10238756.html",
+      "price_gbp": 229.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.currys.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "Feefo (public API, service reviews)",
+            "score": 4.5,
+            "scale": 5,
+            "review_count": 88335,
+            "verified_count": 88335,
+            "url": "https://www.feefo.com/en-GB/reviews/currys"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Change-of-mind returns within 30 days of purchase or delivery, even if opened for inspection (item must be like new for a full refund)",
+          "url": "https://www.currys.co.uk/services/shopping-with-us/returns-refunds.html",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "Argos",
+      "seller_tier": "trusted",
+      "url": "https://www.argos.co.uk/product/2847319",
+      "price_gbp": 229.99,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.argos.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "30-day change-of-mind returns (unused, resaleable, original packaging)",
+          "url": "https://help.argos.co.uk/help/terms-and-conditions",
+          "verified": false,
+          "note": "Argos help pages returned 403 to our fetcher; summary taken from search-index result for the Argos help centre"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "John Lewis",
+      "seller_tier": "trusted",
+      "url": "https://www.johnlewis.com/sony-wh-1000xm5-noise-cancelling-wireless-bluetooth-high-resolution-audio-over-ear-headphones-with-mic-remote/black/p6229813",
+      "price_gbp": 219.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "note": "Search card shows £219.00–£229.99 depending on colour",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.johnlewis.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Returns within 30 days of receipt, unused with proof of purchase (per John Lewis customer-services pages, via search index)",
+          "url": "https://www.johnlewis.com/customer-services/returns/how-to-return-your-item",
+          "verified": false,
+          "note": "johnlewis.com policy page timed out for our fetcher"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "Amazon UK (sold by Amazon)",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+      "price_gbp": 229.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black with hard case £229.00; \"WH-1000XM5SA Special Edition Soft Case\" listed at £199.99",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.amazon.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run (amazon.co.uk blocked automated access)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Listed on idealo as shop \"amazon.co.uk\" (Amazon retail), distinct from \"Amazon-marketplace.co.uk\" third-party offers"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "Sony UK Store",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+      "price_gbp": 229.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Soft-case WH-1000XM5SA variant listed at £199.00",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Not verified (sony.co.uk store pages returned 403)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Manufacturer’s own UK store"
+        }
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "Techinthebasket",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+      "price_gbp": 169.99,
+      "condition": "new, possible international model (grey import)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/techinthebasket.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually. Search-engine result titles showed \"Techinthebasket.com Reviews 3,612\" (ie.trustpilot.com) and \"Reviews 3,868\" (au.trustpilot.com); score not visible."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating (shown in idealo offer row)",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 42,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "30-day return window, but opened items carry a 10%–30% restocking fee and used items a fixed 20% restocking fee; seller recommends recording an unboxing video; return address in Manchester",
+          "url": "https://www.techinthebasket.com/returns",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "no",
+          "basis": "Seller offers its own \"up to 6-month\" warranty (6 Months Seller's Warranty on the product page; extra 12 months sold as paid add-on), not a UK manufacturer warranty",
+          "url": "https://www.techinthebasket.com/warranty"
+        },
+        "other_signals": [
+          "FAQ: \"We source our products globally, which means you may receive an international model.\" (grey/parallel import) https://www.techinthebasket.com/faq",
+          "FAQ: ships delivery-duty-paid from a Manchester warehouse; items \"supplied with a UK-compliant generic adapter where applicable\"",
+          "Site footer: \"Copyright by LKC NAVIGATOR GLOBAL S.R.L.\" (non-UK company form)",
+          "Product page shows \"Be the first to review this product\" (no on-site reviews)",
+          "A Resolver UK complaints page for the company appeared in search results (not opened): https://www.resolver.co.uk/companies/tech-in-the-basket-complaints",
+          "idealo delivery estimate Sat 03 Oct–Thu 08 Oct 2026 (vs 1–3 days at UK majors)"
+        ]
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "a1techdeals.com",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+      "price_gbp": 173.49,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Unknown web shop; no idealo shop rating shown"
+        },
+        "other_signals": [
+          "No idealo shop rating displayed"
+        ]
+      }
+    },
+    {
+      "product_id": "sony-wh1000xm5",
+      "seller": "eBay (seller not identified)",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/201952086/sony-wh-1000xm5-black.html",
+      "price_gbp": 174.99,
+      "condition": "new (as listed; listing title \"WH-1000XM5SA\")",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Depends on individual eBay seller; not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "eBay listing surfaced via idealo; seller identity not shown"
+        }
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "Currys",
+      "seller_tier": "trusted",
+      "url": "https://www.currys.co.uk/products/bose-quietcomfort-ultra-2nd-gen-wireless-bluetooth-noisecancelling-headphones-black-10290064.html",
+      "price_gbp": 399.97,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.currys.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "Feefo (public API, service reviews)",
+            "score": 4.5,
+            "scale": 5,
+            "review_count": 88335,
+            "verified_count": 88335,
+            "url": "https://www.feefo.com/en-GB/reviews/currys"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Change-of-mind returns within 30 days of purchase or delivery, even if opened for inspection (item must be like new for a full refund)",
+          "url": "https://www.currys.co.uk/services/shopping-with-us/returns-refunds.html",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "Argos",
+      "seller_tier": "trusted",
+      "url": "https://www.argos.co.uk/product/7271959",
+      "price_gbp": 399.95,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.argos.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "30-day change-of-mind returns (unused, resaleable, original packaging)",
+          "url": "https://help.argos.co.uk/help/terms-and-conditions",
+          "verified": false,
+          "note": "Argos help pages returned 403 to our fetcher; summary taken from search-index result for the Argos help centre"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "John Lewis",
+      "seller_tier": "trusted",
+      "url": "https://www.johnlewis.com/bose-quietcomfort-ultra-2nd-gen-noise-cancelling-over-ear-wireless-bluetooth-headphones-with-mic-remote/black/p114209626",
+      "price_gbp": 332.95,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "note": "Search card shows £332.95–£399.00 depending on colour",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.johnlewis.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Returns within 30 days of receipt, unused with proof of purchase (per John Lewis customer-services pages, via search index)",
+          "url": "https://www.johnlewis.com/customer-services/returns/how-to-return-your-item",
+          "verified": false,
+          "note": "johnlewis.com policy page timed out for our fetcher"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "Amazon UK (sold by Amazon)",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+      "price_gbp": 320.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.amazon.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run (amazon.co.uk blocked automated access)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Listed on idealo as shop \"amazon.co.uk\" (Amazon retail), distinct from \"Amazon-marketplace.co.uk\" third-party offers"
+        }
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "Techinthebasket",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+      "price_gbp": 231.99,
+      "condition": "new, possible international model (grey import)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "White Smoke £231.99; Driftwood Sand £244.99 (no black listed)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/techinthebasket.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually. Search-engine result titles showed \"Techinthebasket.com Reviews 3,612\" (ie.trustpilot.com) and \"Reviews 3,868\" (au.trustpilot.com); score not visible."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating (shown in idealo offer row)",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 42,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "30-day return window, but opened items carry a 10%–30% restocking fee and used items a fixed 20% restocking fee; seller recommends recording an unboxing video; return address in Manchester",
+          "url": "https://www.techinthebasket.com/returns",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "no",
+          "basis": "Seller offers its own \"up to 6-month\" warranty (6 Months Seller's Warranty on the product page; extra 12 months sold as paid add-on), not a UK manufacturer warranty",
+          "url": "https://www.techinthebasket.com/warranty"
+        },
+        "other_signals": [
+          "FAQ: \"We source our products globally, which means you may receive an international model.\" (grey/parallel import) https://www.techinthebasket.com/faq",
+          "FAQ: ships delivery-duty-paid from a Manchester warehouse; items \"supplied with a UK-compliant generic adapter where applicable\"",
+          "Site footer: \"Copyright by LKC NAVIGATOR GLOBAL S.R.L.\" (non-UK company form)",
+          "Product page shows \"Be the first to review this product\" (no on-site reviews)",
+          "A Resolver UK complaints page for the company appeared in search results (not opened): https://www.resolver.co.uk/companies/tech-in-the-basket-complaints",
+          "idealo delivery estimate Sat 03 Oct–Thu 08 Oct 2026 (vs 1–3 days at UK majors)"
+        ]
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "OnBuy (marketplace)",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+      "price_gbp": 274.99,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black; Midnight Violet £258.99",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/onbuy.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 5,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Not verified (onbuy.com returned 403); third-party marketplace, terms depend on the individual seller",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Marketplace listing; underlying seller not shown on idealo"
+        }
+      }
+    },
+    {
+      "product_id": "bose-qc-ultra-2",
+      "seller": "Joybuy UK",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/207829082/bose-quietcomfort-ultra-headphones-2nd-gen.html",
+      "price_gbp": 320.0,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": null,
+        "other_ratings": [
+          {
+            "source": "idealo shop rating",
+            "score": 4.0,
+            "scale": 5,
+            "review_count": 4,
+            "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Newer UK web shop; not verified"
+        }
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "Currys",
+      "seller_tier": "trusted",
+      "url": "https://www.currys.co.uk/products/sennheiser-momentum-4-wireless-bluetooth-noisecancelling-headphones-black-10242526.html",
+      "price_gbp": 248.97,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.currys.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "Feefo (public API, service reviews)",
+            "score": 4.5,
+            "scale": 5,
+            "review_count": 88335,
+            "verified_count": 88335,
+            "url": "https://www.feefo.com/en-GB/reviews/currys"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Change-of-mind returns within 30 days of purchase or delivery, even if opened for inspection (item must be like new for a full refund)",
+          "url": "https://www.currys.co.uk/services/shopping-with-us/returns-refunds.html",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "Argos",
+      "seller_tier": "trusted",
+      "url": "https://www.argos.co.uk/product/1488566",
+      "price_gbp": 179.99,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.argos.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "30-day change-of-mind returns (unused, resaleable, original packaging)",
+          "url": "https://help.argos.co.uk/help/terms-and-conditions",
+          "verified": false,
+          "note": "Argos help pages returned 403 to our fetcher; summary taken from search-index result for the Argos help centre"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "John Lewis",
+      "seller_tier": "trusted",
+      "url": "https://www.johnlewis.com/sennheiser-momentum-4-wireless-noise-cancelling-bluetooth-over-ear-headphones-with-mic-remote/black/p109312626",
+      "price_gbp": 179.99,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "note": "Search card shows £179.99–£199.00 depending on colour",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.johnlewis.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Returns within 30 days of receipt, unused with proof of purchase (per John Lewis customer-services pages, via search index)",
+          "url": "https://www.johnlewis.com/customer-services/returns/how-to-return-your-item",
+          "verified": false,
+          "note": "johnlewis.com policy page timed out for our fetcher"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "Amazon UK (sold by Amazon)",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+      "price_gbp": 179.99,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.amazon.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run (amazon.co.uk blocked automated access)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Listed on idealo as shop \"amazon.co.uk\" (Amazon retail), distinct from \"Amazon-marketplace.co.uk\" third-party offers"
+        }
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "Richer Sounds",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+      "price_gbp": 199.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "White",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.richersounds.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "UK specialist hi-fi retailer"
+        }
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "Techinthebasket",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+      "price_gbp": 144.99,
+      "condition": "new, possible international model (grey import)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black; White £138.99",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/techinthebasket.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually. Search-engine result titles showed \"Techinthebasket.com Reviews 3,612\" (ie.trustpilot.com) and \"Reviews 3,868\" (au.trustpilot.com); score not visible."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating (shown in idealo offer row)",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 42,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "30-day return window, but opened items carry a 10%–30% restocking fee and used items a fixed 20% restocking fee; seller recommends recording an unboxing video; return address in Manchester",
+          "url": "https://www.techinthebasket.com/returns",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "no",
+          "basis": "Seller offers its own \"up to 6-month\" warranty (6 Months Seller's Warranty on the product page; extra 12 months sold as paid add-on), not a UK manufacturer warranty",
+          "url": "https://www.techinthebasket.com/warranty"
+        },
+        "other_signals": [
+          "FAQ: \"We source our products globally, which means you may receive an international model.\" (grey/parallel import) https://www.techinthebasket.com/faq",
+          "FAQ: ships delivery-duty-paid from a Manchester warehouse; items \"supplied with a UK-compliant generic adapter where applicable\"",
+          "Site footer: \"Copyright by LKC NAVIGATOR GLOBAL S.R.L.\" (non-UK company form)",
+          "Product page shows \"Be the first to review this product\" (no on-site reviews)",
+          "A Resolver UK complaints page for the company appeared in search results (not opened): https://www.resolver.co.uk/companies/tech-in-the-basket-complaints",
+          "idealo delivery estimate Sat 03 Oct–Thu 08 Oct 2026 (vs 1–3 days at UK majors)"
+        ]
+      }
+    },
+    {
+      "product_id": "sennheiser-momentum-4",
+      "seller": "OnBuy (marketplace)",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/202057928/sennheiser-momentum-4-wireless-black.html",
+      "price_gbp": 159.99,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Denim colour",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/onbuy.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 5,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Not verified (onbuy.com returned 403); third-party marketplace, terms depend on the individual seller",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Marketplace listing; underlying seller not shown on idealo"
+        }
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "Currys",
+      "seller_tier": "trusted",
+      "url": "https://www.currys.co.uk/products/bose-quietcomfort-wireless-bluetooth-noisecancelling-headphones-black-10254902.html",
+      "price_gbp": 229.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.currys.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "Feefo (public API, service reviews)",
+            "score": 4.5,
+            "scale": 5,
+            "review_count": 88335,
+            "verified_count": 88335,
+            "url": "https://www.feefo.com/en-GB/reviews/currys"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Change-of-mind returns within 30 days of purchase or delivery, even if opened for inspection (item must be like new for a full refund)",
+          "url": "https://www.currys.co.uk/services/shopping-with-us/returns-refunds.html",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "Argos",
+      "seller_tier": "trusted",
+      "url": "https://www.argos.co.uk/product/3244708",
+      "price_gbp": 229.95,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.argos.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "30-day change-of-mind returns (unused, resaleable, original packaging)",
+          "url": "https://help.argos.co.uk/help/terms-and-conditions",
+          "verified": false,
+          "note": "Argos help pages returned 403 to our fetcher; summary taken from search-index result for the Argos help centre"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "John Lewis",
+      "seller_tier": "trusted",
+      "url": "https://www.johnlewis.com/bose-quietcomfort-noise-cancelling-over-ear-wireless-bluetooth-headphones-with-mic-remote/triple-black/p110950051",
+      "price_gbp": 196.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "note": "Search card shows £196.00–£229.95 depending on colour",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.johnlewis.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Returns within 30 days of receipt, unused with proof of purchase (per John Lewis customer-services pages, via search index)",
+          "url": "https://www.johnlewis.com/customer-services/returns/how-to-return-your-item",
+          "verified": false,
+          "note": "johnlewis.com policy page timed out for our fetcher"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "Amazon UK (sold by Amazon)",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+      "price_gbp": 196.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.amazon.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run (amazon.co.uk blocked automated access)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Listed on idealo as shop \"amazon.co.uk\" (Amazon retail), distinct from \"Amazon-marketplace.co.uk\" third-party offers"
+        }
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "Techinthebasket",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+      "price_gbp": 150.99,
+      "condition": "new, possible international model (grey import)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black; White £149.99",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/techinthebasket.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually. Search-engine result titles showed \"Techinthebasket.com Reviews 3,612\" (ie.trustpilot.com) and \"Reviews 3,868\" (au.trustpilot.com); score not visible."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating (shown in idealo offer row)",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 42,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "30-day return window, but opened items carry a 10%–30% restocking fee and used items a fixed 20% restocking fee; seller recommends recording an unboxing video; return address in Manchester",
+          "url": "https://www.techinthebasket.com/returns",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "no",
+          "basis": "Seller offers its own \"up to 6-month\" warranty (6 Months Seller's Warranty on the product page; extra 12 months sold as paid add-on), not a UK manufacturer warranty",
+          "url": "https://www.techinthebasket.com/warranty"
+        },
+        "other_signals": [
+          "FAQ: \"We source our products globally, which means you may receive an international model.\" (grey/parallel import) https://www.techinthebasket.com/faq",
+          "FAQ: ships delivery-duty-paid from a Manchester warehouse; items \"supplied with a UK-compliant generic adapter where applicable\"",
+          "Site footer: \"Copyright by LKC NAVIGATOR GLOBAL S.R.L.\" (non-UK company form)",
+          "Product page shows \"Be the first to review this product\" (no on-site reviews)",
+          "A Resolver UK complaints page for the company appeared in search results (not opened): https://www.resolver.co.uk/companies/tech-in-the-basket-complaints",
+          "idealo delivery estimate Sat 03 Oct–Thu 08 Oct 2026 (vs 1–3 days at UK majors)"
+        ]
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "OnBuy (marketplace)",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+      "price_gbp": 157.99,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/onbuy.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "idealo shop rating",
+            "score": 4.2,
+            "scale": 5,
+            "review_count": 5,
+            "url": "https://www.idealo.co.uk/compare/206509478/sony-wh-1000xm6-goji-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Not verified (onbuy.com returned 403); third-party marketplace, terms depend on the individual seller",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Marketplace listing; underlying seller not shown on idealo"
+        }
+      }
+    },
+    {
+      "product_id": "bose-quietcomfort",
+      "seller": "Joybuy UK",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html",
+      "price_gbp": 196.0,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black",
+      "trust_signals": {
+        "trustpilot": null,
+        "other_ratings": [
+          {
+            "source": "idealo shop rating",
+            "score": 4.0,
+            "scale": 5,
+            "review_count": 4,
+            "url": "https://www.idealo.co.uk/compare/203505484/bose-quietcomfort-headphones-black.html"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Newer UK web shop; not verified"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "Currys",
+      "seller_tier": "trusted",
+      "url": "https://www.currys.co.uk/products/sonos-ace-wireless-bluetooth-noisecancelling-headphones-black-10263722.html",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.currys.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "other_ratings": [
+          {
+            "source": "Feefo (public API, service reviews)",
+            "score": 4.5,
+            "scale": 5,
+            "review_count": 88335,
+            "verified_count": 88335,
+            "url": "https://www.feefo.com/en-GB/reviews/currys"
+          }
+        ],
+        "returns_policy": {
+          "summary": "Change-of-mind returns within 30 days of purchase or delivery, even if opened for inspection (item must be like new for a full refund)",
+          "url": "https://www.currys.co.uk/services/shopping-with-us/returns-refunds.html",
+          "verified": true
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "Argos",
+      "seller_tier": "trusted",
+      "url": "https://www.argos.co.uk/product/4886323",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.argos.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "30-day change-of-mind returns (unused, resaleable, original packaging)",
+          "url": "https://help.argos.co.uk/help/terms-and-conditions",
+          "verified": false,
+          "note": "Argos help pages returned 403 to our fetcher; summary taken from search-index result for the Argos help centre"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "John Lewis",
+      "seller_tier": "trusted",
+      "url": "https://www.johnlewis.com/sonos-ace-wireless-bluetooth-over-ear-headphones-with-active-noise-cancelling-mic-remote/black/p112069471",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.johnlewis.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Returns within 30 days of receipt, unused with proof of purchase (per John Lewis customer-services pages, via search index)",
+          "url": "https://www.johnlewis.com/customer-services/returns/how-to-return-your-item",
+          "verified": false,
+          "note": "johnlewis.com policy page timed out for our fetcher"
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Major UK retailer selling UK-market stock; manufacturer warranty applies"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "Sonos UK Store",
+      "seller_tier": "trusted",
+      "url": "https://www.sonos.com/en-gb/shop/sonos-ace",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "direct fetch of seller page (2026-09-25)",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Not verified in this run",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Manufacturer’s own UK store"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "Amazon UK (sold by Amazon)",
+      "seller_tier": "trusted",
+      "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+      "price_gbp": 349.0,
+      "condition": "new",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.amazon.co.uk",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified in this run (amazon.co.uk blocked automated access)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "yes",
+          "basis": "Listed on idealo as shop \"amazon.co.uk\" (Amazon retail), distinct from \"Amazon-marketplace.co.uk\" third-party offers"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "Dressinn",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+      "price_gbp": 276.49,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "trust_signals": {
+        "trustpilot": {
+          "url": "https://uk.trustpilot.com/review/www.dressinn.com",
+          "score": null,
+          "review_count": null,
+          "note": "Trustpilot blocked automated access (HTTP 403 / browser verification) on 2026-09-25, so score and count were NOT captured. Check manually."
+        },
+        "returns_policy": {
+          "summary": "Not verified (dressinn.com returned 403)",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Listed on idealo as \"Dressinn.com (UK)\", a general fashion/sports web shop; idealo delivery estimate up to 9 Oct 2026"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "Stuart Westmoreland",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+      "price_gbp": 339.0,
+      "condition": "new (as listed)",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Black £339.00; White £299.00",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "Lesser-known web shop listed on idealo; not verified"
+        }
+      }
+    },
+    {
+      "product_id": "sonos-ace",
+      "seller": "eBay (seller not identified)",
+      "seller_tier": "less_trusted",
+      "url": "https://www.idealo.co.uk/compare/204376815/sonos-ace-black.html",
+      "price_gbp": 422.72,
+      "condition": "as listed",
+      "date_checked": "2026-09-25",
+      "price_source": "idealo.co.uk offer list (checked 2026-09-25)",
+      "note": "Example of a marketplace listing ABOVE retail price",
+      "trust_signals": {
+        "trustpilot": null,
+        "returns_policy": {
+          "summary": "Depends on individual eBay seller; not verified",
+          "url": null,
+          "verified": false
+        },
+        "uk_warranty": {
+          "value": "unknown",
+          "basis": "eBay listing surfaced via idealo; seller identity not shown"
+        }
+      }
+    }
+  ],
+  "arbitrage_pairs": [
+    {
+      "rank": 1,
+      "product_id": "sony-wh1000xm6",
+      "recommended_for_demo": true,
+      "cheaper_less_trusted": {
+        "seller": "Techinthebasket",
+        "price_gbp": 244.99,
+        "url": "https://www.techinthebasket.com/sony-wh-1000xm6-black.html"
+      },
+      "trusted_pricier": {
+        "seller": "Currys",
+        "price_gbp": 349.0,
+        "url": "https://www.currys.co.uk/products/sony-wh1000xm6-wireless-bluetooth-noisecancelling-headphones-black-10282441.html",
+        "alternatives_same_price": [
+          "John Lewis £349.00",
+          "Amazon UK £349.00",
+          "Sony UK £349.00",
+          "Argos £349.99"
+        ]
+      },
+      "gap_gbp": 104.01,
+      "why": "Top-rated flight headphone; only under the £300 budget via a grey-import seller with a 6-month seller-only warranty, restocking fees and 1–2 week delivery. Agent asks Currys/John Lewis to price-match (or get as close as possible to ≤£300)."
+    },
+    {
+      "rank": 2,
+      "product_id": "bose-qc-ultra-2",
+      "cheaper_less_trusted": {
+        "seller": "Techinthebasket",
+        "price_gbp": 231.99,
+        "colour": "White Smoke"
+      },
+      "trusted_pricier": {
+        "seller": "Amazon UK (sold by Amazon)",
+        "price_gbp": 320.0,
+        "alternatives": [
+          "John Lewis from £332.95",
+          "Currys £399.97",
+          "Argos £399.95"
+        ]
+      },
+      "gap_gbp": 88.01
+    },
+    {
+      "rank": 3,
+      "product_id": "sony-wh1000xm5",
+      "cheaper_less_trusted": {
+        "seller": "Techinthebasket",
+        "price_gbp": 169.99
+      },
+      "trusted_pricier": {
+        "seller": "Currys",
+        "price_gbp": 229.0,
+        "alternatives": [
+          "Sony UK £229.00",
+          "Amazon UK £229.00 (soft-case SA edition £199.99)",
+          "John Lewis from £219.00"
+        ]
+      },
+      "gap_gbp": 59.01
+    },
+    {
+      "rank": 4,
+      "product_id": "sonos-ace",
+      "cheaper_less_trusted": {
+        "seller": "Dressinn",
+        "price_gbp": 276.49
+      },
+      "trusted_pricier": {
+        "seller": "John Lewis",
+        "price_gbp": 349.0,
+        "alternatives": [
+          "Currys",
+          "Argos",
+          "Sonos UK",
+          "Amazon UK all £349.00"
+        ]
+      },
+      "gap_gbp": 72.51
+    }
+  ]
+}
