@@ -205,7 +205,7 @@ export default function ComparisonClient({
                                     ? 'bg-amber-500'
                                     : 'bg-slate-400'
                                 }`}
-                                style={{ width: `${Math.max(percent, 2)}%` }}
+                                style={{ width: `${Math.max(percent ?? 0, 2)}%` }}
                               />
                             </div>
                           </button>
