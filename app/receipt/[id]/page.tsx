@@ -1,5 +1,5 @@
 import ReceiptView from './receipt-view';
-import { confirmStripePayment } from '@/lib/payments';
+import { loadReceipt } from '@/lib/receipt';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +12,6 @@ export default async function ReceiptPage({
 }) {
   const { id } = await params;
   const { session_id: sessionId } = await searchParams;
-  const payment = await confirmStripePayment(id, sessionId);
-  return <ReceiptView id={id} payment={payment} />;
+  const receipt = await loadReceipt(id, sessionId);
+  return <ReceiptView receipt={receipt} />;
 }

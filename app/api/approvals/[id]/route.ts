@@ -1,7 +1,23 @@
 import { NextRequest } from 'next/server';
-import { getApproval, updateApproval } from '@/lib/deals';
+import { chargeableUnitPrice, groupPricePhrase } from '@/lib/charge';
+import { getApproval, getApprovalsByDealId, getDeal, updateApproval, updateDeal } from '@/lib/deals';
+import type { Approval } from '@/lib/deals';
 import { jsonNoStore } from '@/lib/http';
 import { publicBaseUrl } from '@/lib/public-url';
+
+async function approvalQuote(approval: Approval): Promise<{ price: number; groupSize: number }> {
+  const members = await getApprovalsByDealId(approval.deal_id);
+  const groupSize = Math.max(1, members.length);
+  const deal = await getDeal(approval.deal_id);
+  const live = chargeableUnitPrice(
+    groupSize,
+    deal?.chat_log,
+    deal ? Number(deal.matched_price) : Number(approval.price)
+  );
+  const stored = Number(approval.price);
+  const price = approval.status === 'pending' || !Number.isFinite(stored) ? live : stored;
+  return { price, groupSize };
+}
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
@@ -19,7 +35,12 @@ export async function GET(
       return jsonNoStore({ error: 'Approval not found' }, 404);
     }
 
-    return jsonNoStore(approval);
+    const quote = await approvalQuote(approval);
+    return jsonNoStore({
+      ...approval,
+      price: quote.price,
+      group_size: quote.groupSize,
+    });
   } catch (error) {
     console.error('Get approval error:', error);
     return jsonNoStore({ error: 'Failed to fetch approval' }, 500);
@@ -33,14 +54,26 @@ export async function POST(
   try {
     const { id } = await params;
     const { approved } = await request.json();
-    
+    const approval = await getApproval(id);
+    if (!approval) {
+      return jsonNoStore({ error: 'Approval not found' }, 404);
+    }
+
+    const quote = await approvalQuote(approval);
+    const unitPrice = approved ? quote.price : Number(approval.price);
+
     await updateApproval(id, {
       status: approved ? 'approved' : 'declined',
       approved_at: new Date().toISOString(),
+      ...(approved ? { price: unitPrice } : {}),
     });
 
     if (approved) {
-      // Check if Stripe is configured
+      const deal = await getDeal(approval.deal_id);
+      if (deal && Number(deal.matched_price) !== unitPrice) {
+        await updateDeal(approval.deal_id, { matched_price: unitPrice });
+      }
+
       const stripeKey = process.env.STRIPE_SECRET_KEY;
       const baseUrl = publicBaseUrl(request);
 
@@ -49,14 +82,8 @@ export async function POST(
       }
 
       if (stripeKey && stripeKey.startsWith('sk_test_')) {
-        // Create Stripe checkout session
         const stripe = require('stripe')(stripeKey);
-        const approval = await getApproval(id);
-        
-        if (!approval) {
-          throw new Error('Approval not found');
-        }
-
+        const phrase = groupPricePhrase(unitPrice, quote.groupSize);
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ['card'],
           line_items: [
@@ -65,9 +92,9 @@ export async function POST(
                 currency: 'gbp',
                 product_data: {
                   name: approval.product_name,
-                  description: `From ${approval.seller}`,
+                  description: `${phrase}. From ${approval.seller}`,
                 },
-                unit_amount: Math.round(approval.price * 100),
+                unit_amount: Math.round(unitPrice * 100),
               },
               quantity: 1,
             },
@@ -82,6 +109,7 @@ export async function POST(
           cancel_url: `${baseUrl}/approve/${id}`,
           metadata: {
             approval_id: id,
+            group_size: String(quote.groupSize),
           },
         });
 

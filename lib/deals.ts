@@ -52,9 +52,14 @@ export function createShortCode(length = 4): string {
   return Array.from(bytes, (byte) => SHORT_CODE_ALPHABET[byte % SHORT_CODE_ALPHABET.length]).join('');
 }
 
-// In-memory store (fallback when Supabase is not configured)
-const inMemoryDeals: Map<string, Deal> = new Map();
-const inMemoryApprovals: Map<string, Approval> = new Map();
+// In-memory fallback when Supabase is not configured.
+// Route handlers and server components can load this module twice; keep one store.
+const memory = globalThis as typeof globalThis & {
+  __honestCartDeals?: Map<string, Deal>;
+  __honestCartApprovals?: Map<string, Approval>;
+};
+const inMemoryDeals = (memory.__honestCartDeals ??= new Map<string, Deal>());
+const inMemoryApprovals = (memory.__honestCartApprovals ??= new Map<string, Approval>());
 
 function throwIfError(
   action: string,
@@ -211,8 +216,16 @@ export async function getApprovalsByDealId(dealId: string): Promise<Approval[]> 
   return Array.from(inMemoryApprovals.values()).filter(a => a.deal_id === dealId);
 }
 
-/** Write the current group price onto every approval for this deal, including the real user. */
+/**
+ * Write the current group price onto approvals that have not been accepted yet.
+ * A human approval keeps the price captured when they approved. Bots follow the ladder.
+ */
 export async function setDealApprovalPrices(dealId: string, price: number): Promise<void> {
   const approvals = await getApprovalsByDealId(dealId);
-  await Promise.all(approvals.map((approval) => updateApproval(approval.id, { price })));
+  const open = approvals.filter((approval) => {
+    if (approval.stripe_payment_status === 'paid') return false;
+    if (!approval.is_bot && approval.status === 'approved') return false;
+    return true;
+  });
+  await Promise.all(open.map((approval) => updateApproval(approval.id, { price })));
 }

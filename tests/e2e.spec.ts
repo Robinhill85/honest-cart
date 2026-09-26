@@ -194,7 +194,8 @@ test.describe('Honest Cart - Happy Path E2E', () => {
 
       await mobilePage.goto(approvalUrl!);
       await mobilePage.waitForLoadState('networkidle');
-      await expect(mobilePage.getByText('£249.99')).toBeVisible();
+      await expect(mobilePage.getByText('£249.99', { exact: true })).toBeVisible();
+      await expect(mobilePage.getByText('£249.99 each, group of 5, your unit')).toBeVisible();
       await mobilePage.screenshot({ path: path.join(SCREENSHOTS_DIR, '09-approve-mobile.png'), fullPage: true });
       console.log('✓ Approval page loaded on mobile at the group price');
 
@@ -245,7 +246,15 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '13-receipt.png'), fullPage: true });
       await expect(page.locator('h1')).toContainText('Purchase Complete');
-      await expect(page.getByText('Sony WH-1000XM6 from Currys at £249.99')).toBeVisible();
+      await expect(page.getByText('Sony WH-1000XM6 from Currys at £249.99 each, group of 5, your unit')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Event log' })).toBeVisible();
+      await expect(page.getByText('Demo timeline')).toHaveCount(0);
+      await expect(page.getByText('Initiated search for noise-cancelling headphones')).toHaveCount(0);
+      await expect(page.getByText('Floor price: £279.99, max discount: 20%')).toHaveCount(0);
+      await expect(page.getByText(/Charged £249\.99, £99\.01 under the £349\.00 list price\. Group of 5, your unit\./)).toBeVisible();
+      await expect(page.getByText('Deal agreed at £279.99. Creating approval request...')).toBeVisible();
+      await expect(page.getByText('Five units, £249.99 each. Agreed.')).toBeVisible();
+      await expect(page.getByText('Approved the purchase on your phone')).toBeVisible();
       console.log('✓ Receipt page loaded');
 
       // Step 10: Seller dashboard shows the negotiated deal

@@ -14,7 +14,7 @@ export default function CheckoutPage() {
     let cancelled = false;
     const started = Date.now();
 
-    fetch(`/api/approvals/${approvalId}`)
+    fetch(`/api/approvals/${approvalId}`, { cache: 'no-store' })
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (cancelled || !data) return;

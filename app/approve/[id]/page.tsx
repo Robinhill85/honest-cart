@@ -18,7 +18,7 @@ export default function ApprovePage() {
 
     const fetchApproval = async () => {
       try {
-        const response = await fetch(`/api/approvals/${approvalId}`);
+        const response = await fetch(`/api/approvals/${approvalId}`, { cache: 'no-store' });
         const data = await response.json();
         if (!cancelled) setApproval(data);
       } catch (error) {
@@ -158,8 +158,13 @@ export default function ApprovePage() {
           <div>
             <span className="text-sm text-slate-500 dark:text-slate-400">Price</span>
             <p className="text-3xl font-bold text-slate-900 dark:text-slate-50">
-              £{approval.price.toFixed(2)}
+              £{Number(approval.price).toFixed(2)}
             </p>
+            {Number(approval.group_size) > 0 && (
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                £{Number(approval.price).toFixed(2)} each, group of {Number(approval.group_size)}, your unit
+              </p>
+            )}
           </div>
         </div>
 

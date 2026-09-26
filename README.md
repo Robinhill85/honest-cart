@@ -78,4 +78,4 @@ Committed under `data/`:
 - `judgments_9e10.json` — precomputed authenticity and feature judgments
 - `seller_trust_22c0.json` — precomputed seller trust scores
 
-The receipt timeline is a scripted illustration. The price in its heading is the approval stored for that purchase.
+The receipt heading and charged line use the Stripe Checkout `amount_total` when a test session is verified, and the group size captured with that session. Simulated checkout has no session, so those lines use the price stored at approval. The event log is the deal's saved messages, the approval time, and the payment time, shown in Europe/London. If none of those were stored, the log is omitted.
