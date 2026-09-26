@@ -1,6 +1,20 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { CURRYS_POLICY } from '@/lib/policy';
 
-interface DealLog {
+interface DealRow {
+  id: string;
+  product: string;
+  requested_price: number;
+  offered_price: number | null;
+  group_size: number;
+  tier: '1' | '3' | '5';
+  approval_status: 'pending' | 'approved' | 'declined' | 'none';
+  time: string;
+}
+
+interface SampleRow {
   id: string;
   time: string;
   product: string;
@@ -10,42 +24,90 @@ interface DealLog {
   reason: string;
 }
 
+const SAMPLE_DEALS: SampleRow[] = [
+  {
+    id: 'sample-1',
+    time: '14:32:56',
+    product: 'Sony WH-1000XM6',
+    requested_price: 244.99,
+    offered_price: 279.99,
+    status: 'won',
+    reason: 'Below floor but within policy range',
+  },
+  {
+    id: 'sample-2',
+    time: '13:15:22',
+    product: 'Sony WH-1000XM5',
+    requested_price: 169.99,
+    offered_price: 229.0,
+    status: 'won',
+    reason: 'Counter-offered £229. The £169.99 request was not matched.',
+  },
+  {
+    id: 'sample-3',
+    time: '12:03:41',
+    product: 'Bose QC Ultra 2',
+    requested_price: 195.00,
+    offered_price: 280.00,
+    status: 'declined',
+    reason: 'Requested price 51% below floor',
+  },
+];
+
+function formatDealTime(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}
+
+function approvalLabel(status: DealRow['approval_status']): string {
+  if (status === 'approved') return 'Approved';
+  if (status === 'declined') return 'Declined';
+  if (status === 'pending') return 'Pending';
+  return 'No approval';
+}
+
 export default function SellerDashboard() {
   const policy = {
     floor_price: CURRYS_POLICY.floor_price,
     max_discount_percent: CURRYS_POLICY.max_discount_percent,
     group_floors: CURRYS_POLICY.group_floors,
   };
+  const [deals, setDeals] = useState<DealRow[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const deals: DealLog[] = [
-    {
-      id: '1',
-      time: '14:32:56',
-      product: 'Sony WH-1000XM6',
-      requested_price: 244.99,
-      offered_price: 279.99,
-      status: 'won',
-      reason: 'Below floor but within policy range',
-    },
-    {
-      id: '2',
-      time: '13:15:22',
-      product: 'Sony WH-1000XM5',
-      requested_price: 169.99,
-      offered_price: 229.0,
-      status: 'won',
-      reason: 'Matched exactly within max discount',
-    },
-    {
-      id: '3',
-      time: '12:03:41',
-      product: 'Bose QC Ultra 2',
-      requested_price: 195.00,
-      offered_price: 280.00,
-      status: 'declined',
-      reason: 'Requested price 51% below floor',
-    },
-  ];
+  useEffect(() => {
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const response = await fetch('/api/deals');
+        if (!response.ok) throw new Error('Could not load deals');
+        const data = await response.json();
+        if (cancelled) return;
+        setDeals(Array.isArray(data.deals) ? data.deals : []);
+        setError(null);
+      } catch (err) {
+        console.error('Deal log poll failed:', err);
+        if (!cancelled) setError('Could not load the deal log.');
+      }
+    };
+
+    poll();
+    const timer = setInterval(poll, 1500);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, []);
+
+  const showingSamples = deals !== null && deals.length === 0 && !error;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
@@ -63,11 +125,10 @@ export default function SellerDashboard() {
           Currys Seller Dashboard
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mb-8">
-          Configure pricing policy and monitor agent negotiations
+          Read-only pricing rules and the negotiations saved on this server
         </p>
 
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
-          {/* Policy configuration */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
               Price Match Policy
@@ -111,69 +172,125 @@ export default function SellerDashboard() {
                   The seller bot steps down to these group floors. A group price never goes above the matched price. One buyer still pays £{policy.floor_price.toFixed(2)}.
                 </p>
               </div>
-
             </div>
           </div>
 
-          {/* Deal log */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
-              Sample deal log
+              {showingSamples ? 'Sample deal log' : 'Deal log'}
             </h2>
 
-            <div className="space-y-4">
-              {deals.map((deal) => (
-                <div
-                  key={deal.id}
-                  className={`p-4 rounded-lg border-2 ${
-                    deal.status === 'won'
-                      ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20'
-                      : 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20'
-                  }`}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <p className="font-semibold text-slate-900 dark:text-slate-50">
-                        {deal.product}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {deal.time}
-                      </p>
-                    </div>
-                    <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        deal.status === 'won'
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                      }`}
-                    >
-                      {deal.status === 'won' ? 'Won' : 'Declined'}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
-                    <div>
-                      <span className="text-slate-500 dark:text-slate-400">Requested:</span>
-                      <span className="ml-2 font-semibold text-slate-900 dark:text-slate-50">
-                        £{deal.requested_price.toFixed(2)}
+            {deals === null && !error && (
+              <p className="text-sm text-slate-500 dark:text-slate-400">Loading deals…</p>
+            )}
+
+            {error && deals === null && (
+              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+            )}
+
+            {deals !== null && deals.length > 0 && (
+              <div className="space-y-4">
+                {deals.map((deal) => (
+                  <div
+                    key={deal.id}
+                    className={`p-4 rounded-lg border-2 ${
+                      deal.approval_status === 'declined'
+                        ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20'
+                        : deal.approval_status === 'approved'
+                          ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20'
+                          : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-2 gap-3">
+                      <div>
+                        <p className="font-semibold text-slate-900 dark:text-slate-50">
+                          {deal.product}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {formatDealTime(deal.time)}
+                        </p>
+                      </div>
+                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-800 dark:bg-slate-900/40 dark:text-slate-200">
+                        {approvalLabel(deal.approval_status)}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-slate-500 dark:text-slate-400">Offered:</span>
-                      <span className="ml-2 font-semibold text-slate-900 dark:text-slate-50">
-                        £{deal.offered_price.toFixed(2)}
+                    <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
+                      <div>
+                        <span className="text-slate-500 dark:text-slate-400">Requested:</span>
+                        <span className="ml-2 font-semibold text-slate-900 dark:text-slate-50">
+                          £{Number(deal.requested_price).toFixed(2)}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 dark:text-slate-400">Offered:</span>
+                        <span className="ml-2 font-semibold text-slate-900 dark:text-slate-50">
+                          {deal.offered_price == null ? '—' : `£${Number(deal.offered_price).toFixed(2)}`}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      {deal.group_size} buyer{deal.group_size === 1 ? '' : 's'} · {deal.tier}-buyer tier
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {showingSamples && (
+              <div className="space-y-4">
+                {SAMPLE_DEALS.map((deal) => (
+                  <div
+                    key={deal.id}
+                    className={`p-4 rounded-lg border-2 ${
+                      deal.status === 'won'
+                        ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20'
+                        : 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-2 gap-3">
+                      <div>
+                        <p className="font-semibold text-slate-900 dark:text-slate-50">
+                          {deal.product}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {deal.time}
+                        </p>
+                      </div>
+                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300">
+                        Sample
                       </span>
                     </div>
+                    <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
+                      <div>
+                        <span className="text-slate-500 dark:text-slate-400">Requested:</span>
+                        <span className="ml-2 font-semibold text-slate-900 dark:text-slate-50">
+                          £{deal.requested_price.toFixed(2)}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 dark:text-slate-400">Offered:</span>
+                        <span className="ml-2 font-semibold text-slate-900 dark:text-slate-50">
+                          £{deal.offered_price.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      {deal.reason}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
-                    {deal.reason}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             <div className="mt-6 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Sample rows for the demo. This log does not update when you negotiate on the deal page.
+                {error && deals === null
+                  ? 'The deal log could not be loaded.'
+                  : showingSamples
+                    ? 'Sample rows only. No negotiations have been saved on this server yet.'
+                    : deals === null
+                      ? 'Checking this server for saved negotiations.'
+                      : 'Live deals from this server, newest first. A negotiation on the deal page shows up here within a couple of seconds.'}
               </p>
             </div>
           </div>

@@ -62,6 +62,20 @@ export async function saveDeal(deal: Deal): Promise<void> {
   }
 }
 
+export async function listDeals(): Promise<Deal[]> {
+  if (isSupabaseConfigured() && supabase) {
+    const { data, error } = await supabase
+      .from('deals')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  }
+  return Array.from(inMemoryDeals.values()).sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+}
+
 export async function getDeal(id: string): Promise<Deal | null> {
   if (isSupabaseConfigured() && supabase) {
     const { data } = await supabase

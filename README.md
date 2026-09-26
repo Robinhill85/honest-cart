@@ -13,7 +13,7 @@ It runs with no environment variables. Search results and review judgments are t
 5. **Invite Friends**. Three demo bots join. The group floor steps down: 3 buyers pay £264.99, 5 would pay £249.99. It never goes above the matched price.
 6. Open the approval link (or scan the QR code) and approve. The laptop page flips to **Approved on phone** within a couple of seconds.
 7. Continue through simulated checkout to the receipt. The price on the approval, checkout, and receipt is the current group price.
-8. `/seller` shows the floor, discount cap, and group floors the bot uses, plus a sample deal log.
+8. `/seller` shows the floor, discount cap, and group floors the bot uses, plus the deals saved on this server. Labelled sample rows appear only when that log is empty.
 
 ## Stack
 
