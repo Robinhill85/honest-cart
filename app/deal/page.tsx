@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import QRCode from 'react-qr-code';
-import { CURRYS_POLICY, groupLadder } from '@/lib/policy';
+import { CURRYS_POLICY, DEMO_SELLER_LABEL, groupLadder } from '@/lib/policy';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 interface ChatMessage {
@@ -344,12 +344,17 @@ function DealScreen() {
         )}
 
         {!restoring && !negotiating && !approvalId && (
-          <button
-            onClick={startNegotiation}
-            className="w-full py-4 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
-          >
-            Ask Currys to Match
-          </button>
+          <>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              {DEMO_SELLER_LABEL} answers, running merchant rules.
+            </p>
+            <button
+              onClick={startNegotiation}
+              className="w-full py-4 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+            >
+              Ask Currys to Match
+            </button>
+          </>
         )}
 
         {/* Negotiation chat */}
@@ -374,7 +379,7 @@ function DealScreen() {
                     }`}
                   >
                     <div className="text-xs font-semibold mb-1 opacity-80">
-                      {msg.role === 'buyer' ? 'Buyer Bot' : msg.role === 'seller' ? 'Currys Bot' : 'System'}
+                      {msg.role === 'buyer' ? 'Buyer Bot' : msg.role === 'seller' ? DEMO_SELLER_LABEL : 'System'}
                     </div>
                     <div className="text-sm">{msg.content}</div>
                   </div>
@@ -577,7 +582,7 @@ function DealScreen() {
                       </span>
                       {' - '}
                       <span className="font-semibold">
-                        {msg.role === 'buyer' ? 'Buyer' : msg.role === 'seller' ? 'Seller' : 'System'}
+                        {msg.role === 'buyer' ? 'Buyer' : msg.role === 'seller' ? DEMO_SELLER_LABEL : 'System'}
                       </span>
                       : {msg.content}
                     </div>

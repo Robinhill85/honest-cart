@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { DEMO_SELLER_LABEL } from '@/lib/policy';
 
 export default function ReceiptPage() {
   const params = useParams();
@@ -38,10 +39,10 @@ export default function ReceiptPage() {
     { time: '14:32:46', role: 'System', action: 'Identified cheaper offer: Techinthebasket £244.99' },
     { time: '14:32:47', role: 'System', action: 'Detected trust concerns: grey import, no UK warranty, restrictive returns' },
     { time: '14:32:48', role: 'Buyer Bot', action: 'Requested price match from Currys (trusted seller at £349.00)' },
-    { time: '14:32:50', role: 'Currys Bot', action: 'Reviewed competitor offer against pricing policy' },
-    { time: '14:32:52', role: 'Currys Bot', action: 'Evaluated discount: £104.01 (29.8%)' },
-    { time: '14:32:54', role: 'Currys Bot', action: 'Floor price: £279.99, max discount: 20%' },
-    { time: '14:32:56', role: 'Currys Bot', action: 'Offered matched price: £279.99 (£69.01 saving)' },
+    { time: '14:32:50', role: DEMO_SELLER_LABEL, action: 'Reviewed competitor offer against merchant rules' },
+    { time: '14:32:52', role: DEMO_SELLER_LABEL, action: 'Evaluated discount: £104.01 (29.8%)' },
+    { time: '14:32:54', role: DEMO_SELLER_LABEL, action: 'Floor price: £279.99, max discount: 20%' },
+    { time: '14:32:56', role: DEMO_SELLER_LABEL, action: 'Offered matched price: £279.99 (£69.01 saving)' },
     { time: '14:32:58', role: 'Buyer Bot', action: 'Accepted £279.99 offer (genuine UK stock + warranty)' },
     { time: '14:32:59', role: 'System', action: 'Created approval request' },
     { time: '14:33:05', role: 'User', action: 'Scanned QR code on phone' },
@@ -102,7 +103,7 @@ export default function ReceiptPage() {
               What Happened
             </h3>
             <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-              <li>• Buyer bot negotiated with Currys bot</li>
+              <li>• Buyer bot negotiated with a demo seller bot (stand-in for Currys) running merchant rules</li>
               <li>• {saving != null ? `Charged £${price!.toFixed(2)}, £${saving.toFixed(2)} under the £${listPrice.toFixed(2)} list price` : 'Price shown once the approval loads'}</li>
               <li>• Avoided grey import risks (no UK warranty, restrictive returns)</li>
               <li>• You approved via phone in real-time</li>

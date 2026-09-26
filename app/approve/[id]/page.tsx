@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { DEMO_SELLER_LABEL } from '@/lib/policy';
 
 export default function ApprovePage() {
   const params = useParams();
@@ -149,6 +150,9 @@ export default function ApprovePage() {
             <span className="text-sm text-slate-500 dark:text-slate-400">Seller</span>
             <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
               {approval.seller}
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {DEMO_SELLER_LABEL}, running merchant rules.
             </p>
           </div>
           <div>

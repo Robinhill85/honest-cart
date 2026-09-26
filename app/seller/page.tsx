@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CURRYS_POLICY } from '@/lib/policy';
+import { CURRYS_POLICY, DEMO_SELLER_LABEL } from '@/lib/policy';
 
 interface DealRow {
   id: string;
@@ -125,7 +125,7 @@ export default function SellerDashboard() {
           Currys Seller Dashboard
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mb-8">
-          Read-only pricing rules and the negotiations saved on this server
+          {DEMO_SELLER_LABEL} runs these merchant rules. The negotiations below are the ones saved on this server.
         </p>
 
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
@@ -144,7 +144,7 @@ export default function SellerDashboard() {
                 <span className="text-sm font-semibold text-slate-900 dark:text-slate-50">{policy.max_discount_percent}%</span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                These are the rules the seller bot actually uses. This page does not edit them.
+                Merchant rules for the {DEMO_SELLER_LABEL}. This page does not edit them.
               </p>
 
               <div>
@@ -169,7 +169,7 @@ export default function SellerDashboard() {
                   ))}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  The seller bot steps down to these group floors. A group price never goes above the matched price. One buyer still pays £{policy.floor_price.toFixed(2)}.
+                  The demo seller bot steps down to these group floors. A group price never goes above the matched price. One buyer still pays £{policy.floor_price.toFixed(2)}.
                 </p>
               </div>
             </div>

@@ -9,6 +9,8 @@ export interface SellerPolicy {
   };
 }
 
+export const DEMO_SELLER_LABEL = 'Demo seller bot (stand-in for Currys)';
+
 export const CURRYS_POLICY: SellerPolicy = {
   floor_price: 279.99,
   max_discount_percent: 20,
