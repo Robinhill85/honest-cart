@@ -111,14 +111,15 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForSelector('text=Share link', { timeout: 5000 });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08b-group-buy-invited.png'), fullPage: true });
 
-      // Alice 2s, Bob 4s (+ renegotiation), Charlie 6s. Allow headroom.
-      await page.getByText('Charlie', { exact: true }).waitFor({ timeout: 25000 });
+      // Names sit beside a "Bot" badge, so the element text is "Alice Bot", not "Alice".
+      // Alice 2s, Bob 4s (+ renegotiation), Charlie 6s — about 14s total.
+      await page.getByText('Charlie').waitFor({ timeout: 25000 });
       const membersPanel = page.locator('div.rounded-xl').filter({
         has: page.getByRole('heading', { name: 'Group Members (4)' }),
       });
       await expect(membersPanel).toBeVisible();
       for (const name of ['You', 'Alice', 'Bob', 'Charlie']) {
-        await expect(membersPanel.getByText(name, { exact: true })).toBeVisible();
+        await expect(membersPanel.getByText(name)).toBeVisible();
       }
       await expect(membersPanel.getByText('Bot', { exact: true })).toHaveCount(3);
       await expect(membersPanel.getByText('✓ Approved')).toHaveCount(3);
@@ -127,7 +128,9 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const currentTier = page.locator('div.border-emerald-500').filter({ hasText: 'Current' });
       await expect(currentTier).toContainText('3 buyers');
       await expect(currentTier).toContainText('£329.00');
-      await expect(page.getByText('For 3 buyers, I can offer £329.00 each.')).toBeVisible();
+      const renegotiation = page.getByText('Great! For 3 buyers, I can offer £329.00 each.', { exact: true });
+      await renegotiation.scrollIntoViewIfNeeded();
+      await expect(renegotiation).toBeVisible();
 
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08c-group-buy-complete.png'), fullPage: true });
       console.log('✓ Group buy: 4 members, £329.00 tier, bot cards auto-approved');
