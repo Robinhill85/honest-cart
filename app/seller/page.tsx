@@ -130,7 +130,7 @@ export default function SellerDashboard() {
           {DEMO_SELLER_LABEL} runs these merchant rules. The negotiations below are the ones saved on this server.
         </p>
 
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid items-start lg:grid-cols-2 gap-8 mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
               Price Match Policy

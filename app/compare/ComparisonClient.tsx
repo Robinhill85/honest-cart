@@ -147,7 +147,7 @@ export default function ComparisonClient({
                         <p className="text-sm text-slate-600 dark:text-slate-400">
                           Based on {ranking.trusted_review_count} trusted reviews
                           {ranking.ignored_review_count > 0 && (
-                            <span className="text-slate-400 dark:text-slate-500">
+                            <span className="text-slate-600 dark:text-slate-400">
                               , {ranking.ignored_review_count} ignored
                             </span>
                           )}
@@ -185,7 +185,7 @@ export default function ComparisonClient({
                               {percent}%
                             </span>
                           ) : (
-                            <span className="text-sm text-slate-400 dark:text-slate-500">No data</span>
+                            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">No data</span>
                           )}
                         </div>
                         {hasData ? (
@@ -268,7 +268,7 @@ export default function ComparisonClient({
                     className={`p-4 rounded-lg border ${
                       reviewData.trusted
                         ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20'
-                        : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 opacity-60'
+                        : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
