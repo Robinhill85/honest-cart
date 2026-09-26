@@ -90,10 +90,16 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       console.log('Step 5: Starting negotiation...');
       await page.click('button:has-text("Ask Currys to Match")');
       await page.waitForSelector('text=Buyer Bot', { timeout: 5000 });
+      await expect(page.getByText('Demo seller bot (stand-in for Currys)').first()).toBeVisible({ timeout: 8000 });
+      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, 'negotiation-demo-seller.png'), fullPage: true });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '07-negotiation-start.png'), fullPage: true });
 
       // Wait for negotiation to complete
       await page.waitForSelector('text=Your Approval Required', { timeout: 15000 });
+      const shortLink = page.locator('a[href^="/a/"]');
+      await expect(shortLink).toBeVisible();
+      await expect(shortLink).toHaveAttribute('href', /^\/a\/[23456789abcdefghjkmnpqrstuvwxyz]{4}$/);
+      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop-qr-short-url.png'), fullPage: true });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08-negotiation-complete.png'), fullPage: true });
       console.log('✓ Negotiation completed');
 
@@ -169,12 +175,22 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '11-desktop-after-approve.png'), fullPage: true });
       console.log('✓ Laptop showed Approved on phone');
 
+      console.log('Step 7b: Reloading the deal page...');
+      await page.reload();
+      await page.waitForLoadState('networkidle');
+      await expect(page.getByText('Approved on phone').first()).toBeVisible({ timeout: 8000 });
+      await expect(page.getByRole('link', { name: 'View receipt' }).first()).toBeVisible();
+      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop-after-reload.png'), fullPage: true });
+      console.log('✓ Reload still showed Approved on phone');
+
       // Step 8: Navigate to simulated checkout from desktop
       console.log('Step 8: Navigating to checkout...');
       const approvalId = approvalUrl!.split('/').pop();
       await page.goto(`${BASE_URL}/checkout/${approvalId}`);
       await page.waitForLoadState('networkidle');
       await expect(page.getByText('£264.99')).toBeVisible({ timeout: 8000 });
+      await expect(page.getByText('Test mode', { exact: true })).toBeVisible();
+      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, 'checkout-test-mode.png'), fullPage: true });
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '12-simulated-checkout.png'), fullPage: true });
       console.log('✓ Simulated checkout page loaded');
 
