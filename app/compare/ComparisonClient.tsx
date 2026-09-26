@@ -158,6 +158,16 @@ export default function ComparisonClient({
                       >
                         {ranking.best_trusted_seller}
                       </a>
+                      {ranking.rank === 1 && ranking.product_id === 'sony-wh1000xm6' && (
+                        <div className="mt-2">
+                          <a
+                            href="/deal"
+                            className="inline-block text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
+                          >
+                            → Ask to price match
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
 
