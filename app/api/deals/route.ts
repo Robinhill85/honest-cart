@@ -9,6 +9,9 @@ export async function GET() {
       deals.map(async (deal) => {
         const approvals = await getApprovalsByDealId(deal.id);
         const userApproval = approvals.find((approval) => !approval.is_bot);
+        const groupMessages = (deal.chat_log || [])
+          .filter((message) => message.role !== 'system' && /What's your group price\?|Group of \d+ approved:/.test(message.content))
+          .map((message) => ({ role: message.role, content: message.content }));
         return {
           id: deal.id,
           product: deal.product_name,
@@ -18,6 +21,7 @@ export async function GET() {
           tier: groupFloorLabel(approvals.length),
           approval_status: userApproval?.status ?? 'none',
           time: deal.created_at,
+          group_messages: groupMessages,
         };
       })
     );

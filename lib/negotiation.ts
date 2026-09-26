@@ -1,4 +1,5 @@
 import { ChatMessage, SellerPolicy } from './deals';
+import { groupPriceForCount } from './policy';
 
 export async function* negotiateDeal(
   productName: string,
@@ -120,4 +121,18 @@ export async function* negotiateDeal(
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/** Phrases for a tier crossing. The price is the group ladder, not a model guess. */
+export function groupTierExchange(
+  memberCount: number,
+  productName: string,
+  matchedPrice: number
+): { price: number; buyer: string; seller: string } {
+  const price = groupPriceForCount(memberCount, matchedPrice);
+  return {
+    price,
+    buyer: `We now have ${memberCount} buyers for the ${productName}. What's your group price?`,
+    seller: `Group of ${memberCount} approved: £${price.toFixed(2)} each, within my floor for multi-unit orders. Each buyer still buys their own unit.`,
+  };
 }

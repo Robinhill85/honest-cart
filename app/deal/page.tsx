@@ -41,6 +41,12 @@ function DealScreen() {
   const [restoring, setRestoring] = useState(Boolean(dealFromUrl));
   const [restoreError, setRestoreError] = useState<string | null>(null);
   const dealToRestore = useRef(dealFromUrl);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = chatScrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [chatLog]);
 
   const startNegotiation = async () => {
     setNegotiating(true);
@@ -141,9 +147,16 @@ function DealScreen() {
                 isBot: true,
                 status: 'approved',
               }]);
-              setGroupPrice(data.groupPrice);
+              if (!data.tierChanged) setGroupPrice(data.groupPrice);
             } else if (data.type === 'chat') {
-              setChatLog(prev => [...prev, data]);
+              setChatLog(prev => [...prev, {
+                role: data.role,
+                content: data.content,
+                timestamp: data.timestamp,
+              }]);
+              if (data.role === 'seller' && typeof data.groupPrice === 'number') {
+                setGroupPrice(data.groupPrice);
+              }
             } else if (data.type === 'complete') {
               console.log('Group buy complete:', data);
             }
@@ -364,7 +377,7 @@ function DealScreen() {
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-6">
               Negotiation
             </h2>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
+            <div ref={chatScrollRef} className="space-y-4 max-h-96 overflow-y-auto">
               {chatLog.map((msg, i) => (
                 <div
                   key={i}
@@ -395,9 +408,14 @@ function DealScreen() {
           <>
             {/* Price Ladder */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-4">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-2">
                 Group Price Ladder
               </h2>
+              {groupMembers.length > 0 && (
+                <p className="mb-4 text-sm font-semibold text-slate-900 dark:text-slate-50">
+                  Group price: £{groupPrice.toFixed(2)} each ({groupMembers.length} {groupMembers.length === 1 ? 'buyer' : 'buyers'})
+                </p>
+              )}
               <div className="space-y-3">
                 {ladder.map(tier => {
                   const isActive = groupMembers.length >= tier.qty;

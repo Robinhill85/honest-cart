@@ -150,9 +150,16 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const currentTier = ladder.locator('div.border-emerald-500').filter({ hasText: 'Current' });
       await expect(currentTier).toContainText('5 buyers');
       await expect(currentTier).toContainText('£249.99');
-      const renegotiation = page.getByText('Group floor for 5 buyers is £249.99 each, down from the matched £279.99.', { exact: true });
-      await renegotiation.scrollIntoViewIfNeeded();
-      await expect(renegotiation).toBeVisible();
+      const buyerAtThree = page.getByText("We now have 3 buyers for the Sony WH-1000XM6. What's your group price?", { exact: true });
+      const sellerAtThree = page.getByText('Group of 3 approved: £264.99 each, within my floor for multi-unit orders. Each buyer still buys their own unit.', { exact: true });
+      const buyerAtFive = page.getByText("We now have 5 buyers for the Sony WH-1000XM6. What's your group price?", { exact: true });
+      const sellerAtFive = page.getByText('Group of 5 approved: £249.99 each, within my floor for multi-unit orders. Each buyer still buys their own unit.', { exact: true });
+      await sellerAtFive.scrollIntoViewIfNeeded();
+      await expect(buyerAtThree).toBeVisible();
+      await expect(sellerAtThree).toBeVisible();
+      await expect(buyerAtFive).toBeVisible();
+      await expect(sellerAtFive).toBeVisible();
+      await expect(page.getByText('Group price: £249.99 each (5 buyers)')).toBeVisible();
 
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08c-group-buy-complete.png'), fullPage: true });
       console.log('✓ Group buy: 5 members, £249.99 tier, bot cards auto-approved');
@@ -240,6 +247,8 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await expect(dealCard).toContainText('£249.99');
       await expect(dealCard).toContainText('Approved');
       await expect(dealCard).toContainText('5 buyers · 5-buyer tier');
+      await expect(dealCard).toContainText("We now have 5 buyers for the Sony WH-1000XM6. What's your group price?");
+      await expect(dealCard).toContainText('Group of 5 approved: £249.99 each, within my floor for multi-unit orders.');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '14-seller-dashboard.png'), fullPage: true });
       console.log('✓ Seller dashboard showed the negotiated deal');
 

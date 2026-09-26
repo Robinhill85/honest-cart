@@ -12,6 +12,7 @@ interface DealRow {
   tier: '1' | '3' | '5';
   approval_status: 'pending' | 'approved' | 'declined' | 'none';
   time: string;
+  group_messages?: { role: 'buyer' | 'seller' | 'system'; content: string }[];
 }
 
 interface SampleRow {
@@ -231,6 +232,18 @@ export default function SellerDashboard() {
                     <p className="text-xs text-slate-600 dark:text-slate-400">
                       {deal.group_size} buyer{deal.group_size === 1 ? '' : 's'} · {deal.tier}-buyer tier
                     </p>
+                    {deal.group_messages && deal.group_messages.length > 0 && (
+                      <div className="mt-3 space-y-1">
+                        {deal.group_messages.map((message, index) => (
+                          <p key={index} className="text-xs text-slate-600 dark:text-slate-400">
+                            <span className="font-medium text-slate-800 dark:text-slate-200">
+                              {message.role === 'buyer' ? 'Buyer bot' : 'Seller bot'}:
+                            </span>{' '}
+                            {message.content}
+                          </p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

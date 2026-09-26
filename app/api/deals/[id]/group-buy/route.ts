@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDeal, updateDeal, saveApproval, getApprovalsByDealId, setDealApprovalPrices } from '@/lib/deals';
-import type { Approval } from '@/lib/deals';
-import { CURRYS_POLICY, groupFloorLabel, groupLadder, groupPriceForCount } from '@/lib/policy';
+import type { Approval, ChatMessage } from '@/lib/deals';
+import { groupLadder, groupPriceForCount } from '@/lib/policy';
+import { groupTierExchange } from '@/lib/negotiation';
 import { publicBaseUrl } from '@/lib/public-url';
 
 export const maxDuration = 60;
@@ -36,6 +37,7 @@ export async function POST(
     // Generate group ID if not exists
     const groupId = deal.group_id || crypto.randomUUID();
     const soloPrice = deal.matched_price || deal.trusted_price;
+    const chatLog: ChatMessage[] = Array.isArray(deal.chat_log) ? [...deal.chat_log] : [];
     await updateDeal(dealId, { group_id: groupId });
 
     // Create stream for real-time updates
@@ -62,7 +64,6 @@ export async function POST(
           const approvalsBefore = await getApprovalsByDealId(dealId);
           const memberCount = approvalsBefore.length + 1;
           const groupPrice = groupPriceForCount(memberCount, soloPrice);
-          const tier = groupFloorLabel(memberCount);
 
           const botApprovalId = crypto.randomUUID();
           const botApproval: Approval = {
@@ -81,10 +82,14 @@ export async function POST(
           await saveApproval(botApproval);
 
           const priceDropped = groupPrice < currentPrice - 0.001;
+          const exchange = priceDropped
+            ? groupTierExchange(memberCount, deal.product_name, soloPrice)
+            : null;
+          const tierPrice = exchange?.price ?? groupPrice;
           if (priceDropped) {
-            currentPrice = groupPrice;
-            await setDealApprovalPrices(dealId, groupPrice);
-            await updateDeal(dealId, { matched_price: groupPrice });
+            currentPrice = tierPrice;
+            await setDealApprovalPrices(dealId, tierPrice);
+            await updateDeal(dealId, { matched_price: tierPrice });
           }
 
           controller.enqueue(
@@ -93,36 +98,35 @@ export async function POST(
               botName: bot.name,
               approvalId: botApprovalId,
               memberCount,
-              groupPrice,
+              groupPrice: tierPrice,
+              tierChanged: priceDropped,
               timestamp: new Date().toISOString(),
             })}\n\n`)
           );
 
-          if (priceDropped) {
-            const floor = tier === '5'
-              ? CURRYS_POLICY.group_floors.buyers_5
-              : CURRYS_POLICY.group_floors.buyers_3;
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
+          if (exchange) {
+            await new Promise(resolve => setTimeout(resolve, 400));
+            const buyer: ChatMessage = {
+              role: 'buyer',
+              content: exchange.buyer,
+              timestamp: new Date().toISOString(),
+            };
+            chatLog.push(buyer);
+            await updateDeal(dealId, { chat_log: chatLog });
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({
-                type: 'chat',
-                role: 'system',
-                content: `Group size reached ${memberCount}. Checking the group floor for ${tier} buyers.`,
-                timestamp: new Date().toISOString(),
-              })}\n\n`)
+              encoder.encode(`data: ${JSON.stringify({ type: 'chat', ...buyer })}\n\n`)
             );
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
+            await new Promise(resolve => setTimeout(resolve, 800));
+            const seller: ChatMessage = {
+              role: 'seller',
+              content: exchange.seller,
+              timestamp: new Date().toISOString(),
+            };
+            chatLog.push(seller);
+            await updateDeal(dealId, { chat_log: chatLog, matched_price: tierPrice });
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({
-                type: 'chat',
-                role: 'seller',
-                content: `Group floor for ${tier} buyers is £${floor.toFixed(2)} each, down from the matched £${soloPrice.toFixed(2)}.`,
-                timestamp: new Date().toISOString(),
-              })}\n\n`)
+              encoder.encode(`data: ${JSON.stringify({ type: 'chat', ...seller, groupPrice: tierPrice })}\n\n`)
             );
           }
         }
