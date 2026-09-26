@@ -99,6 +99,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       console.log('Step 4: Navigating to deal screen...');
       // Navigate directly to deal page (the link only appears when Sony is #1)
       await page.goto(`${BASE_URL}/deal`);
+      await expect(page.getByRole('button', { name: 'New deal' })).toBeVisible();
       await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '06-deal-screen.png'), fullPage: true });
       console.log('✓ Deal screen loaded');
@@ -205,6 +206,12 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await mobilePage.waitForURL('**/checkout/**', { timeout: 10000 });
       await mobilePage.screenshot({ path: path.join(SCREENSHOTS_DIR, '10-checkout-mobile.png'), fullPage: true });
       console.log('✓ Redirected to checkout');
+
+      await mobilePage.goto(approvalUrl!);
+      await expect(mobilePage.getByRole('heading', { name: 'Already Processed' })).toBeVisible();
+      await expect(mobilePage.getByText('This approval is approved.')).toBeVisible();
+      await expect(mobilePage.getByRole('button', { name: 'Start a new demo' })).toBeVisible();
+      await expect(mobilePage.getByRole('link', { name: 'Go Home' })).toBeVisible();
 
       await mobileContext.close();
 

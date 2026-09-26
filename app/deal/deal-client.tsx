@@ -40,6 +40,7 @@ function DealScreen({
 }) {
   const searchParams = useSearchParams();
   const dealFromUrl = searchParams.get('deal');
+  const freshToken = searchParams.get('fresh');
   const [negotiating, setNegotiating] = useState(false);
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [approvalId, setApprovalId] = useState<string | null>(null);
@@ -52,8 +53,9 @@ function DealScreen({
   const [shortCode, setShortCode] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(Boolean(dealFromUrl));
   const [restoreError, setRestoreError] = useState<string | null>(null);
-  const dealToRestore = useRef(dealFromUrl);
   const chatScrollRef = useRef<HTMLDivElement>(null);
+  const runId = useRef(0);
+  const freshStart = useRef(false);
 
   useEffect(() => {
     const el = chatScrollRef.current;
@@ -61,8 +63,17 @@ function DealScreen({
   }, [chatLog]);
 
   const startNegotiation = async () => {
+    const run = ++runId.current;
+    setRestoring(false);
+    setRestoreError(null);
     setNegotiating(true);
     setChatLog([]);
+    setApprovalId(null);
+    setDealId(null);
+    setGroupBuyActive(false);
+    setGroupMembers([]);
+    setShortCode(null);
+    setShareLink('');
 
     try {
       const response = await fetch('/api/negotiate', {
@@ -87,10 +98,12 @@ function DealScreen({
         const { done, value } = await reader.read();
         if (done) break;
 
+        if (run !== runId.current) return;
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n\n');
 
         for (const line of lines) {
+          if (run !== runId.current) return;
           if (line.startsWith('data: ')) {
             const data = JSON.parse(line.slice(6));
             
@@ -124,8 +137,14 @@ function DealScreen({
     }
   };
 
+  const startFreshDeal = () => {
+    freshStart.current = true;
+    window.location.assign(`/deal?fresh=${Date.now()}`);
+  };
+
   const startGroupBuy = async () => {
     if (!dealId) return;
+    const run = runId.current;
     
     setGroupBuyActive(true);
     
@@ -143,10 +162,12 @@ function DealScreen({
         const { done, value } = await reader.read();
         if (done) break;
 
+        if (run !== runId.current) return;
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n\n');
 
         for (const line of lines) {
+          if (run !== runId.current) return;
           if (line.startsWith('data: ')) {
             const data = JSON.parse(line.slice(6));
             
@@ -203,7 +224,31 @@ function DealScreen({
   const markYouPaid = (id: string, price?: number) => applyYouStatus(id, 'paid', price);
 
   useEffect(() => {
-    const id = dealToRestore.current;
+    if (!freshToken || dealFromUrl) return;
+    if (freshStart.current) return;
+    freshStart.current = true;
+    window.history.replaceState(null, '', '/deal');
+    void startNegotiation();
+  }, [freshToken, dealFromUrl]);
+
+  useEffect(() => {
+    if (dealFromUrl) return;
+    if (freshToken || freshStart.current) return;
+    runId.current += 1;
+    setNegotiating(false);
+    setChatLog([]);
+    setApprovalId(null);
+    setDealId(null);
+    setGroupBuyActive(false);
+    setGroupMembers([]);
+    setShortCode(null);
+    setShareLink('');
+    setRestoring(false);
+    setRestoreError(null);
+  }, [dealFromUrl, freshToken]);
+
+  useEffect(() => {
+    const id = dealFromUrl;
     if (!id) return;
     let cancelled = false;
 
@@ -249,7 +294,7 @@ function DealScreen({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [dealFromUrl]);
 
   useEffect(() => {
     if (!supabaseUrl || !supabaseAnonKey || (!approvalId && !dealId)) return;
@@ -331,9 +376,18 @@ function DealScreen({
           </a>
         </div>
 
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-8">
-          Deal: Sony WH-1000XM6
-        </h1>
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50">
+            Deal: Sony WH-1000XM6
+          </h1>
+          <button
+            type="button"
+            onClick={startFreshDeal}
+            className="shrink-0 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900"
+          >
+            New deal
+          </button>
+        </div>
 
         {restoring && (
           <p className="text-slate-600 dark:text-slate-400 mb-8">Loading this deal…</p>

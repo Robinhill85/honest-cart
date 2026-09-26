@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { formatLondonTimestamp } from '@/lib/charge';
 import { DEMO_SELLER_LABEL } from '@/lib/policy';
+
+function outcomeLabel(approval: { status?: string; stripe_payment_status?: string | null }): 'paid' | 'approved' | 'declined' | null {
+  if (approval.stripe_payment_status === 'paid') return 'paid';
+  if (approval.status === 'approved' || approval.status === 'declined') return approval.status;
+  return null;
+}
 
 export default function ApprovePage() {
   const params = useParams();
@@ -20,7 +27,12 @@ export default function ApprovePage() {
       try {
         const response = await fetch(`/api/approvals/${approvalId}`, { cache: 'no-store' });
         const data = await response.json();
-        if (!cancelled) setApproval(data);
+        if (cancelled) return;
+        if (!response.ok || !data?.id) {
+          setApproval(null);
+          return;
+        }
+        setApproval(data);
       } catch (error) {
         console.error('Failed to fetch approval:', error);
       } finally {
@@ -108,22 +120,39 @@ export default function ApprovePage() {
     );
   }
 
-  if (approval.status !== 'pending') {
+  const outcome = outcomeLabel(approval);
+  if (outcome) {
+    const when = formatLondonTimestamp(approval.approved_at);
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
-        <div className="text-center">
+        <div className="text-center max-w-md">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-2">
             Already Processed
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">
-            This approval request has already been {approval.status}.
+          <p className="text-slate-600 dark:text-slate-400 mb-2">
+            This approval is {outcome}.
           </p>
-          <a
-            href="/"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Go Home
-          </a>
+          {when && (
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+              {when}
+            </p>
+          )}
+          {!when && <div className="mb-6" />}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="/"
+              className="inline-block px-6 py-3 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300 transition-colors dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            >
+              Go Home
+            </a>
+            <button
+              type="button"
+              onClick={() => { window.location.href = '/deal'; }}
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Start a new demo
+            </button>
+          </div>
         </div>
       </div>
     );
