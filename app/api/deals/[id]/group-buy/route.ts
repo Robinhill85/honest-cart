@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDeal, updateDeal, saveApproval, getApprovalsByDealId, setDealApprovalPrices } from '@/lib/deals';
 import type { Approval, ChatMessage } from '@/lib/deals';
 import { groupLadder, groupPriceForCount } from '@/lib/policy';
-import { groupTierExchange } from '@/lib/negotiation';
+import { groupJoinStatus, groupTierExchange } from '@/lib/negotiation';
 import { publicBaseUrl } from '@/lib/public-url';
 
 export const maxDuration = 60;
@@ -83,7 +83,7 @@ export async function POST(
 
           const priceDropped = groupPrice < currentPrice - 0.001;
           const exchange = priceDropped
-            ? groupTierExchange(memberCount, deal.product_name, soloPrice)
+            ? groupTierExchange(memberCount, soloPrice)
             : null;
           const tierPrice = exchange?.price ?? groupPrice;
           if (priceDropped) {
@@ -102,6 +102,17 @@ export async function POST(
               tierChanged: priceDropped,
               timestamp: new Date().toISOString(),
             })}\n\n`)
+          );
+
+          const joined: ChatMessage = {
+            role: 'status',
+            content: groupJoinStatus(bot.name, memberCount),
+            timestamp: new Date().toISOString(),
+          };
+          chatLog.push(joined);
+          await updateDeal(dealId, { chat_log: chatLog });
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ type: 'chat', ...joined })}\n\n`)
           );
 
           if (exchange) {

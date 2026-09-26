@@ -22,7 +22,7 @@ export interface Deal {
 }
 
 export interface ChatMessage {
-  role: 'buyer' | 'seller' | 'system';
+  role: 'buyer' | 'seller' | 'system' | 'status';
   content: string;
   timestamp: string;
 }

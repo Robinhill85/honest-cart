@@ -123,16 +123,28 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/** Phrases for a tier crossing. The price is the group ladder, not a model guess. */
+/** Buyer/seller bargaining for a tier crossing. The accepted price is the group ladder. */
 export function groupTierExchange(
   memberCount: number,
-  productName: string,
   matchedPrice: number
 ): { price: number; buyer: string; seller: string } {
   const price = groupPriceForCount(memberCount, matchedPrice);
+  const amount = `£${price.toFixed(2)}`;
+  if (memberCount >= 5) {
+    return {
+      price,
+      buyer: `Now 5 of us. Make it ${amount} each and all 5 orders are yours today.`,
+      seller: `Five units, ${amount} each. Agreed.`,
+    };
+  }
   return {
     price,
-    buyer: `We now have ${memberCount} buyers for the ${productName}. What's your group price?`,
-    seller: `Group of ${memberCount} approved: £${price.toFixed(2)} each, within my floor for multi-unit orders. Each buyer still buys their own unit.`,
+    buyer: `I've got ${memberCount} buyers ready. If you lower it to ${amount} each, I'll place ${memberCount} orders with you right now.`,
+    seller: `For ${memberCount} units I can do ${amount} each. Deal.`,
   };
+}
+
+export function groupJoinStatus(name: string, memberCount: number): string {
+  const buyers = memberCount === 1 ? 'buyer' : 'buyers';
+  return `${name} joined the group (${memberCount} ${buyers})`;
 }

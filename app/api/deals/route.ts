@@ -10,7 +10,8 @@ export async function GET() {
         const approvals = await getApprovalsByDealId(deal.id);
         const userApproval = approvals.find((approval) => !approval.is_bot);
         const groupMessages = (deal.chat_log || [])
-          .filter((message) => message.role !== 'system' && /What's your group price\?|Group of \d+ approved:/.test(message.content))
+          .filter((message) => message.role === 'buyer' || message.role === 'seller')
+          .filter((message) => /orders with you right now|orders are yours today|I can do £|Five units, £/.test(message.content))
           .map((message) => ({ role: message.role, content: message.content }));
         return {
           id: deal.id,

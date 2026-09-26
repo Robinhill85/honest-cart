@@ -154,11 +154,17 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       const currentTier = ladder.locator('div.border-emerald-500').filter({ hasText: 'Current' });
       await expect(currentTier).toContainText('5 buyers');
       await expect(currentTier).toContainText('£249.99');
-      const buyerAtThree = page.getByText("We now have 3 buyers for the Sony WH-1000XM6. What's your group price?", { exact: true });
-      const sellerAtThree = page.getByText('Group of 3 approved: £264.99 each, within my floor for multi-unit orders. Each buyer still buys their own unit.', { exact: true });
-      const buyerAtFive = page.getByText("We now have 5 buyers for the Sony WH-1000XM6. What's your group price?", { exact: true });
-      const sellerAtFive = page.getByText('Group of 5 approved: £249.99 each, within my floor for multi-unit orders. Each buyer still buys their own unit.', { exact: true });
+      const buyerAtThree = page.getByText("I've got 3 buyers ready. If you lower it to £264.99 each, I'll place 3 orders with you right now.", { exact: true });
+      const sellerAtThree = page.getByText('For 3 units I can do £264.99 each. Deal.', { exact: true });
+      const buyerAtFive = page.getByText('Now 5 of us. Make it £249.99 each and all 5 orders are yours today.', { exact: true });
+      const sellerAtFive = page.getByText('Five units, £249.99 each. Agreed.', { exact: true });
+      const bobJoined = page.getByText('Bob joined the group (3 buyers)', { exact: true });
+      const danaJoined = page.getByText('Dana joined the group (5 buyers)', { exact: true });
       await sellerAtFive.scrollIntoViewIfNeeded();
+      await bobJoined.scrollIntoViewIfNeeded();
+      await expect(bobJoined).toBeVisible();
+      await danaJoined.scrollIntoViewIfNeeded();
+      await expect(danaJoined).toBeVisible();
       await expect(buyerAtThree).toBeVisible();
       await expect(sellerAtThree).toBeVisible();
       await expect(buyerAtFive).toBeVisible();
@@ -251,8 +257,8 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await expect(dealCard).toContainText('£249.99');
       await expect(dealCard).toContainText('Approved');
       await expect(dealCard).toContainText('5 buyers · 5-buyer tier');
-      await expect(dealCard).toContainText("We now have 5 buyers for the Sony WH-1000XM6. What's your group price?");
-      await expect(dealCard).toContainText('Group of 5 approved: £249.99 each, within my floor for multi-unit orders.');
+      await expect(dealCard).toContainText('Now 5 of us. Make it £249.99 each and all 5 orders are yours today.');
+      await expect(dealCard).toContainText('Five units, £249.99 each. Agreed.');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '14-seller-dashboard.png'), fullPage: true });
       console.log('✓ Seller dashboard showed the negotiated deal');
 

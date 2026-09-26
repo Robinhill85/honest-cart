@@ -7,7 +7,7 @@ import { CURRYS_POLICY, DEMO_SELLER_LABEL, groupLadder } from '@/lib/policy';
 import { getSupabase } from '@/lib/supabase';
 
 interface ChatMessage {
-  role: 'buyer' | 'seller' | 'system';
+  role: 'buyer' | 'seller' | 'system' | 'status';
   content: string;
   timestamp: string;
 }
@@ -379,6 +379,11 @@ function DealScreen() {
             </h2>
             <div ref={chatScrollRef} className="space-y-4 max-h-96 overflow-y-auto">
               {chatLog.map((msg, i) => (
+                msg.role === 'status' ? (
+                  <p key={i} className="text-center text-xs text-slate-500 dark:text-slate-400">
+                    {msg.content}
+                  </p>
+                ) : (
                 <div
                   key={i}
                   className={`flex ${msg.role === 'buyer' ? 'justify-end' : 'justify-start'}`}
@@ -398,6 +403,7 @@ function DealScreen() {
                     <div className="text-sm">{msg.content}</div>
                   </div>
                 </div>
+                )
               ))}
             </div>
           </div>
@@ -600,10 +606,17 @@ function DealScreen() {
                         {new Date(msg.timestamp).toLocaleTimeString()}
                       </span>
                       {' - '}
-                      <span className="font-semibold">
-                        {msg.role === 'buyer' ? 'Buyer' : msg.role === 'seller' ? DEMO_SELLER_LABEL : 'System'}
-                      </span>
-                      : {msg.content}
+                      {msg.role === 'status' ? (
+                        <span>{msg.content}</span>
+                      ) : (
+                        <>
+                          <span className="font-semibold">
+                            {msg.role === 'buyer' ? 'Buyer Bot' : msg.role === 'seller' ? DEMO_SELLER_LABEL : 'System'}
+                          </span>
+                          {': '}
+                          {msg.content}
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>
