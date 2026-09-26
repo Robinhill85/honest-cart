@@ -68,11 +68,20 @@ cp .env.example .env.local
 ## Project Structure
 
 ```
-/app                  # Next.js pages
-/data                 # Local JSON data (products, reviews, sellers)
-/lib                  # Utilities (Supabase, Tavily, TypeSafe)
-/scripts              # Database seed script
-/supabase/migrations  # SQL schema
+/app
+  /page.tsx           # Home: product catalog
+  /compare/page.tsx   # Comparison screen with ranking
+/data                 # Local JSON data (products, reviews, sellers, judgments)
+/lib
+  /supabase.ts        # Supabase client
+  /search.ts          # Tavily wrapper
+  /jev.ts             # TypeSafe client
+  /judgments.ts       # Judgment data loader
+  /ranking.ts         # Ranking algorithm
+/scripts
+  /seed.ts            # Database seed script
+/supabase/migrations
+  /001_initial_schema.sql  # Database schema
 ```
 
 ## Data Files
@@ -81,6 +90,8 @@ All demo data is committed under `/data`:
 - `products_c90d.json` - 6 headphone models with specs
 - `reviews_2b03.json` - 173 real reviews with URLs
 - `sellers_prices_97c0.json` - 45 UK seller offers with trust signals
+- `judgments_9e10.json` - 173 TypeSafe Jev review judgments (fake_prob, features, flight_relevance)
+- `seller_trust_22c0.json` - 45 TypeSafe Jev seller trust scores (trust_prob, flags)
 
 ## Deploy to Vercel
 
