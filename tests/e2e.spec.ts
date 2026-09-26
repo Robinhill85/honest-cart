@@ -190,13 +190,20 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await expect(page.getByText('Sony WH-1000XM6 from Currys at £264.99')).toBeVisible();
       console.log('✓ Receipt page loaded');
 
-      // Step 10: Seller dashboard
+      // Step 10: Seller dashboard shows the negotiated deal
       console.log('Step 10: Loading seller dashboard...');
       await page.goto(`${BASE_URL}/seller`);
       await page.waitForLoadState('networkidle');
-      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '14-seller-dashboard.png'), fullPage: true });
       await expect(page.locator('h1')).toContainText('Currys Seller Dashboard');
-      console.log('✓ Seller dashboard loaded');
+      await expect(page.getByRole('heading', { name: 'Deal log', exact: true })).toBeVisible({ timeout: 8000 });
+      await expect(page.getByText('Sample rows only')).toHaveCount(0);
+      const dealCard = page.locator('div.rounded-lg').filter({ hasText: 'Sony WH-1000XM6' }).filter({ hasText: 'Offered:' });
+      await expect(dealCard).toContainText('£244.99');
+      await expect(dealCard).toContainText('£264.99');
+      await expect(dealCard).toContainText('Approved');
+      await expect(dealCard).toContainText('4 buyers · 3-buyer tier');
+      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '14-seller-dashboard.png'), fullPage: true });
+      console.log('✓ Seller dashboard showed the negotiated deal');
 
       console.log('\n✅ All steps completed successfully!');
       console.log(`Screenshots saved to: ${SCREENSHOTS_DIR}`);
