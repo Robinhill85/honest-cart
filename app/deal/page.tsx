@@ -218,9 +218,10 @@ function DealScreen() {
   }, []);
 
   useEffect(() => {
-    if (!approvalId || !isSupabaseConfigured() || !supabase) return;
+    const client = supabase;
+    if (!approvalId || !isSupabaseConfigured() || !client) return;
 
-    const channel = supabase
+    const channel = client
       .channel(`approval-${approvalId}`)
       .on(
         'postgres_changes',
@@ -235,7 +236,7 @@ function DealScreen() {
       .subscribe();
 
     return () => {
-      void supabase.removeChannel(channel);
+      void client.removeChannel(channel);
     };
   }, [approvalId]);
 
