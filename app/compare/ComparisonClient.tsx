@@ -179,30 +179,36 @@ export default function ComparisonClient({
                           <span className="text-sm font-medium text-slate-700 dark:text-slate-300 capitalize">
                             {feature.replace('_', ' ')}
                           </span>
-                          <span className="text-sm text-slate-500 dark:text-slate-400">
-                            {Math.round(score * 100)}%
-                          </span>
+                          {score == null ? (
+                            <span className="text-sm text-slate-400 dark:text-slate-500">No data</span>
+                          ) : (
+                            <span className="text-sm text-slate-500 dark:text-slate-400">
+                              {Math.round(score * 100)}%
+                            </span>
+                          )}
                         </div>
-                        <button
-                          onClick={() => {
-                            setSelectedProduct(ranking.product_id);
-                            setSelectedFeature(feature);
-                          }}
-                          className="w-full"
-                        >
-                          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
-                            <div
-                              className={`h-full rounded-full transition-all ${
-                                score >= 0.7
-                                  ? 'bg-emerald-500'
-                                  : score >= 0.5
-                                  ? 'bg-amber-500'
-                                  : 'bg-slate-400'
-                              }`}
-                              style={{ width: `${score * 100}%` }}
-                            />
-                          </div>
-                        </button>
+                        {score == null ? null : (
+                          <button
+                            onClick={() => {
+                              setSelectedProduct(ranking.product_id);
+                              setSelectedFeature(feature);
+                            }}
+                            className="w-full"
+                          >
+                            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all ${
+                                  score >= 0.7
+                                    ? 'bg-emerald-500'
+                                    : score >= 0.5
+                                    ? 'bg-amber-500'
+                                    : 'bg-slate-400'
+                                }`}
+                                style={{ width: `${Math.max(score * 100, 2)}%` }}
+                              />
+                            </div>
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>

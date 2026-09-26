@@ -50,29 +50,21 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '03-compare-initial.png'), fullPage: true });
 
-      // Check if the "Ask to price match" link is visible (Sony should be #1 initially)
-      const hasPriceMatchLink = await page.locator('a:has-text("→ Ask to price match")').count();
-      console.log(`Price match link visible: ${hasPriceMatchLink > 0}`);
+      await expect(page.getByText('No data').first()).toBeVisible();
 
-      // Move comfort slider (but note this might change rankings)
-      console.log('Step 3a: Moving comfort slider...');
-      const comfortSlider = page.locator('input[type="range"]').nth(1); // Second slider is comfort
-      await comfortSlider.fill('1');
-      await page.waitForTimeout(1000); // Wait for re-ranking animation
-      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04-compare-comfort-100.png'), fullPage: true });
-      console.log('✓ Comfort slider moved');
+      const headings = page.locator('h3');
+      const orderBefore = await headings.allTextContents();
+      console.log('Order before:', orderBefore.join(' > '));
 
-      // Reset sliders to defaults to get Sony back to #1
-      console.log('Step 3b: Resetting to default weights...');
-      const sliders = page.locator('input[type="range"]');
-      await sliders.nth(0).fill('0.9'); // noise cancelling
-      await sliders.nth(1).fill('0.7'); // comfort
-      await sliders.nth(2).fill('0.7'); // battery
-      await sliders.nth(3).fill('0.5'); // call quality
-      await sliders.nth(4).fill('0.8'); // price
-      await page.waitForTimeout(1000);
-      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04b-compare-reset.png'), fullPage: true });
-      console.log('✓ Sliders reset to defaults');
+      // Noise cancelling starts at 100%. Dropping it to 0 changes who is first.
+      console.log('Step 3a: Moving noise-cancelling slider to 0...');
+      await page.locator('input[type="range"]').nth(0).fill('0');
+      await expect.poll(async () => headings.first().textContent()).not.toBe(orderBefore[0]);
+      const orderAfter = await headings.allTextContents();
+      expect(orderAfter.join('|')).not.toBe(orderBefore.join('|'));
+      console.log('Order after:', orderAfter.join(' > '));
+      await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '04-compare-order-changed.png'), fullPage: true });
+      console.log('✓ Noise-cancelling slider changed the order');
 
       // Open evidence drawer
       console.log('Step 3c: Opening evidence drawer...');

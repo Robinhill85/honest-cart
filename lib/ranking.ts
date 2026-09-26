@@ -20,10 +20,10 @@ export interface ProductRanking {
   trusted_review_count: number;
   ignored_review_count: number;
   feature_scores: {
-    noise_cancelling: number;
-    comfort: number;
-    battery: number;
-    call_quality: number;
+    noise_cancelling: number | null;
+    comfort: number | null;
+    battery: number | null;
+    call_quality: number | null;
   };
 }
 
@@ -68,32 +68,14 @@ export function calculateProductScore(
     let reviewScore = 0;
     let featureCount = 0;
 
-    // Noise cancelling
-    if (features.noise_cancelling?.mentioned_prob > 0.5) {
-      const positiveProb = features.noise_cancelling.positive_prob || 0;
-      reviewScore += positiveProb * weights.noise_cancelling;
-      featureCount += weights.noise_cancelling;
-    }
-
-    // Comfort
-    if (features.comfort?.mentioned_prob > 0.5) {
-      const positiveProb = features.comfort.positive_prob || 0;
-      reviewScore += positiveProb * weights.comfort;
-      featureCount += weights.comfort;
-    }
-
-    // Battery
-    if (features.battery?.mentioned_prob > 0.5) {
-      const positiveProb = features.battery.positive_prob || 0;
-      reviewScore += positiveProb * weights.battery;
-      featureCount += weights.battery;
-    }
-
-    // Call quality
-    if (features.call_quality?.mentioned_prob > 0.5) {
-      const positiveProb = features.call_quality.positive_prob || 0;
-      reviewScore += positiveProb * weights.call_quality;
-      featureCount += weights.call_quality;
+    const featureKeys = ['noise_cancelling', 'comfort', 'battery', 'call_quality'] as const;
+    for (const key of featureKeys) {
+      const feature = features[key];
+      // No mention, or a mention with no sentiment, is missing evidence — not a zero.
+      if (!feature || feature.mentioned_prob <= 0.5 || feature.positive_prob == null) continue;
+      if (weights[key] <= 0) continue;
+      reviewScore += feature.positive_prob * weights[key];
+      featureCount += weights[key];
     }
 
     if (featureCount > 0) {
@@ -109,11 +91,11 @@ export function calculateFeatureScore(
   productId: string,
   feature: FeatureKey,
   judgments: ReviewJudgment[]
-): number {
-  if (feature === 'price') return 0; // Price handled separately
+): number | null {
+  if (feature === 'price') return null;
 
   const productJudgments = judgments.filter(j => j.product_id === productId);
-  
+
   let totalScore = 0;
   let totalWeight = 0;
 
@@ -125,14 +107,13 @@ export function calculateFeatureScore(
     if (reviewWeight < 0.1) continue;
 
     const featureData = judgment.features[feature];
-    if (featureData?.mentioned_prob > 0.5) {
-      const positiveProb = featureData.positive_prob || 0;
-      totalScore += positiveProb * reviewWeight;
+    if (featureData?.mentioned_prob > 0.5 && featureData.positive_prob != null) {
+      totalScore += featureData.positive_prob * reviewWeight;
       totalWeight += reviewWeight;
     }
   }
 
-  return totalWeight > 0 ? totalScore / totalWeight : 0;
+  return totalWeight > 0 ? totalScore / totalWeight : null;
 }
 
 export function getBestTrustedPrice(
