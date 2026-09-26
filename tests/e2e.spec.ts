@@ -134,7 +134,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.screenshot({ path: path.join(SCREENSHOTS_DIR, '08b-group-buy-invited.png'), fullPage: true });
 
       // Alice, Bob, Charlie, Dana join about 2s apart, with two price-drop pauses.
-      await page.getByText('Dana').waitFor({ timeout: 25000 });
+      await page.getByRole('heading', { name: 'Group Members (5)' }).waitFor({ timeout: 25000 });
       const membersPanel = page.locator('div.rounded-xl').filter({
         has: page.getByRole('heading', { name: 'Group Members (5)' }),
       });
