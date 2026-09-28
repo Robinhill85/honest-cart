@@ -1,4 +1,4 @@
-import { getApprovalsByDealId, getDeal } from '@/lib/deals';
+import { getApprovalsByDealId, getDeal, toPublicApproval } from '@/lib/deals';
 import { jsonNoStore } from '@/lib/http';
 
 export const dynamic = 'force-dynamic';
@@ -14,7 +14,7 @@ export async function GET(
     if (!deal) {
       return jsonNoStore({ error: 'Deal not found' }, 404);
     }
-    const approvals = await getApprovalsByDealId(id);
+    const approvals = (await getApprovalsByDealId(id)).map((approval) => toPublicApproval(approval));
     return jsonNoStore({ deal, approvals });
   } catch (error) {
     console.error('Failed to load deal:', error);

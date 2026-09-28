@@ -25,6 +25,26 @@ function soloPriceFromChat(messages: ChatMessage[], fallback: number): number {
   return match ? parseFloat(match[1]) : fallback;
 }
 
+function tokenKey(dealId: string): string {
+  return `honestCartToken:${dealId}`;
+}
+
+function rememberToken(dealId: string, token: string) {
+  try {
+    sessionStorage.setItem(tokenKey(dealId), token);
+  } catch {
+    // Private mode can block storage. The QR still works for this page load.
+  }
+}
+
+function recallToken(dealId: string): string {
+  try {
+    return sessionStorage.getItem(tokenKey(dealId)) || '';
+  } catch {
+    return '';
+  }
+}
+
 function memberStatus(approval: { is_bot?: boolean; status?: string; stripe_payment_status?: string | null }): GroupMember['status'] {
   if (!approval.is_bot && approval.stripe_payment_status === 'paid') return 'paid';
   if (approval.status === 'approved') return 'approved';
@@ -51,6 +71,7 @@ function DealScreen({
   const [groupPrice, setGroupPrice] = useState<number>(CURRYS_POLICY.floor_price);
   const [shareLink, setShareLink] = useState<string>('');
   const [shortCode, setShortCode] = useState<string | null>(null);
+  const [approvalToken, setApprovalToken] = useState('');
   const [restoring, setRestoring] = useState(Boolean(dealFromUrl));
   const [restoreError, setRestoreError] = useState<string | null>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
@@ -73,6 +94,7 @@ function DealScreen({
     setGroupBuyActive(false);
     setGroupMembers([]);
     setShortCode(null);
+    setApprovalToken('');
     setShareLink('');
 
     try {
@@ -111,6 +133,10 @@ function DealScreen({
               setApprovalId(data.approvalId);
               setDealId(data.dealId);
               if (data.shortCode) setShortCode(data.shortCode);
+              if (typeof data.token === 'string' && data.token) {
+                setApprovalToken(data.token);
+                rememberToken(data.dealId, data.token);
+              }
               const matched = data.matchedPrice || CURRYS_POLICY.floor_price;
               setSoloPrice(matched);
               setGroupPrice(matched);
@@ -151,7 +177,14 @@ function DealScreen({
     try {
       const response = await fetch(`/api/deals/${dealId}/group-buy`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: approvalToken }),
       });
+      if (!response.ok) {
+        console.error('Group buy failed:', response.status);
+        setGroupBuyActive(false);
+        return;
+      }
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
@@ -201,7 +234,10 @@ function DealScreen({
     }
   };
 
-  const approvalUrl = approvalId ? `${window.location.origin}/approve/${approvalId}` : '';
+  const approvalUrl = approvalId
+    ? `${window.location.origin}/approve/${approvalId}${approvalToken ? `?t=${encodeURIComponent(approvalToken)}` : ''}`
+    : '';
+  const phonePath = approvalToken ? `/a/${approvalToken}` : shortCode ? `/a/${shortCode}` : '';
   const ladder = groupLadder(soloPrice);
   const youMember = groupMembers.find((member) => !member.isBot);
   const youStatus = youMember?.status ?? 'pending';
@@ -242,6 +278,7 @@ function DealScreen({
     setGroupBuyActive(false);
     setGroupMembers([]);
     setShortCode(null);
+    setApprovalToken('');
     setShareLink('');
     setRestoring(false);
     setRestoreError(null);
@@ -270,6 +307,7 @@ function DealScreen({
         setChatLog(messages);
         setApprovalId(userApproval?.id ?? null);
         if (userApproval?.short_code) setShortCode(userApproval.short_code);
+        setApprovalToken(recallToken(deal.id));
         setGroupPrice(price);
         setSoloPrice(soloPriceFromChat(messages, Number(deal.matched_price) || price));
         setGroupBuyActive(approvals.some((approval: { is_bot?: boolean }) => approval.is_bot));
@@ -675,16 +713,16 @@ function DealScreen({
                 <div className="bg-white p-6 rounded-lg inline-block">
                   <QRCode value={approvalUrl} size={200} />
                 </div>
-                {shortCode && (
+                {phonePath && (
                   <div className="mt-6">
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
                       Type this on your phone
                     </p>
                     <a
-                      href={`/a/${shortCode}`}
+                      href={phonePath}
                       className="block max-w-full break-all font-mono text-sm font-semibold leading-snug text-slate-900 dark:text-slate-50 sm:text-base"
                     >
-                      {window.location.host}/a/{shortCode}
+                      {window.location.host}{phonePath}
                     </a>
                   </div>
                 )}

@@ -116,7 +116,7 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       await page.waitForSelector('text=Your Approval Required', { timeout: 15000 });
       const shortLink = page.locator('a[href^="/a/"]');
       await expect(shortLink).toBeVisible();
-      await expect(shortLink).toHaveAttribute('href', /^\/a\/[23456789abcdefghjkmnpqrstuvwxyz]{4}$/);
+      await expect(shortLink).toHaveAttribute('href', /^\/a\/[A-Za-z0-9_-]{32,}$/);
       for (const width of [390, 1280]) {
         await page.setViewportSize({ width, height: width === 390 ? 844 : 800 });
         const clipped = await shortLink.evaluate((el) => el.scrollWidth > el.clientWidth + 1);
@@ -181,8 +181,9 @@ test.describe('Honest Cart - Happy Path E2E', () => {
       // Extract approval URL
       const approvalLink = await page.locator('a[href*="/approve/"]').getAttribute('href');
       expect(approvalLink).toBeTruthy();
-      // If the link is already absolute, use it as-is, otherwise prepend BASE_URL
-      const approvalUrl = approvalLink!.startsWith('http') ? approvalLink : `${BASE_URL}${approvalLink}`;
+      const approvalUrl = approvalLink!.startsWith('http') ? approvalLink! : `${BASE_URL}${approvalLink}`;
+      const approvalId = new URL(approvalUrl).pathname.split('/').pop();
+      expect(approvalUrl).toContain('t=');
       console.log(`Approval URL: ${approvalUrl}`);
 
       // Step 6: Mobile approval (second context)
@@ -235,7 +236,6 @@ test.describe('Honest Cart - Happy Path E2E', () => {
 
       // Step 8: Navigate to simulated checkout from desktop
       console.log('Step 8: Navigating to checkout...');
-      const approvalId = approvalUrl!.split('/').pop();
       await page.goto(`${BASE_URL}/checkout/${approvalId}`);
       await page.waitForLoadState('networkidle');
       await expect(page.getByText('£249.99')).toBeVisible({ timeout: 8000 });

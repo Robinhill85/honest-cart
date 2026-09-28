@@ -1,21 +1,34 @@
 import { NextRequest } from 'next/server';
+import { approvalTokenMatches } from '@/lib/approval-token';
 import { chargeableUnitPrice, groupPricePhrase } from '@/lib/charge';
-import { getApproval, getApprovalsByDealId, getDeal, updateApproval, updateDeal } from '@/lib/deals';
+import {
+  approvalTokensEnforced,
+  getApproval,
+  getApprovalsByDealId,
+  getDeal,
+  toPublicApproval,
+  updateApproval,
+  updateDeal,
+} from '@/lib/deals';
 import type { Approval } from '@/lib/deals';
 import { jsonNoStore } from '@/lib/http';
+import { priceAtOrAboveFloor } from '@/lib/policy';
 import { publicBaseUrl } from '@/lib/public-url';
+import { invalidPriceField, invalidQuantity } from '@/lib/request-guards';
 
 async function approvalQuote(approval: Approval): Promise<{ price: number; groupSize: number }> {
   const members = await getApprovalsByDealId(approval.deal_id);
   const groupSize = Math.max(1, members.length);
   const deal = await getDeal(approval.deal_id);
-  const live = chargeableUnitPrice(
+  const live = priceAtOrAboveFloor(
     groupSize,
-    deal?.chat_log,
-    deal ? Number(deal.matched_price) : Number(approval.price)
+    chargeableUnitPrice(groupSize, deal?.chat_log, deal ? Number(deal.matched_price) : Number(approval.price))
   );
   const stored = Number(approval.price);
-  const price = approval.status === 'pending' || !Number.isFinite(stored) ? live : stored;
+  const price =
+    approval.status === 'pending' || !Number.isFinite(stored)
+      ? live
+      : priceAtOrAboveFloor(groupSize, stored);
   return { price, groupSize };
 }
 
@@ -24,20 +37,20 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
     const approval = await getApproval(id);
-    
+
     if (!approval) {
       return jsonNoStore({ error: 'Approval not found' }, 404);
     }
 
     const quote = await approvalQuote(approval);
     return jsonNoStore({
-      ...approval,
+      ...toPublicApproval(approval),
       price: quote.price,
       group_size: quote.groupSize,
     });
@@ -53,27 +66,65 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { approved } = await request.json();
+    let body: Record<string, unknown>;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonNoStore({ error: 'Invalid JSON' }, 400);
+    }
+
+    if (typeof body.approved !== 'boolean') {
+      return jsonNoStore({ error: 'approved must be true or false' }, 400);
+    }
+    if (
+      invalidPriceField(body.price) ||
+      invalidPriceField(body.unit_price) ||
+      invalidQuantity(body.quantity)
+    ) {
+      return jsonNoStore({ error: 'Invalid price or quantity' }, 400);
+    }
+
     const approval = await getApproval(id);
     if (!approval) {
       return jsonNoStore({ error: 'Approval not found' }, 404);
     }
+    if (approval.is_bot) {
+      return jsonNoStore({ error: 'Bot approvals are closed' }, 403);
+    }
+
+    if ((await approvalTokensEnforced()) && !approvalTokenMatches(approval.token_hash, body.token)) {
+      return jsonNoStore({ error: 'This approval link is not valid' }, 401);
+    }
+
+    if (approval.stripe_payment_status === 'paid') {
+      return jsonNoStore({ error: 'This approval is already paid' }, 409);
+    }
+    if (approval.status === 'declined') {
+      return jsonNoStore({ error: 'This approval was declined' }, 409);
+    }
+    if (approval.status === 'approved' && !body.approved) {
+      return jsonNoStore({ error: 'This approval was already accepted' }, 409);
+    }
 
     const quote = await approvalQuote(approval);
-    const unitPrice = approved ? quote.price : Number(approval.price);
+    const unitPrice = body.approved ? quote.price : Number(approval.price);
 
-    await updateApproval(id, {
-      status: approved ? 'approved' : 'declined',
-      approved_at: new Date().toISOString(),
-      ...(approved ? { price: unitPrice } : {}),
-    });
+    if (approval.status === 'pending') {
+      await updateApproval(id, {
+        status: body.approved ? 'approved' : 'declined',
+        approved_at: new Date().toISOString(),
+        ...(body.approved ? { price: unitPrice } : {}),
+      });
 
-    if (approved) {
-      const deal = await getDeal(approval.deal_id);
-      if (deal && Number(deal.matched_price) !== unitPrice) {
-        await updateDeal(approval.deal_id, { matched_price: unitPrice });
+      if (body.approved) {
+        const deal = await getDeal(approval.deal_id);
+        if (deal && Number(deal.matched_price) !== unitPrice) {
+          await updateDeal(approval.deal_id, { matched_price: unitPrice });
+        }
       }
+    }
 
+    if (body.approved) {
       const stripeKey = process.env.STRIPE_SECRET_KEY;
       const baseUrl = publicBaseUrl(request);
 
@@ -106,7 +157,7 @@ export async function POST(
             },
           },
           success_url: `${baseUrl}/receipt/${id}?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${baseUrl}/approve/${id}`,
+          cancel_url: `${baseUrl}/approve/${id}?t=${encodeURIComponent(String(body.token || ''))}`,
           metadata: {
             approval_id: id,
             group_size: String(quote.groupSize),

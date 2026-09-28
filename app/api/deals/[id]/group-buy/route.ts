@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDeal, updateDeal, saveApproval, getApprovalsByDealId, setDealApprovalPrices } from '@/lib/deals';
+import { approvalTokenMatches } from '@/lib/approval-token';
+import {
+  approvalTokensEnforced,
+  getDeal,
+  updateDeal,
+  saveApproval,
+  getApprovalsByDealId,
+  setDealApprovalPrices,
+} from '@/lib/deals';
 import type { Approval, ChatMessage } from '@/lib/deals';
-import { groupLadder, groupPriceForCount } from '@/lib/policy';
+import { groupLadder, groupPriceForCount, priceAtOrAboveFloor } from '@/lib/policy';
 import { groupJoinStatus, groupTierExchange } from '@/lib/negotiation';
 import { publicBaseUrl } from '@/lib/public-url';
+import { invalidPriceField, invalidQuantity } from '@/lib/request-guards';
 
 export const maxDuration = 60;
 
@@ -21,6 +30,19 @@ export async function POST(
 ) {
   try {
     const { id: dealId } = await params;
+    let body: Record<string, unknown> = {};
+    const raw = await request.text();
+    if (raw.trim()) {
+      try {
+        body = JSON.parse(raw);
+      } catch {
+        return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+      }
+    }
+    if (invalidPriceField(body.price) || invalidQuantity(body.quantity)) {
+      return NextResponse.json({ error: 'Invalid price or quantity' }, { status: 400 });
+    }
+
     const deal = await getDeal(dealId);
     
     if (!deal) {
@@ -34,9 +56,22 @@ export async function POST(
       );
     }
 
+    const existing = await getApprovalsByDealId(dealId);
+    if (deal.group_id || existing.some((approval) => approval.is_bot)) {
+      return NextResponse.json({ error: 'Group buy already started' }, { status: 409 });
+    }
+
+    const human = existing.find((approval) => !approval.is_bot);
+    if (
+      (await approvalTokensEnforced()) &&
+      !approvalTokenMatches(human?.token_hash, body.token)
+    ) {
+      return NextResponse.json({ error: 'This approval link is not valid' }, { status: 401 });
+    }
+
     // Generate group ID if not exists
     const groupId = deal.group_id || crypto.randomUUID();
-    const soloPrice = deal.matched_price || deal.trusted_price;
+    const soloPrice = Number(deal.matched_price ?? deal.trusted_price);
     const chatLog: ChatMessage[] = Array.isArray(deal.chat_log) ? [...deal.chat_log] : [];
     await updateDeal(dealId, { group_id: groupId });
 
@@ -63,7 +98,7 @@ export async function POST(
 
           const approvalsBefore = await getApprovalsByDealId(dealId);
           const memberCount = approvalsBefore.length + 1;
-          const groupPrice = groupPriceForCount(memberCount, soloPrice);
+          const groupPrice = priceAtOrAboveFloor(memberCount, groupPriceForCount(memberCount, soloPrice));
 
           const botApprovalId = crypto.randomUUID();
           const botApproval: Approval = {

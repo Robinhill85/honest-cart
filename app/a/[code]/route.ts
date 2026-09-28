@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getApprovalByShortCode } from '@/lib/deals';
+import { getApprovalByShortCode, getApprovalByToken } from '@/lib/deals';
 
 export async function GET(
   request: NextRequest,
@@ -7,6 +7,12 @@ export async function GET(
 ) {
   const { code } = await params;
   try {
+    const byToken = await getApprovalByToken(code);
+    if (byToken) {
+      const url = new URL(`/approve/${byToken.id}`, request.url);
+      url.searchParams.set('t', code);
+      return NextResponse.redirect(url);
+    }
     const approval = await getApprovalByShortCode(code);
     if (!approval) {
       return NextResponse.redirect(new URL('/', request.url));

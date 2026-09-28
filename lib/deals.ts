@@ -1,3 +1,5 @@
+import { hashApprovalToken } from './approval-token';
+import { getSupabaseWriter } from './supabase-admin';
 import { getSupabase } from './supabase';
 import { CURRYS_POLICY, type SellerPolicy } from './policy';
 
@@ -42,6 +44,8 @@ export interface Approval {
   short_code?: string;
   stripe_payment_intent_id?: string;
   stripe_payment_status?: string | null;
+  /** sha256 hex of the QR token. Not a secret by itself. Omitted from API JSON. */
+  token_hash?: string;
 }
 
 const SHORT_CODE_ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz';
@@ -76,8 +80,45 @@ function throwIfError(
   throw new Error(error.message);
 }
 
+function isMissingColumn(
+  error: { code?: string; message?: string } | null,
+  column: string
+): boolean {
+  if (!error) return false;
+  return (
+    error.code === 'PGRST204' ||
+    error.code === '42703' ||
+    (error.message || '').includes(column)
+  );
+}
+
+let tokenColumnReady: boolean | null = null;
+
+/**
+ * True once approvals.token_hash exists, and always in the in-memory store.
+ * False until the migration adds the column, so a deploy before that SQL
+ * still accepts approvals.
+ */
+export async function approvalTokensEnforced(): Promise<boolean> {
+  const supabase = getSupabaseWriter();
+  if (!supabase) return true;
+  if (tokenColumnReady === true) return true;
+  const { error } = await supabase.from('approvals').select('token_hash').limit(1);
+  if (!error) {
+    tokenColumnReady = true;
+    return true;
+  }
+  if (isMissingColumn(error, 'token_hash')) return false;
+  throw new Error(error.message);
+}
+
+export function toPublicApproval<T extends { token_hash?: string }>(approval: T): Omit<T, 'token_hash'> {
+  const { token_hash: _tokenHash, ...rest } = approval;
+  return rest;
+}
+
 export async function saveDeal(deal: Deal): Promise<void> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseWriter();
   if (supabase) {
     const { error } = await supabase.from('deals').upsert(deal);
     throwIfError('saveDeal', error);
@@ -116,7 +157,7 @@ export async function getDeal(id: string): Promise<Deal | null> {
 }
 
 export async function updateDeal(id: string, updates: Partial<Deal>): Promise<void> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseWriter();
   if (supabase) {
     const { data, error } = await supabase
       .from('deals')
@@ -142,9 +183,15 @@ export async function updateDeal(id: string, updates: Partial<Deal>): Promise<vo
 }
 
 export async function saveApproval(approval: Approval): Promise<void> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseWriter();
   if (supabase) {
     const { error } = await supabase.from('approvals').insert(approval);
+    if (error && isMissingColumn(error, 'token_hash')) {
+      const { token_hash: _tokenHash, ...legacy } = approval;
+      const retry = await supabase.from('approvals').insert(legacy);
+      throwIfError('saveApproval', retry.error);
+      return;
+    }
     throwIfError('saveApproval', error);
     return;
   }
@@ -165,17 +212,57 @@ export async function getApproval(id: string): Promise<Approval | null> {
   return inMemoryApprovals.get(id) || null;
 }
 
+function withoutPaymentFields(updates: Partial<Approval>): Partial<Approval> {
+  const next = { ...updates };
+  delete next.stripe_payment_intent_id;
+  delete next.stripe_payment_status;
+  delete next.token_hash;
+  delete next.id;
+  return next;
+}
+
 export async function updateApproval(id: string, updates: Partial<Approval>): Promise<void> {
-  const supabase = getSupabase();
+  const safe = withoutPaymentFields(updates);
+  const supabase = getSupabaseWriter();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('approvals')
+      .update(safe)
+      .eq('id', id)
+      .select('id');
+    throwIfError('updateApproval', error);
+    if (!data || data.length === 0) {
+      console.error('Supabase updateApproval matched 0 rows:', id);
+      throw new Error(`Approval ${id} was not updated`);
+    }
+    return;
+  }
+  const approval = inMemoryApprovals.get(id);
+  if (!approval) {
+    throw new Error(`Approval ${id} was not updated`);
+  }
+  inMemoryApprovals.set(id, { ...approval, ...safe });
+}
+
+/** The only writer of stripe_payment_status. Callers must already have verified Stripe. */
+export async function markApprovalPaid(
+  id: string,
+  updates: {
+    status: 'approved';
+    stripe_payment_status: 'paid';
+    stripe_payment_intent_id?: string;
+  }
+): Promise<void> {
+  const supabase = getSupabaseWriter();
   if (supabase) {
     const { data, error } = await supabase
       .from('approvals')
       .update(updates)
       .eq('id', id)
       .select('id');
-    throwIfError('updateApproval', error);
+    throwIfError('markApprovalPaid', error);
     if (!data || data.length === 0) {
-      console.error('Supabase updateApproval matched 0 rows:', id);
+      console.error('Supabase markApprovalPaid matched 0 rows:', id);
       throw new Error(`Approval ${id} was not updated`);
     }
     return;
@@ -201,6 +288,25 @@ export async function getApprovalByShortCode(code: string): Promise<Approval | n
     return data || null;
   }
   return Array.from(inMemoryApprovals.values()).find((approval) => approval.short_code === normalized) || null;
+}
+
+export async function getApprovalByToken(token: string): Promise<Approval | null> {
+  if (!token || token.length < 20) return null;
+  const hash = hashApprovalToken(token);
+  const supabase = getSupabase() || getSupabaseWriter();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('approvals')
+      .select('*')
+      .eq('token_hash', hash)
+      .maybeSingle();
+    if (error && isMissingColumn(error, 'token_hash')) {
+      return Array.from(inMemoryApprovals.values()).find((approval) => approval.token_hash === hash) || null;
+    }
+    throwIfError('getApprovalByToken', error);
+    return data || null;
+  }
+  return Array.from(inMemoryApprovals.values()).find((approval) => approval.token_hash === hash) || null;
 }
 
 export async function getApprovalsByDealId(dealId: string): Promise<Approval[]> {

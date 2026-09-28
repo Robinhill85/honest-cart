@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { mintApprovalToken } from '@/lib/approval-token';
 import { negotiateDeal } from '@/lib/negotiation';
 import { saveDeal, saveApproval, createShortCode, CURRYS_POLICY, Deal, Approval } from '@/lib/deals';
+import { DEMO_XM6_OFFER, priceAtOrAboveFloor } from '@/lib/policy';
+import { invalidPriceField, invalidQuantity } from '@/lib/request-guards';
 import { randomUUID } from 'crypto';
 
 export const maxDuration = 60;
@@ -17,15 +20,23 @@ export async function POST(request: NextRequest) {
   (async () => {
     try {
       const body = await request.json();
-      const { productName, cheaperSeller, cheaperPrice, cheaperFlags, trustedSeller, trustedPrice } = body;
+      if (
+        invalidPriceField(body?.cheaperPrice) ||
+        invalidPriceField(body?.trustedPrice) ||
+        invalidPriceField(body?.price) ||
+        invalidQuantity(body?.quantity)
+      ) {
+        throw new Error('Invalid price or quantity');
+      }
 
+      const offer = DEMO_XM6_OFFER;
       const negotiation = negotiateDeal(
-        productName,
-        cheaperSeller,
-        cheaperPrice,
-        cheaperFlags,
-        trustedSeller,
-        trustedPrice,
+        offer.productName,
+        offer.cheaperSeller,
+        offer.cheaperPrice,
+        [...offer.cheaperFlags],
+        offer.trustedSeller,
+        offer.trustedPrice,
         CURRYS_POLICY
       );
 
@@ -50,16 +61,18 @@ export async function POST(request: NextRequest) {
       const dealId = randomUUID();
       const approvalId = randomUUID();
       const shortCode = createShortCode();
+      const { token, token_hash } = mintApprovalToken();
+      matchedPrice = priceAtOrAboveFloor(1, matchedPrice);
 
       const deal: Deal = {
         id: dealId,
-        product_id: 'sony-wh1000xm6',
-        product_name: productName,
-        cheaper_seller: cheaperSeller,
-        cheaper_price: cheaperPrice,
-        cheaper_flags: cheaperFlags,
-        trusted_seller: trustedSeller,
-        trusted_price: trustedPrice,
+        product_id: offer.productId,
+        product_name: offer.productName,
+        cheaper_seller: offer.cheaperSeller,
+        cheaper_price: offer.cheaperPrice,
+        cheaper_flags: [...offer.cheaperFlags],
+        trusted_seller: offer.trustedSeller,
+        trusted_price: offer.trustedPrice,
         matched_price: matchedPrice,
         status: 'matched',
         chat_log: chatLog,
@@ -70,12 +83,13 @@ export async function POST(request: NextRequest) {
       const approval: Approval = {
         id: approvalId,
         deal_id: dealId,
-        product_name: productName,
-        seller: trustedSeller,
+        product_name: offer.productName,
+        seller: offer.trustedSeller,
         price: matchedPrice,
         status: 'pending',
         created_at: new Date().toISOString(),
         short_code: shortCode,
+        token_hash,
       };
 
       await saveDeal(deal);
@@ -89,6 +103,7 @@ export async function POST(request: NextRequest) {
           dealId,
           matchedPrice,
           shortCode,
+          token,
         })}\n\n`)
       );
     } catch (error) {

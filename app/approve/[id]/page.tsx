@@ -19,6 +19,12 @@ export default function ApprovePage() {
   const [approval, setApproval] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const approvalToken = () => {
+    if (typeof window === 'undefined') return '';
+    return new URLSearchParams(window.location.search).get('t') || '';
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -50,40 +56,53 @@ export default function ApprovePage() {
 
   const handleApprove = async () => {
     setSubmitting(true);
+    setActionError(null);
     try {
       const response = await fetch(`/api/approvals/${approvalId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ approved: true }),
+        body: JSON.stringify({ approved: true, token: approvalToken() }),
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        setActionError(data.error || 'Could not approve this purchase');
+        setSubmitting(false);
+        return;
+      }
       
       if (data.checkoutUrl) {
-        // Redirect to Stripe checkout
         window.location.href = data.checkoutUrl;
       } else {
-        // Show simulated checkout
         router.push(`/checkout/${approvalId}`);
       }
     } catch (error) {
       console.error('Approval failed:', error);
+      setActionError('Could not approve this purchase');
       setSubmitting(false);
     }
   };
 
   const handleDecline = async () => {
     setSubmitting(true);
+    setActionError(null);
     try {
-      await fetch(`/api/approvals/${approvalId}`, {
+      const response = await fetch(`/api/approvals/${approvalId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ approved: false }),
+        body: JSON.stringify({ approved: false, token: approvalToken() }),
       });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setActionError(data.error || 'Could not decline this purchase');
+        setSubmitting(false);
+        return;
+      }
 
       router.push('/compare');
     } catch (error) {
       console.error('Decline failed:', error);
+      setActionError('Could not decline this purchase');
       setSubmitting(false);
     }
   };
@@ -197,6 +216,9 @@ export default function ApprovePage() {
           </div>
         </div>
 
+        {actionError && (
+          <p className="text-sm text-red-700 dark:text-red-300 text-center mb-4">{actionError}</p>
+        )}
         <div className="space-y-3">
           <button
             onClick={handleApprove}

@@ -59,7 +59,7 @@ async function main() {
   const approved = await fetch(`${readerBase}/api/approvals/${created.approvalId}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ approved: true }),
+    body: JSON.stringify({ approved: true, token: created.token }),
   });
   const approvedBody = await approved.json();
   console.log('approve', approved.status, approvedBody.checkoutUrl ? 'stripe' : 'simulated');

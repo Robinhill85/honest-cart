@@ -1,5 +1,5 @@
 import { asChatLog } from './charge';
-import { getApproval, getDeal, updateApproval, updateDeal } from './deals';
+import { getApproval, getDeal, markApprovalPaid, updateDeal } from './deals';
 import type { ChatMessage } from './deals';
 
 export interface PaymentConfirmation {
@@ -101,7 +101,7 @@ export async function confirmStripePayment(
         ? session.payment_intent
         : session.payment_intent?.id;
     paidAt = paidAt || new Date().toISOString();
-    await updateApproval(approvalId, {
+    await markApprovalPaid(approvalId, {
       status: 'approved',
       stripe_payment_status: 'paid',
       ...(intent ? { stripe_payment_intent_id: intent } : {}),

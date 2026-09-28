@@ -29,7 +29,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000. Every variable in `.env.example` is optional and ships empty. The demo runs on the seeded files in `data/` with no keys. For phone approval across separate servers, set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, then paste `supabase/SETUP.sql`, `supabase/SEED_1.sql`, `supabase/SEED_2.sql`, and `supabase/PATCH_1.sql` into the Supabase SQL editor. `STRIPE_SECRET_KEY` must start with `sk_test_`.
+Open http://localhost:3000. Every variable in `.env.example` is optional and ships empty. The demo runs on the seeded files in `data/` with no keys. For phone approval across separate servers, set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` (server only), then paste `supabase/SETUP.sql`, `supabase/SEED_1.sql`, `supabase/SEED_2.sql`, `supabase/PATCH_1.sql`, and `supabase/migrations/002_lock_anon_writes.sql` into the Supabase SQL editor. Set the service-role key before that last file. Do not paste `PATCH_1.sql` again afterwards; it restores anon writes. `STRIPE_SECRET_KEY` must start with `sk_test_`.
 
 ## Disclosure
 
@@ -38,11 +38,9 @@ The seller is a demo bot standing in for Currys. All payments are Stripe test mo
 
 Honest Cart is a one-day hackathon demo. Payments run in Stripe **test mode only** (the server refuses any key that isn't `sk_test_`), and no real money or personal data is involved.
 
-Known limitations we would fix before production:
+Fixed:
 
-- **Database writes use the public anon key.** To keep the demo simple, deals and approvals are written through Supabase with the anon key under permissive row-level security policies. That means a determined visitor could edit a deal's status or price directly. The Stripe receipt page is not affected, because it re-verifies payment with Stripe before showing "Paid".
-  - *Fix:* move all writes to a server-only Supabase client using the service-role key, drop the public insert/update policies, and revoke anon write grants (keeping read access for realtime updates).
-- **API routes are unauthenticated.** Anyone can call approve/decline or trigger a group buy on a deal (Stripe test mode only; prices never go below the configured floors).
-  - *Fix:* require a per-approval secret token for approve/decline, block repeat group-buys, and add auth plus rate limiting to the research and negotiate endpoints.
+- **Anon can read, not write.** Deal and approval writes use a server-only Supabase client. When `SUPABASE_SERVICE_ROLE_KEY` is set, that client is the service role and never reaches the browser. `supabase/migrations/002_lock_anon_writes.sql` drops anon insert/update policies and revokes those grants. Anon SELECT stays so the laptop can hear phone approval over Realtime. Until that SQL is applied, the server falls back to the anon client so a deploy does not break the demo.
+- **The QR link is the approval secret.** Creating a deal mints an unguessable token, stores only its hash, and puts the raw token in the QR URL. Approve, decline, checkout, and group buy check it. The decision can be made once. Paying is not a client flag: `stripe_payment_status` is written only after Stripe confirms a test Checkout session. Prices and quantities sent by the client are rejected or ignored. The unit price comes from the coded floors (£279.99, then £264.99 at 3 buyers, £249.99 at 5).
 
-No secrets are shipped to the browser, and the repo was scanned with gitleaks and trufflehog before publishing.
+Still open: anon can read deal chat logs, and `/api/research` has no rate limit. No secrets are shipped to the browser. The repo was scanned with gitleaks and trufflehog before the public copy.

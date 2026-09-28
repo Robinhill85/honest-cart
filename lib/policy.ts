@@ -53,3 +53,31 @@ export function groupFloorLabel(memberCount: number): '1' | '3' | '5' {
   if (memberCount >= 3) return '3';
   return '1';
 }
+
+/** Lowest unit price the seller bot may accept at this group size. */
+export function tierFloor(memberCount: number, policy: SellerPolicy = CURRYS_POLICY): number {
+  if (memberCount >= 5) return policy.group_floors.buyers_5;
+  if (memberCount >= 3) return policy.group_floors.buyers_3;
+  return policy.floor_price;
+}
+
+export function priceAtOrAboveFloor(
+  memberCount: number,
+  price: number,
+  policy: SellerPolicy = CURRYS_POLICY
+): number {
+  const floor = tierFloor(memberCount, policy);
+  if (!Number.isFinite(price)) return floor;
+  return Math.max(price, floor);
+}
+
+/** The demo negotiation. Callers cannot substitute their own prices. */
+export const DEMO_XM6_OFFER = {
+  productId: 'sony-wh1000xm6',
+  productName: 'Sony WH-1000XM6',
+  cheaperSeller: 'Techinthebasket',
+  cheaperPrice: 244.99,
+  cheaperFlags: ['grey_import', 'no_uk_warranty', 'restrictive_returns'],
+  trustedSeller: 'Currys',
+  trustedPrice: 349,
+};
