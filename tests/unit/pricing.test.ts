@@ -114,6 +114,7 @@ describe('agreedPriceFromChat', () => {
     assert.equal(agreedPriceFromChat(agreedAt('279.99'), 999), 279.99);
     assert.equal(agreedPriceFromChat(agreedAt('280'), 999), 280);
     assert.equal(agreedPriceFromChat(agreedAt('280.00'), 999), 280);
+    assert.equal(agreedPriceFromChat([{ role: 'system', content: 'Deal agreed at £279.99' }], 999), 279.99);
   });
 
   test('accepts the chat log as a JSON string', () => {
@@ -130,6 +131,9 @@ describe('agreedPriceFromChat', () => {
     assert.equal(agreedPriceFromChat(agreedAt('279..99'), 299), 299);
     assert.equal(agreedPriceFromChat(agreedAt('279.99.99'), 299), 299);
     assert.equal(agreedPriceFromChat(agreedAt('1.2.3'), 299), 299);
+    assert.equal(agreedPriceFromChat(agreedAt('279.'), 299), 299);
+    assert.equal(agreedPriceFromChat([{ role: 'system', content: 'Deal agreed at £279..' }], 299), 299);
+    assert.equal(agreedPriceFromChat([{ role: 'system', content: 'Deal agreed at £279abc' }], 299), 299);
   });
 
   test('drives the group ladder in chargeableUnitPrice', () => {
