@@ -29,7 +29,7 @@ export function agreedPriceFromChat(messages: unknown, fallback: number): number
   const agreed = asChatLog(messages).find(
     (message) => message.role === 'system' && message.content.includes('Deal agreed at £')
   );
-  const match = agreed?.content.match(/£([\d.]+)/);
+  const match = agreed?.content.match(/£(\d+(?:\.\d+)?)/);
   const parsed = match ? Number(match[1]) : NaN;
   return Number.isFinite(parsed) ? parsed : fallback;
 }

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { chargeableUnitPrice } from '../../lib/charge';
+import { agreedPriceFromChat, chargeableUnitPrice } from '../../lib/charge';
 import {
   CURRYS_POLICY,
   groupFloorLabel,
@@ -101,5 +101,34 @@ describe('chargeableUnitPrice', () => {
     assert.equal(chargeableUnitPrice(3, 'not json', 279.99), 264.99);
     assert.equal(chargeableUnitPrice(3, { role: 'system' }, 279.99), 264.99);
     assert.equal(chargeableUnitPrice(3, [null, 42, { role: 'system' }], 279.99), 264.99);
+  });
+});
+
+describe('agreedPriceFromChat', () => {
+  const agreedAt = (price: string) => [
+    { role: 'buyer', content: `I'll accept £${price}.` },
+    { role: 'system', content: `Deal agreed at £${price}. Creating approval request...` },
+  ];
+
+  test('reads the price from the negotiation system message', () => {
+    assert.equal(agreedPriceFromChat(agreedAt('279.99'), 999), 279.99);
+    assert.equal(agreedPriceFromChat(agreedAt('280'), 999), 280);
+    assert.equal(agreedPriceFromChat(agreedAt('280.00'), 999), 280);
+  });
+
+  test('accepts the chat log as a JSON string', () => {
+    assert.equal(agreedPriceFromChat(JSON.stringify(agreedAt('264.50')), 999), 264.5);
+  });
+
+  test('falls back when there is no agreed-price message', () => {
+    assert.equal(agreedPriceFromChat([], 999), 999);
+    assert.equal(agreedPriceFromChat([{ role: 'buyer', content: 'Deal agreed at £100.' }], 999), 999);
+    assert.equal(agreedPriceFromChat([{ role: 'system', content: 'Deal agreed at £' }], 999), 999);
+  });
+
+  test('drives the group ladder in chargeableUnitPrice', () => {
+    assert.equal(chargeableUnitPrice(1, agreedAt('299.00'), 349), 299);
+    assert.equal(chargeableUnitPrice(3, agreedAt('299.00'), 349), 264.99);
+    assert.equal(chargeableUnitPrice(3, agreedAt('250.00'), 349), 250);
   });
 });
