@@ -126,6 +126,12 @@ describe('agreedPriceFromChat', () => {
     assert.equal(agreedPriceFromChat([{ role: 'system', content: 'Deal agreed at £' }], 999), 999);
   });
 
+  test('falls back instead of charging a partial price for malformed amounts', () => {
+    assert.equal(agreedPriceFromChat(agreedAt('279..99'), 299), 299);
+    assert.equal(agreedPriceFromChat(agreedAt('279.99.99'), 299), 299);
+    assert.equal(agreedPriceFromChat(agreedAt('1.2.3'), 299), 299);
+  });
+
   test('drives the group ladder in chargeableUnitPrice', () => {
     assert.equal(chargeableUnitPrice(1, agreedAt('299.00'), 349), 299);
     assert.equal(chargeableUnitPrice(3, agreedAt('299.00'), 349), 264.99);
